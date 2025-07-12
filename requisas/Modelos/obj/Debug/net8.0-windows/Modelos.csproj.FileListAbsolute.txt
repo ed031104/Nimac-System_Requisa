@@ -1,0 +1,12 @@
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Modelos\bin\Debug\net8.0-windows\Modelos.deps.json
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Modelos\bin\Debug\net8.0-windows\Modelos.dll
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Modelos\bin\Debug\net8.0-windows\Modelos.pdb
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Modelos\obj\Debug\net8.0-windows\Modelos.GeneratedMSBuildEditorConfig.editorconfig
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Modelos\obj\Debug\net8.0-windows\Modelos.AssemblyInfoInputs.cache
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Modelos\obj\Debug\net8.0-windows\Modelos.AssemblyInfo.cs
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Modelos\obj\Debug\net8.0-windows\Modelos.csproj.CoreCompileInputs.cache
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Modelos\obj\Debug\net8.0-windows\Modelos.sourcelink.json
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Modelos\obj\Debug\net8.0-windows\Modelos.dll
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Modelos\obj\Debug\net8.0-windows\refint\Modelos.dll
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Modelos\obj\Debug\net8.0-windows\Modelos.pdb
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Modelos\obj\Debug\net8.0-windows\ref\Modelos.dll

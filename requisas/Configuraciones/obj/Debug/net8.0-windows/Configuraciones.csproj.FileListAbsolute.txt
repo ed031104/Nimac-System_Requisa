@@ -1,0 +1,16 @@
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Configuraciones\bin\Debug\net8.0-windows\appsettings.json
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Configuraciones\bin\Debug\net8.0-windows\Configuraciones.deps.json
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Configuraciones\bin\Debug\net8.0-windows\Configuraciones.dll
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Configuraciones\bin\Debug\net8.0-windows\Configuraciones.pdb
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Configuraciones\obj\Debug\net8.0-windows\Configuraciones.csproj.AssemblyReference.cache
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Configuraciones\obj\Debug\net8.0-windows\Configuraciones.GeneratedMSBuildEditorConfig.editorconfig
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Configuraciones\obj\Debug\net8.0-windows\Configuraciones.AssemblyInfoInputs.cache
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Configuraciones\obj\Debug\net8.0-windows\Configuraciones.AssemblyInfo.cs
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Configuraciones\obj\Debug\net8.0-windows\Configuraciones.csproj.CoreCompileInputs.cache
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Configuraciones\obj\Debug\net8.0-windows\Configuraciones.sourcelink.json
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Configuraciones\obj\Debug\net8.0-windows\Configuraciones.dll
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Configuraciones\obj\Debug\net8.0-windows\refint\Configuraciones.dll
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Configuraciones\obj\Debug\net8.0-windows\Configuraciones.pdb
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Configuraciones\obj\Debug\net8.0-windows\ref\Configuraciones.dll
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Configuraciones\obj\Debug\net8.0-windows\Configuraciones.Properties.Resources.resources
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\Configuraciones\obj\Debug\net8.0-windows\Configuraciones.csproj.GenerateResource.cache

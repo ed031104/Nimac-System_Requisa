@@ -1,0 +1,41 @@
+C:\Users\Frank-PC\source\repos\requisas\requisas\bin\Debug\net8.0-windows\requisas.exe
+C:\Users\Frank-PC\source\repos\requisas\requisas\bin\Debug\net8.0-windows\requisas.deps.json
+C:\Users\Frank-PC\source\repos\requisas\requisas\bin\Debug\net8.0-windows\requisas.runtimeconfig.json
+C:\Users\Frank-PC\source\repos\requisas\requisas\bin\Debug\net8.0-windows\requisas.dll
+C:\Users\Frank-PC\source\repos\requisas\requisas\bin\Debug\net8.0-windows\requisas.pdb
+C:\Users\Frank-PC\source\repos\requisas\requisas\obj\Debug\net8.0-windows\requisas.Form1.resources
+C:\Users\Frank-PC\source\repos\requisas\requisas\obj\Debug\net8.0-windows\requisas.ingreso_data.resources
+C:\Users\Frank-PC\source\repos\requisas\requisas\obj\Debug\net8.0-windows\requisas.Properties.Resources.resources
+C:\Users\Frank-PC\source\repos\requisas\requisas\obj\Debug\net8.0-windows\requisas.table.resources
+C:\Users\Frank-PC\source\repos\requisas\requisas\obj\Debug\net8.0-windows\requisas.csproj.GenerateResource.cache
+C:\Users\Frank-PC\source\repos\requisas\requisas\obj\Debug\net8.0-windows\requisas.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Frank-PC\source\repos\requisas\requisas\obj\Debug\net8.0-windows\requisas.AssemblyInfoInputs.cache
+C:\Users\Frank-PC\source\repos\requisas\requisas\obj\Debug\net8.0-windows\requisas.AssemblyInfo.cs
+C:\Users\Frank-PC\source\repos\requisas\requisas\obj\Debug\net8.0-windows\requisas.csproj.CoreCompileInputs.cache
+C:\Users\Frank-PC\source\repos\requisas\requisas\obj\Debug\net8.0-windows\requisas.dll
+C:\Users\Frank-PC\source\repos\requisas\requisas\obj\Debug\net8.0-windows\refint\requisas.dll
+C:\Users\Frank-PC\source\repos\requisas\requisas\obj\Debug\net8.0-windows\requisas.pdb
+C:\Users\Frank-PC\source\repos\requisas\requisas\obj\Debug\net8.0-windows\requisas.genruntimeconfig.cache
+C:\Users\Frank-PC\source\repos\requisas\requisas\obj\Debug\net8.0-windows\ref\requisas.dll
+C:\Users\Frank-PC\source\repos\requisas\requisas\obj\Debug\net8.0-windows\requisas.Data.resources
+D:\SISTEMA NICMAC\requisas\requisas\bin\Debug\net8.0-windows\requisas.exe
+D:\SISTEMA NICMAC\requisas\requisas\bin\Debug\net8.0-windows\requisas.deps.json
+D:\SISTEMA NICMAC\requisas\requisas\bin\Debug\net8.0-windows\requisas.runtimeconfig.json
+D:\SISTEMA NICMAC\requisas\requisas\bin\Debug\net8.0-windows\requisas.dll
+D:\SISTEMA NICMAC\requisas\requisas\bin\Debug\net8.0-windows\requisas.pdb
+D:\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\requisas.Data.resources
+D:\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\requisas.Form1.resources
+D:\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\requisas.ingreso_data.resources
+D:\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\requisas.Properties.Resources.resources
+D:\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\requisas.table.resources
+D:\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\requisas.csproj.GenerateResource.cache
+D:\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\requisas.GeneratedMSBuildEditorConfig.editorconfig
+D:\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\requisas.AssemblyInfoInputs.cache
+D:\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\requisas.AssemblyInfo.cs
+D:\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\requisas.csproj.CoreCompileInputs.cache
+D:\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\requisas.sourcelink.json
+D:\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\requisas.dll
+D:\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\refint\requisas.dll
+D:\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\requisas.pdb
+D:\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\requisas.genruntimeconfig.cache
+D:\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\ref\requisas.dll
