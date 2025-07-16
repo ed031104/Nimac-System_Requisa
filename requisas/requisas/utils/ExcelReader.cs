@@ -1,5 +1,6 @@
 ﻿using Modelos;
 using Modelos.data;
+using Modelos.requisas;
 using OfficeOpenXml;
 using Servicios;
 using System;
@@ -22,7 +23,7 @@ namespace CapaVista.utils
             _tipoAjusteServices = new TipoAjusteServices();
         }
 
-        public async Task<ServiceResponse<IEnumerable<RequisaAjuste>>> ParserExcelAndRequisa(string filePath)
+        public async Task<ServiceResponse<IEnumerable< RequisaAjuste>>> ParserExcelAndRequisa(string filePath)
         {
             var ajustes = new List<RequisaAjuste>();
             try
@@ -115,7 +116,7 @@ namespace CapaVista.utils
 
                     var casa = new Casa.Builder()
                         .SetCodigoCasa(hoja.Cells[fila, 1].Text)
-                        .SetNombreCasa(hoja.Cells[fila, 4].Text)
+                        .SetNombreCasa(hoja.Cells[fila, 2].Text)
                         .SetFechaRegistro(DateTime.Now)
                         .SetFechaModificacion(DateTime.Now)
                         .Build();
@@ -137,11 +138,100 @@ namespace CapaVista.utils
             }
         }
 
-        public async Task<ServiceResponse<IEnumerable<Casa>>> ParserExcelAndSucursal(string filePath) { return null; }
+        public async Task<ServiceResponse<IEnumerable<Sucursal>>> ParserExcelAndSucursal(string filePath) {
+            var sucursales = new List<Sucursal>();
+            try
+            {
+                ExcelPackage.License.SetNonCommercialOrganization("My Noncommercial organization");
+
+                using var package = new ExcelPackage(new FileInfo(filePath));
+                var hoja = package.Workbook.Worksheets[0]; // Asumiendo que los datos están en la primera hoja
+
+                int filaInicio = 2; // Asumiendo que la primera fila es el encabezado
+                int totalFilas = hoja.Dimension.Rows;
+
+                for (int fila = filaInicio; fila <= totalFilas; fila++)
+                {
+
+                    var sucursal = new Sucursal.Builder()
+                        .SetNumeroSucursal(hoja.Cells[fila, 1].Text)
+                        .SetNombreSucursal(hoja.Cells[fila, 2].Text)
+                        .SetCasa( new Casa.Builder()
+                            .SetCodigoCasa(hoja.Cells[fila, 3].Text)
+                            .Build()
+                        )
+                        .SetFechaRegistro(DateTime.Now)
+                        .SetFechaModificacion(DateTime.Now)
+                        .Build();
+                    sucursales.Add(sucursal);
+                }
+
+                return new ServiceResponse<IEnumerable<Sucursal>>.Builder()
+                    .SetData(sucursales)
+                    .SetMessage("Archivo procesado correctamente.")
+                    .SetSuccess(true)
+                    .Build();
+            }
+            catch (Exception e)
+            {
+                return new ServiceResponse<IEnumerable<Sucursal>>.Builder()
+                    .SetErrorMessage("Error al procesar el archivo: " + e.Message)
+                    .SetSuccess(false)
+                    .Build();
+            }
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ParteSucursal>>> ParserExcelAndParteSucursal(string filePath) {
+            var parteSucursales = new List<ParteSucursal>();
+            try
+            {
+                ExcelPackage.License.SetNonCommercialOrganization("My Noncommercial organization");
+
+                using var package = new ExcelPackage(new FileInfo(filePath));
+                var hoja = package.Workbook.Worksheets[0]; // Asumiendo que los datos están en la primera hoja
+
+                int filaInicio = 2; // Asumiendo que la primera fila es el encabezado
+                int totalFilas = hoja.Dimension.Rows;
+
+                for (int fila = filaInicio; fila <= totalFilas; fila++)
+                {
+
+                    var parteSucursal = new ParteSucursal.Builder()
+                        .SetParte(
+                            new Parte.Builder()
+                                .SetNumeroParte(hoja.Cells[fila, 1].Text)
+                                .Build()
+                        )
+                        .SetCostoUnitario(Convert.ToDecimal(hoja.Cells[fila, 2].Text))
+                        .SetCantidad(Convert.ToInt32(hoja.Cells[fila, 3].Text))
+                        .SetSucursal(new Sucursal.Builder()
+                            .SetNumeroSucursal(hoja.Cells[fila, 4].Text)
+                            .Build()
+                        )
+                        .SetFechaRegistro(DateTime.Now)
+                        .SetFechaModificacion(DateTime.Now)
+                        .Build();
+
+                    parteSucursales.Add(parteSucursal);
+                }
+
+                return new ServiceResponse<IEnumerable<ParteSucursal>>.Builder()
+                    .SetData(parteSucursales)
+                    .SetMessage("Archivo procesado correctamente.")
+                    .SetSuccess(true)
+                    .Build();
+            }
+            catch (Exception e)
+            {
+                return new ServiceResponse<IEnumerable<ParteSucursal>>.Builder()
+                    .SetErrorMessage("Error al procesar el archivo: " + e.Message)
+                    .SetSuccess(false)
+                    .Build();
+            }
+        }
 
         public async Task<ServiceResponse<IEnumerable<Casa>>> ParserExcelAndParte(string filePath) { return null; }
 
-        public async Task<ServiceResponse<IEnumerable<Casa>>> ParserExcelAndParteSucursal(string filePath) { return null; }
 
         private bool validarColumnas()
         {

@@ -33,6 +33,7 @@
             menuStrip = new MenuStrip();
             editMenu = new ToolStripMenuItem();
             nUEVAToolStripMenuItem = new ToolStripMenuItem();
+            gESTIONDEREQUISAToolStripMenuItem = new ToolStripMenuItem();
             viewMenu = new ToolStripMenuItem();
             toolBarToolStripMenuItem = new ToolStripMenuItem();
             statusBarToolStripMenuItem = new ToolStripMenuItem();
@@ -54,7 +55,6 @@
             label1 = new Label();
             usuarioText = new Label();
             notifyIcon1 = new NotifyIcon(components);
-            NotificacionButton = new Button();
             revisionTimer = new System.Windows.Forms.Timer(components);
             menuStrip.SuspendLayout();
             SuspendLayout();
@@ -73,7 +73,7 @@
             // 
             // editMenu
             // 
-            editMenu.DropDownItems.AddRange(new ToolStripItem[] { nUEVAToolStripMenuItem });
+            editMenu.DropDownItems.AddRange(new ToolStripItem[] { nUEVAToolStripMenuItem, gESTIONDEREQUISAToolStripMenuItem });
             editMenu.Image = (Image)resources.GetObject("editMenu.Image");
             editMenu.Name = "editMenu";
             editMenu.Size = new Size(115, 28);
@@ -83,9 +83,16 @@
             // 
             nUEVAToolStripMenuItem.Image = (Image)resources.GetObject("nUEVAToolStripMenuItem.Image");
             nUEVAToolStripMenuItem.Name = "nUEVAToolStripMenuItem";
-            nUEVAToolStripMenuItem.Size = new Size(139, 26);
+            nUEVAToolStripMenuItem.Size = new Size(239, 26);
             nUEVAToolStripMenuItem.Text = "NUEVA";
             nUEVAToolStripMenuItem.Click += nUEVAToolStripMenuItem_Click;
+            // 
+            // gESTIONDEREQUISAToolStripMenuItem
+            // 
+            gESTIONDEREQUISAToolStripMenuItem.Name = "gESTIONDEREQUISAToolStripMenuItem";
+            gESTIONDEREQUISAToolStripMenuItem.Size = new Size(239, 26);
+            gESTIONDEREQUISAToolStripMenuItem.Text = "GESTION DE REQUISA";
+            gESTIONDEREQUISAToolStripMenuItem.Click += gESTIONDEREQUISAToolStripMenuItem_Click;
             // 
             // viewMenu
             // 
@@ -234,23 +241,12 @@
             notifyIcon1.Text = "notifyIcon1";
             notifyIcon1.Visible = true;
             // 
-            // NotificacionButton
-            // 
-            NotificacionButton.Location = new Point(245, 44);
-            NotificacionButton.Name = "NotificacionButton";
-            NotificacionButton.Size = new Size(94, 29);
-            NotificacionButton.TabIndex = 5;
-            NotificacionButton.Text = "button1";
-            NotificacionButton.UseVisualStyleBackColor = true;
-            NotificacionButton.Click += NotificacionButton_Click;
-            // 
             // Menu_Principal
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImageLayout = ImageLayout.Center;
             ClientSize = new Size(911, 697);
-            Controls.Add(NotificacionButton);
             Controls.Add(usuarioText);
             Controls.Add(label1);
             Controls.Add(menuStrip);
@@ -291,7 +287,6 @@
         private Label label1;
         private Label usuarioText;
         private NotifyIcon notifyIcon1;
-        private Button NotificacionButton;
         private ToolStripMenuItem usuariosToolStripMenuItem;
         private ToolStripMenuItem gestionarToolStripMenuItem;
         private ToolStripMenuItem oPCIONESToolStripMenuItem;
@@ -299,6 +294,7 @@
         private System.Windows.Forms.Timer revisionTimer;
         private ToolStripMenuItem reporteDeUsuariosToolStripMenuItem;
         private ToolStripMenuItem reporteCasaToolStripMenuItem;
+        private ToolStripMenuItem gESTIONDEREQUISAToolStripMenuItem;
     }
 }
 

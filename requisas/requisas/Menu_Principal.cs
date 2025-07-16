@@ -1,4 +1,4 @@
-﻿using Modelos;
+﻿using Modelos.login;
 using requisas;
 using System;
 using System.Collections.Generic;
@@ -24,7 +24,7 @@ namespace CapaVista
             InitializeComponent();
         }
 
-       
+
 
         private void OpenFile(object sender, EventArgs e)
         {
@@ -113,7 +113,7 @@ namespace CapaVista
         private void irAReportesToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
-            reporte1 ventana = new reporte1();
+            reportView ventana = new reportView();
             ventana.StartPosition = FormStartPosition.CenterScreen;
             ventana.Size = new Size(1024, 768); // o ventana.WindowState = FormWindowState.Maximized;
             ventana.Show();
@@ -146,6 +146,7 @@ namespace CapaVista
             {
                 case userRole.Administrador:
                     usuariosToolStripMenuItem.Visible = true;
+                    nUEVAToolStripMenuItem.Visible = false;
                     editMenu.Visible = true;
                     viewMenu.Visible = true;
                     toolsMenu.Visible = true;
@@ -156,6 +157,7 @@ namespace CapaVista
                     break;
                 case userRole.GereteDeRepuesto:
                     usuariosToolStripMenuItem.Visible = true;
+                    nUEVAToolStripMenuItem.Visible = false;
                     editMenu.Visible = true;
                     viewMenu.Visible = true;
                     toolsMenu.Visible = true;
@@ -166,6 +168,7 @@ namespace CapaVista
                     break;
                 case userRole.GereteDeOperaciones:
                     usuariosToolStripMenuItem.Visible = true;
+                    nUEVAToolStripMenuItem.Visible = false;
                     editMenu.Visible = true;
                     viewMenu.Visible = true;
                     toolsMenu.Visible = true;
@@ -184,6 +187,7 @@ namespace CapaVista
                     rEPORTESToolStripMenuItem.Visible = false;
                     break;
                 case userRole.Analista:
+                    nUEVAToolStripMenuItem.Visible = false;
                     usuariosToolStripMenuItem.Visible = false;
                     editMenu.Visible = true;
                     viewMenu.Visible = false;
@@ -214,27 +218,26 @@ namespace CapaVista
         #region notificacion
         private void NotificacionButton_Click(object sender, EventArgs e)
         {
-            notifyIcon1.BalloonTipTitle = "Nuevo artículo";
-            notifyIcon1.BalloonTipText = "Se ha cargado un nuevo PDF para revisión.";
-            notifyIcon1.ShowBalloonTip(5000); // Milisegundos
+            //notifyIcon1.BalloonTipTitle = "Nuevo artículo";
+            //notifyIcon1.BalloonTipText = "Se ha cargado un nuevo PDF para revisión.";
+            //notifyIcon1.ShowBalloonTip(5000); // Milisegundos
         }
 
         private void timerNotification()
         {
-            revisionTimer.Enabled = true; // Habilita el temporizador para verificar notificaciones periódicamente
-            revisionTimer.Interval = 20000; // Intervalo de 1 minuto (60000 ms)
-            revisionTimer.Tick += verifyNotificationRepoprt; // Asocia el evento Tick del temporizador
-            revisionTimer.Start(); // Inicia el temporizador
+            //revisionTimer.Enabled = true; // Habilita el temporizador para verificar notificaciones periódicamente
+            //revisionTimer.Interval = 20000; // Intervalo de 1 minuto (60000 ms)
+            //revisionTimer.Tick += verifyNotificationRepoprt; // Asocia el evento Tick del temporizador
+            //revisionTimer.Start(); // Inicia el temporizador
         }
 
         // método para mostrar las notificaciones
         private void verifyNotificationRepoprt(Object sender, EventArgs e)
         {
-            notifyIcon1.BalloonTipTitle = "Nuevo artículo";
-            notifyIcon1.BalloonTipText = "Se ha cargado un nuevo PDF para revisión.";
-            notifyIcon1.BalloonTipIcon = ToolTipIcon.Info; // Info, Warning, Error
-            notifyIcon1.ShowBalloonTip(5000); // Milisegundos
-
+            //notifyIcon1.BalloonTipTitle = "Nuevo artículo";
+            //notifyIcon1.BalloonTipText = "Se ha cargado un nuevo PDF para revisión.";
+            //notifyIcon1.BalloonTipIcon = ToolTipIcon.Info; // Info, Warning, Error
+            //notifyIcon1.ShowBalloonTip(5000); // Milisegundos
         }
         #endregion
 
@@ -327,6 +330,20 @@ namespace CapaVista
             }
 
             AsignacionParteSucursal m1 = new AsignacionParteSucursal();
+            m1.MdiParent = this;
+            m1.Show();
+
+            currentChildForm = m1;
+        }
+
+        private void gESTIONDEREQUISAToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentChildForm != null && !currentChildForm.IsDisposed)
+            {
+                currentChildForm.Close();
+            }
+
+            GestionRequisaAjuste m1 = new GestionRequisaAjuste();
             m1.MdiParent = this;
             m1.Show();
 

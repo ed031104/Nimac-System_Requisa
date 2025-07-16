@@ -27,6 +27,7 @@
     <PackageReference Include="EPPlus.Interfaces" Version="8.0.0" />
     <PackageReference Include="EPPlus.System.Drawing" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3351.48" />
     <PackageReference Include="ReportViewerCore.WinForms" Version="15.1.26" />
   </ItemGroup>
 

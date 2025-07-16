@@ -1,4 +1,7 @@
-﻿using Modelos;
+﻿using CapaVista.Components;
+using CapaVista.utils;
+using Modelos;
+using Modelos.requisas;
 using Servicios;
 using System;
 using System.Collections.Generic;
@@ -15,6 +18,7 @@ namespace CapaVista
     public partial class GestionCasa : Form
     {
         CasaServices _casaServices;
+        private ExcelReader _excelReader = new ExcelReader();
 
         public GestionCasa()
         {
@@ -24,7 +28,7 @@ namespace CapaVista
 
         private async void crearButton_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(CodigoInput.Text) || string.IsNullOrEmpty(NombreInput.Text))
+            if (string.IsNullOrEmpty(NombreInput.Text))
             {
                 MessageBox.Show("Por favor, complete todos los campos.");
                 return;
@@ -95,7 +99,7 @@ namespace CapaVista
 
         private async void GestionCasa_Load(object sender, EventArgs e)
         {
-            MostrarButton.Visible = false; 
+            MostrarButton.Visible = false;
             await LoadDataAsync();
         }
 
@@ -131,8 +135,8 @@ namespace CapaVista
             {
                 codigoCasaColumn = c.CodigoCasa,
                 nombreCasaColumn = c.NombreCasa,
-                fechaRegistroColumn = c.FechaRegistro.ToString("dd/MM/yyyy"),
-                fechaModificacionColumn = c.FechaModificacion.ToString("dd/MM/yyyy")
+                fechaRegistroColumn = c.FechaRegistro?.ToString("dd/MM/yyyy") ?? "",
+                fechaModificacionColumn = c.FechaModificacion?.ToString("dd/MM/yyyy")
             }).ToList();
         }
 
@@ -160,15 +164,69 @@ namespace CapaVista
                     return;
                 }
                 table.DataSource = null; // Limpiar la tabla antes de cargar nuevos datos
+                table.AutoGenerateColumns = false; // Desactivar la generación automática de columnas
                 table.DataSource = response.Data.Select(c => new
                 {
                     codigoCasaColumn = c.CodigoCasa,
                     nombreCasaColumn = c.NombreCasa,
-                    fechaRegistroColumn = c.FechaRegistro.ToString("dd/MM/yyyy"),
-                    fechaModificacionColumn = c.FechaModificacion.ToString("dd/MM/yyyy")
+                    fechaRegistroColumn = c.FechaRegistro?.ToString("dd/MM/yyyy"),
+                    fechaModificacionColumn = c.FechaModificacion?.ToString("dd/MM/yyyy")
                 }).ToList();
 
-                MostrarButton.Visible = true; 
+                MostrarButton.Visible = true;
+            }
+        }
+
+        private async void cargaMasivaButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ImportarExcelCasa importarExcel = new ImportarExcelCasa();
+                string ruta = string.Empty;
+
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Archivos PDF (*.xlsx)|*.xlsx";
+                openFileDialog.Title = "Selecciona un archivo Excel";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    ruta = openFileDialog.FileName;
+                    MessageBox.Show("Excel cargado correctamente:\n" + ruta);
+                }
+
+                var dataParserExcel = await _excelReader.ParserExcelAndCasa(ruta);
+
+                if (dataParserExcel.Success == false || !dataParserExcel.Data.Any())
+                {
+                    MessageBox.Show($"Error al procesar el archivo: {dataParserExcel.ErrorMessage}");
+                    return;
+                }
+
+                IEnumerable<Casa> listDataExcel = dataParserExcel.Data;
+
+                importarExcel.ListCasa = listDataExcel.ToList();
+                importarExcel.ShowDialog();
+
+                if (importarExcel.DialogResult != DialogResult.OK)
+                {
+                    MessageBox.Show("Importación cancelada.");
+                    return;
+                }
+
+                var response = await _casaServices.CrearCasas(importarExcel.ListCasa);
+                if (!response.Success)
+                {
+                    MessageBox.Show($"Error al importar casas: {response.ErrorMessage}");
+                    return;
+                }
+
+                MessageBox.Show("Casas importadas correctamente.");
+
+                await LoadDataAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al importar Excel: {ex.Message}");
             }
         }
     }

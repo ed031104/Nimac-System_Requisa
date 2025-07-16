@@ -53,6 +53,7 @@
             fechaRegistroColumn = new DataGridViewTextBoxColumn();
             fechaModificacionColumn = new DataGridViewTextBoxColumn();
             sucursalColumn = new DataGridViewTextBoxColumn();
+            cargaMasivaButton = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)table).BeginInit();
             SuspendLayout();
@@ -222,7 +223,7 @@
             table.Location = new Point(24, 259);
             table.Name = "table";
             table.RowHeadersWidth = 51;
-            table.Size = new Size(974, 259);
+            table.Size = new Size(1179, 259);
             table.TabIndex = 22;
             table.CellClick += table_CellClick;
             // 
@@ -289,11 +290,22 @@
             sucursalColumn.ReadOnly = true;
             sucursalColumn.Width = 125;
             // 
+            // cargaMasivaButton
+            // 
+            cargaMasivaButton.Location = new Point(1055, 200);
+            cargaMasivaButton.Name = "cargaMasivaButton";
+            cargaMasivaButton.Size = new Size(148, 29);
+            cargaMasivaButton.TabIndex = 30;
+            cargaMasivaButton.Text = "Carga Masiva";
+            cargaMasivaButton.UseVisualStyleBackColor = true;
+            cargaMasivaButton.Click += cargaMasivaButton_Click;
+            // 
             // AsignacionParteSucursal
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1042, 549);
+            ClientSize = new Size(1215, 549);
+            Controls.Add(cargaMasivaButton);
             Controls.Add(MostrarButton);
             Controls.Add(label7);
             Controls.Add(numeroParteSearchInput);
@@ -339,5 +351,6 @@
         private DataGridViewTextBoxColumn fechaRegistroColumn;
         private DataGridViewTextBoxColumn fechaModificacionColumn;
         private DataGridViewTextBoxColumn sucursalColumn;
+        private Button cargaMasivaButton;
     }
 }

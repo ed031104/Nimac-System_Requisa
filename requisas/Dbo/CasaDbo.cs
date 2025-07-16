@@ -44,6 +44,43 @@ namespace Dbo
             }
         }
 
+        public async Task<DBOResponse<bool>> CrearCasasTransaction(List<Casa> casa)
+        {
+            await using var conn = Conexion.conexion();
+            await conn.OpenAsync();
+
+            using SqlTransaction transaction = conn.BeginTransaction();
+            try
+            {
+                var query = @"
+                insert into Casa(Codigo_Casa, Nombre_Casa, FechaRegistro, FechaModificacion)
+                values(@ID, @NombreCasa, @FechaRegistro, @FechaModificacion); 
+                ";
+
+                foreach (var c in casa)
+                {
+                    var cmd = conn.CreateCommand();
+                    cmd.Transaction = transaction;
+                    cmd.CommandText = query;
+                    // Generar un nuevo ID para cada casa
+                    cmd.Parameters.AddWithValue("@ID", c.CodigoCasa);
+                    cmd.Parameters.AddWithValue("@NombreCasa", c.NombreCasa);
+                    cmd.Parameters.AddWithValue("@FechaRegistro", c.FechaRegistro);
+                    cmd.Parameters.AddWithValue("@FechaModificacion", c.FechaModificacion);
+                    await cmd.ExecuteNonQueryAsync();
+                }
+
+                transaction.Commit();
+                return DBOResponse<bool>.Ok(true);
+            }
+            catch (SqlException ex)
+            {
+                transaction.Rollback();
+                // Manejo de excepciones
+                return DBOResponse<bool>.Error("Error al crear la casa: " + ex.Message);
+            }
+        }
+
         public async Task<DBOResponse<IEnumerable<Casa>>> ObtenerCasaPorCodigo(string codigo)
         {
             try

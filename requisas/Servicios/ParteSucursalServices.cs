@@ -18,6 +18,82 @@ namespace Servicios
             _parteSucursalDbo = new ParteSucursalDbo();
         }
 
+        public async Task<ServiceResponse<int>> CrearParteSucursal(ParteSucursal parteSucursal)
+        {
+            try
+            {
+                if(parteSucursal == null)
+                {
+                    return new ServiceResponse<int>.Builder()
+                        .SetErrorMessage("El parte sucursal no puede ser nulo.")
+                        .SetSuccess(false)
+                        .Build();
+                }
+                parteSucursal.FechaRegistro = DateTime.Now;
+                parteSucursal.FechaModificacion = DateTime.Now;
+                var response = await _parteSucursalDbo.CrearParteSucursal(parteSucursal);
+
+                if (response.Data == null)
+                {
+                    return new ServiceResponse<int>.Builder()
+                        .SetErrorMessage(response.Message)
+                        .SetSuccess(false)
+                        .Build();
+                }
+
+                return new ServiceResponse<int>.Builder()
+                    .SetData(response.Data)
+                    .SetMessage("Parte sucursal creado exitosamente.")
+                    .SetSuccess(true)
+                    .Build();
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponse<int>.Builder()
+                    .SetMessage("Error al crear parte sucursal: " + ex.Message)
+                    .SetSuccess(false)
+                    .Build();
+            }
+        }
+
+        public async Task<ServiceResponse<bool>> CrearParteSucursales(List<ParteSucursal> parteSucursal)
+        {
+            try
+            {
+                if (parteSucursal == null)
+                {
+                    return new ServiceResponse<bool>.Builder()
+                        .SetErrorMessage("El parte sucursal no puede ser nulo.")
+                        .SetSuccess(false)
+                        .Build();
+                }
+
+                var response = await _parteSucursalDbo.CrearParteSucursalesTransaction(parteSucursal);
+
+                if (!response.Data)
+                {
+                    return new ServiceResponse<bool>.Builder()
+                        .SetErrorMessage(response.Message)
+                        .SetSuccess(false)
+                        .Build();
+                }
+
+                return new ServiceResponse<bool>.Builder()
+                    .SetData(true)
+                    .SetMessage("Parte sucursal creado exitosamente.")
+                    .SetSuccess(true)
+                    .Build();
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponse<bool>.Builder()
+                    .SetErrorMessage("Error al crear parte sucursal: " + ex.Message)
+                    .SetSuccess(false)
+                    .Build();
+            }
+        }
+
+
         public async Task<ServiceResponse<IEnumerable<ParteSucursal>>> obtenerPartePorNumeroParte(string numeroParte) {
             try { 
            
@@ -78,44 +154,6 @@ namespace Servicios
                 return new ServiceResponse<IEnumerable<ParteSucursal>>.Builder()
                     .SetData(null)
                     .SetMessage("Error al obtener partes sucursales: " + ex.Message)
-                    .SetSuccess(false)
-                    .Build();
-            }
-        }
-
-        public async Task<ServiceResponse<int>> CrearParteSucursal(ParteSucursal parteSucursal)
-        {
-            try
-            {
-                if(parteSucursal == null)
-                {
-                    return new ServiceResponse<int>.Builder()
-                        .SetErrorMessage("El parte sucursal no puede ser nulo.")
-                        .SetSuccess(false)
-                        .Build();
-                }
-                parteSucursal.FechaRegistro = DateTime.Now;
-                parteSucursal.FechaModificacion = DateTime.Now;
-                var response = await _parteSucursalDbo.CrearParteSucursal(parteSucursal);
-
-                if (response.Data == null)
-                {
-                    return new ServiceResponse<int>.Builder()
-                        .SetErrorMessage(response.Message)
-                        .SetSuccess(false)
-                        .Build();
-                }
-
-                return new ServiceResponse<int>.Builder()
-                    .SetData(response.Data)
-                    .SetMessage("Parte sucursal creado exitosamente.")
-                    .SetSuccess(true)
-                    .Build();
-            }
-            catch (Exception ex)
-            {
-                return new ServiceResponse<int>.Builder()
-                    .SetMessage("Error al crear parte sucursal: " + ex.Message)
                     .SetSuccess(false)
                     .Build();
             }

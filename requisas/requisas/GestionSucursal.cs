@@ -1,4 +1,6 @@
-﻿using Modelos;
+﻿using CapaVista.Components;
+using CapaVista.utils;
+using Modelos;
 using Servicios;
 using System;
 using System.Collections.Generic;
@@ -16,6 +18,8 @@ namespace CapaVista
     {
         SucursalServices _sucursalServices;
         CasaServices _casaServices;
+        private ExcelReader _excelReader = new ExcelReader();
+
 
         public GestionSucursal()
         {
@@ -157,13 +161,13 @@ namespace CapaVista
                     return;
                 }
 
-                table.DataSource = null; 
+                table.DataSource = null;
                 table.DataSource = response.Data.Select(s => new
                 {
                     numeroSucursalColumn = s.NumeroSucursal,
                     nombreSucursalColumn = s.NombreSucursal,
-                    fechaRegistroColumn = s.FechaRegistro.ToString("dd/MM/yyyy"),
-                    fechaModificacionColumn = s.FechaModificacion.ToString("dd/MM/yyyy"),
+                    fechaRegistroColumn = s.FechaRegistro?.ToString("dd/MM/yyyy"),
+                    fechaModificacionColumn = s.FechaModificacion?.ToString("dd/MM/yyyy"),
                     casaColumn = s.Casa
                 }).ToList();
 
@@ -220,8 +224,8 @@ namespace CapaVista
                 {
                     numeroSucursalColumn = s.NumeroSucursal,
                     nombreSucursalColumn = s.NombreSucursal,
-                    fechaRegistroColumn = s.FechaRegistro.ToString("dd/MM/yyyy"),
-                    fechaModificacionColumn = s.FechaModificacion.ToString("dd/MM/yyyy"),
+                    fechaRegistroColumn = s.FechaRegistro?.ToString("dd/MM/yyyy"),
+                    fechaModificacionColumn = s.FechaModificacion?.ToString("dd/MM/yyyy"),
                     casaColumn = s.Casa
                 }).ToList();
 
@@ -236,6 +240,60 @@ namespace CapaVista
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al cargar los partes: {ex.Message}");
+            }
+        }
+
+        private async void cargaMasivaButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ImportarExcelSucursal importarExcel = new ImportarExcelSucursal();
+                string ruta = string.Empty;
+
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Archivos PDF (*.xlsx)|*.xlsx";
+                openFileDialog.Title = "Selecciona un archivo Excel";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    ruta = openFileDialog.FileName;
+                    MessageBox.Show("Excel cargado correctamente:\n" + ruta);
+                }
+
+                var dataParserExcel = await _excelReader.ParserExcelAndSucursal(ruta);
+
+                if (dataParserExcel.Success == false || !dataParserExcel.Data.Any())
+                {
+                    MessageBox.Show($"Error al procesar el archivo: {dataParserExcel.ErrorMessage}");
+                    return;
+                }
+
+                IEnumerable<Sucursal> listDataExcel = dataParserExcel.Data;
+
+                importarExcel.ListSucursales = listDataExcel.ToList();
+                importarExcel.ShowDialog();
+
+                if (importarExcel.DialogResult != DialogResult.OK)
+                {
+                    MessageBox.Show("Importación cancelada.");
+                    return;
+                }
+
+                var response = await _sucursalServices.CrearSucursales(listDataExcel.ToList());
+                if (!response.Success)
+                {
+                    MessageBox.Show($"Error al importar sucursales: {response.ErrorMessage}");
+                    return;
+                }
+
+                MessageBox.Show("Sucursales importadas correctamente.");
+                
+                await LoadDataAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al importar Sucursales: {ex.Message}");
+
             }
         }
     }

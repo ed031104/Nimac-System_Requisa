@@ -14,8 +14,12 @@
           "EPPlus.Interfaces": "8.0.0",
           "EPPlus.System.Drawing": "8.0.0",
           "Microsoft.Extensions.Configuration.Json": "9.0.6",
+          "Microsoft.Web.WebView2": "1.0.3351.48",
           "ReportViewerCore.WinForms": "15.1.26",
-          "Servicios": "1.0.0"
+          "Servicios": "1.0.0",
+          "Microsoft.Web.WebView2.Core": "1.0.3351.48",
+          "Microsoft.Web.WebView2.WinForms": "1.0.3351.48",
+          "Microsoft.Web.WebView2.Wpf": "1.0.3351.48"
         },
         "runtime": {
           "CapaVista.dll": {}
@@ -677,6 +681,25 @@
           "lib/netstandard2.0/Microsoft.SqlServer.Server.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Microsoft.Web.WebView2/1.0.3351.48": {
+        "runtimeTargets": {
+          "runtimes/win-arm64/native/WebView2Loader.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "1.0.3351.48"
+          },
+          "runtimes/win-x64/native/WebView2Loader.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "1.0.3351.48"
+          },
+          "runtimes/win-x86/native/WebView2Loader.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "1.0.3351.48"
           }
         }
       },
@@ -1758,6 +1781,30 @@
             "fileVersion": "1.0.0.0"
           }
         }
+      },
+      "Microsoft.Web.WebView2.Core/1.0.3351.48": {
+        "runtime": {
+          "Microsoft.Web.WebView2.Core.dll": {
+            "assemblyVersion": "1.0.3351.48",
+            "fileVersion": "1.0.3351.48"
+          }
+        }
+      },
+      "Microsoft.Web.WebView2.WinForms/1.0.3351.48": {
+        "runtime": {
+          "Microsoft.Web.WebView2.WinForms.dll": {
+            "assemblyVersion": "1.0.3351.48",
+            "fileVersion": "1.0.3351.48"
+          }
+        }
+      },
+      "Microsoft.Web.WebView2.Wpf/1.0.3351.48": {
+        "runtime": {
+          "Microsoft.Web.WebView2.Wpf.dll": {
+            "assemblyVersion": "1.0.3351.48",
+            "fileVersion": "1.0.3351.48"
+          }
+        }
       }
     }
   },
@@ -2088,6 +2135,13 @@
       "sha512": "sha512-N4KeF3cpcm1PUHym1RmakkzfkEv3GRMyofVv40uXsQhCQeglr2OHNcUk2WOG51AKpGO8ynGpo9M/kFXSzghwug==",
       "path": "microsoft.sqlserver.server/1.0.0",
       "hashPath": "microsoft.sqlserver.server.1.0.0.nupkg.sha512"
+    },
+    "Microsoft.Web.WebView2/1.0.3351.48": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UIzXdl3x3H2MX2es7+BHYT3pLkLoT7090omqla9S3MQQCma0slwiY+CXBM6x0LmdLTpksoQ6XUqOAXrtxjtklQ==",
+      "path": "microsoft.web.webview2/1.0.3351.48",
+      "hashPath": "microsoft.web.webview2.1.0.3351.48.nupkg.sha512"
     },
     "Microsoft.Win32.Primitives/4.3.0": {
       "type": "package",
@@ -2827,6 +2881,21 @@
     },
     "Servicios/1.0.0": {
       "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Web.WebView2.Core/1.0.3351.48": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Web.WebView2.WinForms/1.0.3351.48": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Web.WebView2.Wpf/1.0.3351.48": {
+      "type": "reference",
       "serviceable": false,
       "sha512": ""
     }

@@ -4,7 +4,7 @@ using CapaVista.utils;
 using Configuraciones;
 using Dbo;
 using Microsoft.Data.SqlClient;
-using Modelos;
+using Modelos.login;
 using Servicios;
 using Servicios.login;
 using Servicios.utils;

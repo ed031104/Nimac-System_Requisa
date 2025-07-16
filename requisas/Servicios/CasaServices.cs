@@ -104,7 +104,44 @@ namespace Servicios
                     .Build();
             }
         }
- 
+
+        public async Task<ServiceResponse<bool>> CrearCasas(List<Casa> casas)
+        {
+            try
+            {
+                if (casas == null)
+                {
+                    return new ServiceResponse<bool>.Builder()
+                        .SetErrorMessage("La casa no puede ser nula.")
+                        .SetSuccess(false)
+                        .Build();
+                }
+
+                var result = await _casaDbo.CrearCasasTransaction(casas);
+
+                if (!result.Success)
+                {
+                    return new ServiceResponse<bool>.Builder()
+                        .SetErrorMessage(result.Message)
+                        .SetSuccess(false)
+                        .Build();
+                }
+
+                return new ServiceResponse<bool>.Builder()
+                    .SetData(true)
+                    .SetMessage("Casa creada correctamente.")
+                    .SetSuccess(true)
+                    .Build();
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponse<bool>.Builder()
+                    .SetErrorMessage("Error al crear la casa: " + ex.Message)
+                    .SetSuccess(false)
+                    .Build();
+            }
+        }
+
         public async Task<ServiceResponse<bool>> ActualizarCasa(Casa casa)
         {
             try {

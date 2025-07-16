@@ -44,6 +44,7 @@
             codigoSearchInput = new TextBox();
             label3 = new Label();
             MostrarButton = new Button();
+            cargaMasivaButton = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)table).BeginInit();
             SuspendLayout();
@@ -86,7 +87,7 @@
             groupBox1.Controls.Add(CodigoInput);
             groupBox1.Location = new Point(21, 15);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(790, 113);
+            groupBox1.Size = new Size(1060, 113);
             groupBox1.TabIndex = 6;
             groupBox1.TabStop = false;
             groupBox1.Text = "Datos Casa";
@@ -131,7 +132,7 @@
             table.Location = new Point(12, 240);
             table.Name = "table";
             table.RowHeadersWidth = 51;
-            table.Size = new Size(799, 259);
+            table.Size = new Size(1069, 259);
             table.TabIndex = 5;
             table.CellClick += table_CellClick;
             // 
@@ -198,11 +199,22 @@
             MostrarButton.UseVisualStyleBackColor = true;
             MostrarButton.Click += MostrarButton_Click;
             // 
+            // cargaMasivaButton
+            // 
+            cargaMasivaButton.Location = new Point(929, 186);
+            cargaMasivaButton.Name = "cargaMasivaButton";
+            cargaMasivaButton.Size = new Size(150, 29);
+            cargaMasivaButton.TabIndex = 13;
+            cargaMasivaButton.Text = "Carga Masiva";
+            cargaMasivaButton.UseVisualStyleBackColor = true;
+            cargaMasivaButton.Click += cargaMasivaButton_Click;
+            // 
             // GestionCasa
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(849, 543);
+            ClientSize = new Size(1093, 543);
+            Controls.Add(cargaMasivaButton);
             Controls.Add(MostrarButton);
             Controls.Add(label3);
             Controls.Add(codigoSearchInput);
@@ -239,5 +251,6 @@
         private DataGridViewTextBoxColumn nombreCasaColumn;
         private DataGridViewTextBoxColumn fechaRegistroColumn;
         private DataGridViewTextBoxColumn fechaModificacionColumn;
+        private Button cargaMasivaButton;
     }
 }

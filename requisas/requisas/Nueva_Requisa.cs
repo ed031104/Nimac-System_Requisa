@@ -1,8 +1,15 @@
 ﻿using CapaVista;
+using CapaVista.Components;
 using CapaVista.utils;
+using Dbo;
 using Modelos;
+using Modelos.Enums;
+using Modelos.login;
+using Modelos.requisas;
 using Servicios;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace requisas
@@ -14,13 +21,15 @@ namespace requisas
         private RequisaServices _requisaServices = new RequisaServices();
         private TipoAjusteServices _tipoAjusteServices = new TipoAjusteServices();
         private ParteSucursalServices _parteSucursalServices = new ParteSucursalServices();
+        private SucursalServices _sucursalServices = new SucursalServices();
+        private CasaServices _casaServices = new CasaServices();
         private ExcelReader _excelReader = new ExcelReader();
+
+        private (string? nombre, Byte[]? value) archivo;
 
         // listas   
         private List<RequisaAjuste> requisaAjustes = new List<RequisaAjuste>();
-        private ParteSucursal _parteSucursal = new ParteSucursal();
         List<ParteSucursal> partesSucursales = new();
-
         #endregion
 
         public Nueva_Requisa()
@@ -32,35 +41,30 @@ namespace requisas
         {
             visibleModuleForRoleUser(UserSession.Instance.ID);
             await cargarTiposAjustes();
+            await cargarSucursalTransferir();
         }
 
-        private void cargarPdfButton_Click(object sender, EventArgs e)
+        private async void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Archivos PDF (*.pdf)|*.pdf";
-            openFileDialog.Title = "Selecciona un archivo PDF";
-
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            if (e.RowIndex < 0 || e.ColumnIndex < 0)
             {
-                string rutaPDF = openFileDialog.FileName;
-
-                // Aquí puedes hacer lo que necesites:
-                // Mostrarlo, guardarlo como binario, etc.
-
-                MessageBox.Show("PDF cargado correctamente:\n" + rutaPDF);
-
-                // Corrige el error eliminando el uso de 'await' innecesario
-                // Si quieres cargarlo en visor externo:
-                // System.Diagnostics.Process.Start(new ProcessStartInfo(rutaPDF) { UseShellExecute = true });
-
-                // Si quieres convertirlo a base64:
-                // string base64 = Convert.ToBase64String(File.ReadAllBytes(rutaPDF));
+                return; // Evitar errores si se hace clic en el encabezado o fuera de las celdas
             }
-        }
 
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
+            if (table.Columns[e.ColumnIndex].Name == "viewDocumentColumn")
+            {
+                var doc = table.Rows[e.RowIndex].Cells["reclamoColumn"].Value as Reclamo;
 
+                if (doc == null || doc.DocumentoReclamo == null || doc.DocumentoReclamo.DocumentoBytes == null)
+                {
+                    MessageBox.Show("No hay documento asociado al reclamo.");
+                    return;
+                }
+
+                reportView viewReport = new reportView();
+                viewReport.Show();
+                await viewReport.CargarPdf(doc.DocumentoReclamo.Nombre, doc.DocumentoReclamo.DocumentoBytes);
+            }
         }
 
         private async void nParteAjusteComboBox_KeyDown(object sender, KeyEventArgs e)
@@ -71,6 +75,25 @@ namespace requisas
                 await buscarPartePorNumeroParte(nParteAjusteInput.Text);
                 nParteAjusteInput.Enabled = true;
             }
+            if (e.KeyCode == Keys.F1)
+            {
+                ViewParteSucursales viewParteSucursales = new ViewParteSucursales();
+                viewParteSucursales.ShowDialog();
+
+                var partesucursalSeleccionada = viewParteSucursales.ParteSucursal;
+
+                if (partesucursalSeleccionada == null)
+                {
+                    MessageBox.Show("No se ha seleccionado ninguna parte sucursal.");
+                    return;
+                }
+
+                nParteAjusteInput.Enabled = false;
+                await buscarPartePorNumeroParte(partesucursalSeleccionada);
+                nParteAjusteInput.Enabled = true;
+
+                nParteAjusteInput.Text = partesucursalSeleccionada;
+            }
         }
 
         private async void agregarButton_Click(object sender, EventArgs e)
@@ -78,6 +101,9 @@ namespace requisas
             var casa = casaRequisaComboBox.SelectedItem as Casa;
             var sucursal = sucursalRequisaComboBox.SelectedItem as Sucursal;
             var tipoAjuste = tipoAjusteRequisaComboBox.SelectedItem as TipoAjuste;
+            Reclamo reclamo = null;
+            Transferencia transferencia = null;
+            Documento documento = null;
 
             if (casa == null || sucursal == null || tipoAjuste == null)
             {
@@ -95,20 +121,94 @@ namespace requisas
                 return;
             }
 
+            if (cantidad == 0)
+            {
+                MessageBox.Show("La cantidad no puede ser cero.");
+                return;
+            }
+
+            if (tipoAjuste.SimboloTipoAjuste.Equals("-"))
+            {
+                cantidad *= -1; // Si el símbolo es negativo, multiplicamos la cantidad por -1
+            }
+
+            if (moduleReclamo.Visible)
+            {
+                if (string.IsNullOrWhiteSpace(observacionReclamoInput.Text) || archivo.nombre == null || archivo.value == null)
+                {
+                    MessageBox.Show("Por favor, complete todos los campos del reclamo y seleccione un archivo.");
+                    return;
+                }
+
+                documento = new Documento.Builder()
+                    .SetNombre(archivo.nombre)
+                    .SetDocumento(archivo.value)
+                    .SetCreadoPor(UserSession.Instance.NombreUsuario)
+                    .SetModificadoPor(UserSession.Instance.NombreUsuario)
+                    .SetFechaCreacion(DateTime.Now)
+                    .SetFechaModificacion(DateTime.Now)
+                    .Build();
+
+                reclamo = new Reclamo.Builder()
+                    .SetObservacion(observacionReclamoInput.Text)
+                    .SetDocumento(documento)
+                    .SetCreadoPor(UserSession.Instance.NombreUsuario)
+                    .SetModificadoPor(UserSession.Instance.NombreUsuario)
+                    .SetFechaCreacion(DateTime.Now)
+                    .SetFechaModificacion(DateTime.Now)
+                    .Build();
+            }
+
+            if (moduleTransferir.Visible)
+            {
+                if (casaTransferirComboBox.SelectedItem == null || sucursalTransferirComboBox.SelectedItem == null)
+                {
+                    MessageBox.Show("Por favor, seleccione una casa y sucursal para la transferencia.");
+                    return;
+                }
+                var casaTransferir = casaTransferirComboBox.SelectedItem as Casa;
+                var sucursalTransferir = sucursalTransferirComboBox.SelectedItem as Sucursal;
+
+                if (casaTransferir == null || sucursalTransferir == null)
+                {
+                    MessageBox.Show("Por favor, seleccione una casa y sucursal válidas para la transferencia.");
+                    return;
+                }
+
+                transferencia = new Transferencia.Builder()
+                    .SetCasa(casaTransferir)
+                    .SetSucursal(sucursalTransferir)
+                    .SetCreadoPor(UserSession.Instance.NombreUsuario)
+                    .SetModificadoPor(UserSession.Instance.NombreUsuario)
+                    .SetFechaCreacion(DateTime.Now)
+                    .SetFechaModificacion(DateTime.Now)
+                    .Build();
+            }
+
             var parteSucursalBuscada = partesSucursales
                 .Where(ps => ps.Parte.NumeroParte.Equals(nParteAjusteInput.Text))
                 .Where(ps => ps.Sucursal.NumeroSucursal.Equals(sucursal.NumeroSucursal))
                 .Where(ps => ps.Sucursal.Casa.CodigoCasa.Equals(casa.CodigoCasa))
                 .FirstOrDefault();
 
+            string idRequisaAjuste = sucursal.NumeroSucursal + "-" + tipoAjuste.Descripcion.Substring(0, 1);
+
+
+
             var requisaAjuste = new RequisaAjuste.Builder()
+                .SetIdRequisaAjuste(idRequisaAjuste)
                 .SetCostoPromedio(parteSucursalBuscada.CostoUnitario)
                 .SetTipoAjuste(tipoAjuste)
                 .SetMontoAjuste(cantidad)
+                .SetReclamo(reclamo)
+                .SetTransferencia(transferencia)
                 .SetDescripcion(descripcionParteInput.Text)
                 .SetParteSucursal(parteSucursalBuscada)
-                .SetMontoAjuste(Convert.ToInt32(cantidadParteInput.Text))
-                .SetCostoPromedioExtendido(Convert.ToInt32(cantidadParteInput.Text) * parteSucursalBuscada.CostoUnitario)
+                .SetCreadoPor(UserSession.Instance.NombreUsuario)
+                .SetModificadoPor(UserSession.Instance.NombreUsuario)
+                .SetFechaRegistro(DateTime.Now)
+                .SetFechaModificacion(DateTime.Now)
+                .SetCostoPromedioExtendido(cantidad * parteSucursalBuscada.CostoUnitario)
                 .Build();
 
             requisaAjustes.Add(requisaAjuste);
@@ -144,67 +244,52 @@ namespace requisas
                     MessageBox.Show("No se han seleccionado partes válidas.");
                     return;
                 }
-                var requisa = new Requisa.Builder();
 
-                //var response = await _requisaServices.crearRequisa();
-                //if (response.Success == false)
-                //{
-                //    MessageBox.Show($"Error al crear la requisa: {response.ErrorMessage}");
-                //    return;
-                //}
-                //MessageBox.Show("Requisa creada exitosamente.");
+                var confirmResult = MessageBox.Show("¿Estás seguro de que deseas guardar estos ajustes seleccionados?, una vez guardados no se pueden modificar y puede ser rechazada la requisa.", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-                //requisaAjustes.Clear();
+                if (confirmResult == DialogResult.No)
+                {
+                    return;
+                }
 
+                guardarButton.Enabled = false;
+
+                if (String.IsNullOrEmpty(descripcionParteInput.Text))
+                {
+                    MessageBox.Show("Por favor, ingrese una descripción para la requisa.");
+                    return;
+                }
+
+                var requisa = new Requisa.Builder()
+                    .SetDescripcion(descripcionRequisaInput.Text)
+                    .SetEstado(true)
+                    .SetFechaRegistro(DateTime.Now)
+                    .Build();
+
+                var response = await _requisaServices.crearRequisaConAjustes(requisa, requisaAjustes);
+
+                if (response.Success == false)
+                {
+                    MessageBox.Show($"Error al crear la requisa: {response.ErrorMessage}");
+                    return;
+                }
+                MessageBox.Show("Requisa creada exitosamente.");
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al crear la requisa: {ex.Message}");
                 return;
             }
-        }
-
-        private async void importarExcelButton_Click(object sender, EventArgs e)
-        {
-            try
+            finally
             {
-                ImportarExcel importarExcel = new ImportarExcel();
-                string ruta = string.Empty;
-
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Filter = "Archivos PDF (*.xlsx)|*.xlsx";
-                openFileDialog.Title = "Selecciona un archivo Excel";
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    ruta = openFileDialog.FileName;
-                    MessageBox.Show("Excel cargado correctamente:\n" + ruta);
-                }
-
-                var dataParserExcel = await _excelReader.ParserExcelAndRequisa(ruta);
-
-                if (dataParserExcel.Success == false || !dataParserExcel.Data.Any())
-                {
-                    MessageBox.Show($"Error al procesar el archivo: {dataParserExcel.ErrorMessage}");
-                    return;
-                }
-
-                IEnumerable<RequisaAjuste> listDataExcel = dataParserExcel.Data;
-
-                importarExcel.ListRequisaAjuste = listDataExcel.ToList();
-                importarExcel.ShowDialog();
-
-                if (importarExcel.DialogResult != DialogResult.OK)
-                {
-                    MessageBox.Show("Importación cancelada.");
-                    return;
-                }
-                requisaAjustes.AddRange(listDataExcel);
-                await cargarTipoAjusteTabla();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al importar Excel: {ex.Message}");
+                requisaAjustes.Clear();
+                table.DataSource = null; // Limpiar la tabla
+                guardarButton.Enabled = true;
+                archivo.nombre = null;
+                archivo.value = null; // Reiniciar el archivo cargado
+                observacionReclamoInput.Clear(); // Limpiar el campo de observación del reclamo
+                cantidadParteInput.Clear(); // Limpiar el campo de cantidad
+                descripcionParteInput.Clear(); // Limpiar el campo de descripción
             }
         }
 
@@ -213,7 +298,8 @@ namespace requisas
 
             if (requisaAjustes.Count <= 0)
             {
-                MessageBox.Show("No hay ajustes seleccionados para eliminar.");
+                MessageBox.Show("No hay ajustes agregados para eliminar.");
+                await cargarTipoAjusteTabla();
                 return;
             }
 
@@ -224,77 +310,146 @@ namespace requisas
                 return;
             }
 
+            var indicesAEliminar = new List<int>();
+
             foreach (DataGridViewRow fila in table.Rows)
             {
                 bool estaMarcado = Convert.ToBoolean(fila.Cells["checkColumn"].Value);
-
                 if (estaMarcado)
                 {
-                    // Recuperar el objeto original de la fila
-                    var item = fila.DataBoundItem;
-
-                    if (item == null)
-                    {
-                        continue;
-                    }
-
-                    var tipoAjuste = item.GetType().GetProperty("tipoAjusteColumn").GetValue(item) as TipoAjuste;
-                    var parte = item.GetType().GetProperty("numeroParteColumn").GetValue(item) as Parte;
-                    var montoAjuste = Convert.ToInt32(item.GetType().GetProperty("cantidadColumn").GetValue(item));
-                    var descripcion = item.GetType().GetProperty("descripcionColumn").GetValue(item) as string;
-                    var costoPromedio = Convert.ToDecimal(item.GetType().GetProperty("costoPromedioCOlumn").GetValue(item));
-                    var costoPromedioExtendido = Convert.ToDecimal(item.GetType().GetProperty("costoPromedioExtendidoColumn").GetValue(item));
-
-                    requisaAjustes.RemoveAll(ra =>
-                            ra.TipoAjuste.Descripcion.Equals(tipoAjuste.Descripcion) &&
-                            ra.ParteSucursal.Parte.NumeroParte.Equals(parte.NumeroParte) &&
-                            ra.MontoAjuste.Equals(montoAjuste) &&
-                            ra.Descripcion.Equals(descripcion) &&
-                            ra.CostoPromedio.Equals(costoPromedio) &&
-                            ra.CostoPromedioExtendido.Equals(costoPromedioExtendido)
-                        );
+                    indicesAEliminar.Add(fila.Index);
                 }
             }
+
+            if (indicesAEliminar.Count <= 0)
+            {
+                MessageBox.Show("No se han seleccionado ajustes para eliminar.");
+                return;
+            }
+
+            indicesAEliminar.Sort((a, b) => b.CompareTo(a)); // Ordenar de mayor a menor para evitar problemas al eliminar filas
+
+            foreach (int index in indicesAEliminar)
+            {
+                if (index >= 0 && index < requisaAjustes.Count)
+                {
+                    requisaAjustes.RemoveAt(index);
+                }
+            }
+
             await cargarTipoAjusteTabla();
         }
 
-        #region Additional Methods
-        private void visibleModuleForRoleUser(int idRole)
+        private async void importarExcelButton_Click(object sender, EventArgs e)
         {
-            userRole currentUserRole = (userRole)idRole;
 
-            switch (currentUserRole)
+        }
+
+        private void cargarPdfButton_Click(object sender, EventArgs e)
+        {
+            string ruta = string.Empty;
+
+            try
             {
-                case userRole.Administrador:
-                    nDocumentoRequisaInput.Enabled = true;
-                    estadoRequisaComboBox.Enabled = true;
+                archivo.nombre = null; // Reiniciar el archivo antes de cargar uno nuevo
+                archivo.value = null;
+
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Archivos PDF (*.pdf)|*.pdf";
+                openFileDialog.Title = "Selecciona un archivo Excel";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    ruta = openFileDialog.FileName;
+                    MessageBox.Show("Documento cargado correctamente:\n" + ruta);
+                }
+
+                Byte[] fileBytes = File.ReadAllBytes(ruta);
+                archivo.value = fileBytes;
+                archivo.nombre = Path.GetFileName(ruta);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar el documento: {ex.Message}");
+                return;
+            }
+        }
+
+        private void tipoAjusteRequisaComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selectItem = tipoAjusteRequisaComboBox.SelectedItem as TipoAjuste;
+
+            if (selectItem == null)
+            {
+                MessageBox.Show("Por favor, seleccione un tipo de ajuste válido.");
+                return;
+            }
+
+            switch (selectItem.TipoAjusteId)
+            {
+                case (int)Ajuste.Transferencia:
+                    moduleTransferir.Visible = true;
+                    moduleReclamo.Visible = false;
+                    cargarPdfButton.Visible = false;
                     break;
-                case userRole.GereteDeRepuesto:
-                    nDocumentoRequisaInput.Enabled = true;
-                    estadoRequisaComboBox.Enabled = true;
+                case (int)Ajuste.malEnviado:
+                    moduleTransferir.Visible = false;
+                    moduleReclamo.Visible = true;
+                    cargarPdfButton.Visible = true;
                     break;
-                case userRole.GereteDeOperaciones:
-                    nDocumentoRequisaInput.Enabled = true;
-                    estadoRequisaComboBox.Enabled = true;
+                case (int)Ajuste.Reverso:
+                    moduleTransferir.Visible = false;
+                    moduleReclamo.Visible = true;
+                    cargarPdfButton.Visible = true;
                     break;
-                case userRole.Auxiliar:
-                    nDocumentoRequisaInput.Enabled = false;
-                    estadoRequisaComboBox.Enabled = false;
-                    break;
-                case userRole.Analista:
-                    nDocumentoRequisaInput.Enabled = false;
-                    estadoRequisaComboBox.Enabled = true;
+                default:
+                    moduleTransferir.Visible = false;
+                    moduleReclamo.Visible = false;
+                    cargarPdfButton.Visible = false;
                     break;
             }
         }
 
-        private enum userRole
+        private async void casaTransferirComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Administrador = 1,
-            GereteDeRepuesto = 2,
-            GereteDeOperaciones = 3,
-            Auxiliar = 4,
-            Analista = 5,
+            var casaSeleccionada = casaTransferirComboBox.SelectedItem as Casa;
+
+            if (casaSeleccionada == null)
+            {
+                MessageBox.Show("Por favor, seleccione una casa válida para la transferencia.");
+                sucursalTransferirComboBox.DataSource = null;
+                return;
+            }
+
+            var responseSucursales = await _sucursalServices.ObtenerSucursalesPorNumeroCasa(casaSeleccionada.CodigoCasa);
+
+            if (responseSucursales.Success == false || responseSucursales.Data == null)
+            {
+                MessageBox.Show($"Error al cargar sucursales: {responseSucursales.ErrorMessage}");
+                return;
+            }
+            sucursalTransferirComboBox.DataSource = responseSucursales.Data;
+        }
+
+        #region Additional Methods
+
+        private void visibleModuleForRoleUser(int idRole)
+        {
+            UserRol currentUserRole = (UserRol)idRole;
+
+            switch (currentUserRole)
+            {
+                case UserRol.Administrador:
+                    break;
+                case UserRol.GereteDeRepuesto:
+                    break;
+                case UserRol.GereteDeOperaciones:
+                    break;
+                case UserRol.Auxiliar:
+                    break;
+                case UserRol.Analista:
+                    break;
+            }
         }
 
         private async Task cargarTiposAjustes()
@@ -308,6 +463,17 @@ namespace requisas
             tipoAjusteRequisaComboBox.DataSource = tipoAjustes.Data.ToList();
         }
 
+        private async Task cargarSucursalTransferir()
+        {
+            var response = await _casaServices.ObtenerTodasLasCasas();
+            if (response.Success == false || response.Data == null)
+            {
+                MessageBox.Show($"Error al cargar partes de sucursal: {response.ErrorMessage}");
+                return;
+            }
+            casaTransferirComboBox.DataSource = response.Data.ToList();
+        }
+
         private async Task cargarTipoAjusteTabla()
         {
             if (requisaAjustes.Count <= 0)
@@ -316,19 +482,64 @@ namespace requisas
                 return;
             }
 
-            table.DataSource = null;
-            table.DataSource = requisaAjustes.Select(ra => new
+            // Crear el DataTable
+            var dt = new DataTable();
+            dt.Columns.Add("tipoAjusteColumn", typeof(Object));
+            dt.Columns.Add("numeroParteColumn", typeof(Object));
+            dt.Columns.Add("cantidadColumn", typeof(decimal));
+            dt.Columns.Add("descripcionColumn", typeof(string));
+            dt.Columns.Add("costoPromedioCOlumn", typeof(decimal));
+            dt.Columns.Add("costoPromedioExtendidoColumn", typeof(decimal));
+            dt.Columns.Add("columcasa", typeof(Object));
+            dt.Columns.Add("sucursalColumn", typeof(Object));
+            dt.Columns.Add("costoUnitarioColumn", typeof(decimal));
+            dt.Columns.Add("reclamoColumn", typeof(Object));
+            dt.Columns.Add("transferirColumn", typeof(Object));
+            dt.Columns.Add("viewDocumentColumn", typeof(string));
+
+            // Agregar los datos normales
+            foreach (var ra in requisaAjustes)
             {
-                tipoAjusteColumn = ra.TipoAjuste,
-                numeroParteColumn = ra.ParteSucursal.Parte,
-                cantidadColumn = ra.MontoAjuste,
-                descripcionColumn = ra.Descripcion,
-                costoPromedioCOlumn = ra.ParteSucursal.CostoUnitario,
-                costoPromedioExtendidoColumn = ra.CostoPromedioExtendido,
-                columcasa = ra.ParteSucursal.Sucursal.Casa,
-                sucursalColumn = ra.ParteSucursal.Sucursal,
-                costoUnitarioColumn = ra.ParteSucursal.CostoUnitario
-            }).ToList();
+                dt.Rows.Add(
+                    ra.TipoAjuste,
+                    ra.ParteSucursal.Parte,
+                    ra.MontoAjuste ?? 0,
+                    ra.Descripcion,
+                    ra.ParteSucursal?.CostoUnitario ?? 0,
+                    ra.CostoPromedioExtendido,
+                    ra.ParteSucursal?.Sucursal?.Casa,
+                    ra.ParteSucursal?.Sucursal,
+                    ra.ParteSucursal?.CostoUnitario ?? 0,
+                    ra.Reclamo,
+                    ra.Transferencia,
+                    ra.Reclamo?.DocumentoReclamo?.DocumentoBytes != null ? "Ver Documento" : "Sin Documento"
+                );
+            }
+
+            // Calcular totales
+            decimal totalCostoPromedioExtendido = requisaAjustes.Sum(ra => ra.CostoPromedioExtendido);
+            decimal totalCostoPromedio = requisaAjustes.Sum(ra => ra.ParteSucursal.CostoUnitario);
+            decimal totalCantidad = requisaAjustes.Sum(ra => ra.MontoAjuste ?? 0);
+
+            // Agregar la fila de totales
+            dt.Rows.Add(
+                "Total",
+                null,
+                totalCantidad,
+                "",
+                totalCostoPromedio,
+                totalCostoPromedioExtendido,
+                null,
+                null,
+                null,
+                null,
+                null,
+                ""
+            );
+
+            table.DataSource = null;
+            table.AutoGenerateColumns = false;
+            table.DataSource = dt;
         }
 
         private async Task buscarPartePorNumeroParte(string numeroParte)
@@ -341,13 +552,31 @@ namespace requisas
             }
             partesSucursales = response.Data.ToList();
 
+            descripcionLabel.Text = partesSucursales.FirstOrDefault()?.Parte.DescripcionParte ?? string.Empty;
             casaRequisaComboBox.DataSource = partesSucursales
-                .Select(ps => ps.Sucursal.Casa)
-                .Where(ps => ps != null)
-                .GroupBy(ps => ps.CodigoCasa)
-                .Select(g => g.First())
-                .ToList();
+                    .Select(ps => ps.Sucursal.Casa)
+                    .Where(ps => ps != null)
+                    .GroupBy(ps => ps.CodigoCasa)
+                    .Select(g => g.First())
+                    .ToList();
         }
+
+        private void label13_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private enum Ajuste
+        {
+            Faltante = 1,
+            Sobrante = 2,
+            Transferencia = 3,
+            malEnviado = 4,
+            Reverso = 5,
+            costoCero = 6
+        }
+
         #endregion
+
     }
 }

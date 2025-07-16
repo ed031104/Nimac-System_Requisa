@@ -10,8 +10,23 @@
     <Compile Update="AsignaciónUsuarioRoles.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Components\ImportarExcelCasa.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Components\ImportarExcelParteSucursal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Components\ImportarExcelSucursal.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Components\Loading.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Components\ViewParteSucursales.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="DetallesRequisa.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Update="detalle_Reporte.cs">
       <SubType>Form</SubType>
@@ -31,9 +46,6 @@
     <Compile Update="Gestion_Usuarios.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="ImportarExcel.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="Login.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -43,13 +55,13 @@
     <Compile Update="Menu_Principal.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="reporte1.cs">
+    <Compile Update="reportView.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="ReporteUsuarios.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="VisualizadorPdf.cs">
+    <Compile Update="Components\VisualizadorPdf.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

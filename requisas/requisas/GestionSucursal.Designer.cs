@@ -47,6 +47,7 @@
             fechaModificacionColumn = new DataGridViewTextBoxColumn();
             casaColumn = new DataGridViewTextBoxColumn();
             MostrarButton = new Button();
+            cargaMasivaButton = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)table).BeginInit();
             SuspendLayout();
@@ -108,7 +109,7 @@
             groupBox1.Controls.Add(numeroSucursalInput);
             groupBox1.Location = new Point(21, 13);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(965, 104);
+            groupBox1.Size = new Size(1136, 104);
             groupBox1.TabIndex = 15;
             groupBox1.TabStop = false;
             groupBox1.Text = "Datos Sucursal";
@@ -169,7 +170,7 @@
             table.Location = new Point(12, 193);
             table.Name = "table";
             table.RowHeadersWidth = 51;
-            table.Size = new Size(974, 259);
+            table.Size = new Size(1145, 259);
             table.TabIndex = 14;
             table.CellClick += dataGridView1_CellClick;
             // 
@@ -227,11 +228,22 @@
             MostrarButton.UseVisualStyleBackColor = true;
             MostrarButton.Click += MostrarButton_Click;
             // 
+            // cargaMasivaButton
+            // 
+            cargaMasivaButton.Location = new Point(1040, 143);
+            cargaMasivaButton.Name = "cargaMasivaButton";
+            cargaMasivaButton.Size = new Size(117, 29);
+            cargaMasivaButton.TabIndex = 22;
+            cargaMasivaButton.Text = "Carga Masiva";
+            cargaMasivaButton.UseVisualStyleBackColor = true;
+            cargaMasivaButton.Click += cargaMasivaButton_Click;
+            // 
             // GestionSucursal
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1009, 470);
+            ClientSize = new Size(1202, 470);
+            Controls.Add(cargaMasivaButton);
             Controls.Add(MostrarButton);
             Controls.Add(label7);
             Controls.Add(numeroSucuarSearchInput);
@@ -271,5 +283,6 @@
         private DataGridViewTextBoxColumn fechaRegistroColumn;
         private DataGridViewTextBoxColumn fechaModificacionColumn;
         private DataGridViewTextBoxColumn casaColumn;
+        private Button cargaMasivaButton;
     }
 }

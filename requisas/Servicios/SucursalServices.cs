@@ -69,6 +69,45 @@ namespace Servicios
             }
         }
 
+        public async Task<ServiceResponse<bool>> CrearSucursales(List<Sucursal> sucursal)
+        {
+            try
+            {
+                if (sucursal == null)
+                {
+                    return new ServiceResponse<bool>.Builder()
+                        .SetErrorMessage("Sucursal no puede ser nulo.")
+                        .SetSuccess(false)
+                        .Build();
+                }
+
+                var response = await _sucursalDbo.CrearSucursalesTransaction(sucursal);
+
+                if (!response.Success)
+                {
+                    return new ServiceResponse<bool>.Builder()
+                        .SetErrorMessage(response.Message)
+                        .SetSuccess(false)
+                        .Build();
+                }
+
+                return new ServiceResponse<bool>.Builder()
+                    .SetData(true)
+                    .SetMessage("Sucursal creada exitosamente.")
+                    .SetSuccess(true)
+                    .Build();
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponse<bool>
+                {
+                    Success = false,
+                    ErrorMessage = ex.Message
+                };
+            }
+        }
+
+
         public async Task<ServiceResponse<IEnumerable<Sucursal>>> ObtenerSucursales()
         {
             try
@@ -127,6 +166,43 @@ namespace Servicios
             catch (Exception ex)
             {
                 return new ServiceResponse<Sucursal>.Builder()
+                    .SetSuccess(false)
+                    .SetErrorMessage(ex.Message)
+                    .Build();
+            }
+        }
+
+        public async Task<ServiceResponse<IEnumerable<Sucursal>>> ObtenerSucursalesPorNumeroCasa(string numeroCasa)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(numeroCasa))
+                {
+                    return new ServiceResponse<IEnumerable<Sucursal>>.Builder()
+                        .SetErrorMessage("Número de sucursal no puede ser nulo o vacío.")
+                        .SetSuccess(false)
+                        .Build();
+                }
+
+                var response = await _sucursalDbo.ObtenerSucursalesPorCodigoCasa(numeroCasa);
+
+                if (!response.Success || response.Data == null)
+                {
+                    return new ServiceResponse<IEnumerable<Sucursal>>.Builder()
+                        .SetErrorMessage(response.Message)
+                        .SetSuccess(false)
+                        .Build();
+                }
+
+                return new ServiceResponse<IEnumerable<Sucursal>>.Builder()
+                    .SetData(response.Data)
+                    .SetMessage("Sucursal obtenida exitosamente.")
+                    .SetSuccess(true)
+                    .Build();
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponse<IEnumerable<Sucursal>>.Builder()
                     .SetSuccess(false)
                     .SetErrorMessage(ex.Message)
                     .Build();

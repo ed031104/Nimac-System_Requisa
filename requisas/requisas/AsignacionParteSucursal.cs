@@ -1,4 +1,6 @@
-﻿using Microsoft.Identity.Client;
+﻿using CapaVista.Components;
+using CapaVista.utils;
+using Microsoft.Identity.Client;
 using Modelos;
 using Servicios;
 using System;
@@ -18,6 +20,8 @@ namespace CapaVista
         private ParteServices _parteServices;
         private SucursalServices _sucursalServices;
         private ParteSucursalServices _parteSucursalServices;
+        private ExcelReader _excelReader = new ExcelReader();
+
 
         public AsignacionParteSucursal()
         {
@@ -95,7 +99,7 @@ namespace CapaVista
         {
             try
             {
-                if(string.IsNullOrWhiteSpace(stockInput.Text) || string.IsNullOrWhiteSpace(costoUnitarioInput.Text))
+                if (string.IsNullOrWhiteSpace(stockInput.Text) || string.IsNullOrWhiteSpace(costoUnitarioInput.Text))
                 {
                     MessageBox.Show("Por favor, complete todos los campos.");
                     return;
@@ -136,9 +140,10 @@ namespace CapaVista
 
         private async void editarButton_Click(object sender, EventArgs e)
         {
-            try { 
+            try
+            {
 
-                if(string.IsNullOrWhiteSpace(idParteCasaInput.Text) || string.IsNullOrWhiteSpace(stockInput.Text) || string.IsNullOrWhiteSpace(costoUnitarioInput.Text))
+                if (string.IsNullOrWhiteSpace(idParteCasaInput.Text) || string.IsNullOrWhiteSpace(stockInput.Text) || string.IsNullOrWhiteSpace(costoUnitarioInput.Text))
                 {
                     MessageBox.Show("Por favor, complete todos los campos.");
                     return;
@@ -177,7 +182,7 @@ namespace CapaVista
                 parteComboBox.SelectedIndex = -1;
                 sucursalComboBox.SelectedIndex = -1;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show($"Error al editar la asignación de parte a sucursal: {ex.Message}");
             }
@@ -185,7 +190,8 @@ namespace CapaVista
 
         private async void eliminarButton_Click(object sender, EventArgs e)
         {
-            try { 
+            try
+            {
                 var idParteSucursal = idParteCasaInput.Text.Trim();
                 if (string.IsNullOrWhiteSpace(idParteSucursal))
                 {
@@ -198,9 +204,9 @@ namespace CapaVista
                     MessageBox.Show($"Error al eliminar la asignación de parte a sucursal: {response.ErrorMessage}");
                     return;
                 }
-                
+
                 MessageBox.Show("Asignación de parte a sucursal eliminada correctamente.");
-                
+
                 idParteCasaInput.Clear();
                 stockInput.Clear();
                 costoUnitarioInput.Clear();
@@ -209,7 +215,7 @@ namespace CapaVista
 
                 await dataTableLoad();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show($"Error al eliminar la asignación de parte a sucursal: {ex.Message}");
             }
@@ -293,5 +299,59 @@ namespace CapaVista
             }
         }
         #endregion
+
+        private async void cargaMasivaButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ImportarExcelParteSucursal importarExcel = new ImportarExcelParteSucursal();
+                string ruta = string.Empty;
+
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Archivos PDF (*.xlsx)|*.xlsx";
+                openFileDialog.Title = "Selecciona un archivo Excel";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    ruta = openFileDialog.FileName;
+                    MessageBox.Show("Excel cargado correctamente:\n" + ruta);
+                }
+
+                var dataParserExcel = await _excelReader.ParserExcelAndParteSucursal(ruta);
+
+                if (dataParserExcel.Success == false || !dataParserExcel.Data.Any())
+                {
+                    MessageBox.Show($"Error al procesar el archivo: {dataParserExcel.ErrorMessage}");
+                    return;
+                }
+
+                IEnumerable<ParteSucursal> listDataExcel = dataParserExcel.Data;
+
+                importarExcel.ListParteSucursal = listDataExcel.ToList();
+                importarExcel.ShowDialog();
+
+                if (importarExcel.DialogResult != DialogResult.OK)
+                {
+                    MessageBox.Show("Importación cancelada.");
+                    return;
+                }
+
+                var response = await _parteSucursalServices.CrearParteSucursales(listDataExcel.ToList());
+                if (!response.Success)
+                {
+                    MessageBox.Show($"Error al importar sucursales: {response.ErrorMessage}");
+                    return;
+                }
+
+                MessageBox.Show("Sucursales importadas correctamente.");
+                
+                await dataTableLoad();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al importar Sucursales: {ex.Message}");
+
+            }
+        }
     }
 }

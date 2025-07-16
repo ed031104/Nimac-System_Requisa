@@ -147,7 +147,7 @@
             table.Location = new Point(14, 237);
             table.Name = "table";
             table.RowHeadersWidth = 51;
-            table.Size = new Size(799, 259);
+            table.Size = new Size(997, 259);
             table.TabIndex = 12;
             table.CellClick += table_CellClick;
             // 
@@ -201,7 +201,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(852, 540);
+            ClientSize = new Size(1023, 540);
             Controls.Add(MostrarButton);
             Controls.Add(label3);
             Controls.Add(codigoInput);

@@ -46,6 +46,48 @@ namespace Dbo
             }
         }
 
+        public async Task<DBOResponse<bool>> CrearParteSucursalesTransaction(List<ParteSucursal> parteSucursal)
+        {
+            await using var conn = Conexion.conexion();
+            await conn.OpenAsync();
+
+            using SqlTransaction transaction = conn.BeginTransaction();
+
+            try
+            {
+                var query = @"
+                    Insert into Parte_Sucursal(Numero_Parte, CostoUnitario, Stock, FechaRegistro, FechaModificacion, IdSucursal) 
+                    VALUES(@NumeroParte, @CostoUnitario, @Stock, @FechaRegistro, @FechaModificacion, @IdSucursal)
+                ";
+
+                foreach (var ps in parteSucursal)
+                {
+                    var cmd = conn.CreateCommand();
+                    cmd.Transaction = transaction;
+                    cmd.CommandText = query;
+
+                    cmd.Parameters.AddWithValue("@NumeroParte", ps.Parte.NumeroParte);
+                    cmd.Parameters.AddWithValue("@CostoUnitario", ps.CostoUnitario);
+                    cmd.Parameters.AddWithValue("@Stock", ps.Stock);
+                    cmd.Parameters.AddWithValue("@FechaRegistro", ps.FechaRegistro);
+                    cmd.Parameters.AddWithValue("@FechaModificacion", ps.FechaModificacion);
+                    cmd.Parameters.AddWithValue("@IdSucursal", ps.Sucursal.NumeroSucursal);
+                    
+                    await cmd.ExecuteNonQueryAsync();
+                }
+
+                transaction.Commit();
+                return DBOResponse<bool>.Ok(true);
+            }
+            catch (SqlException ex)
+            {
+                // Manejo de excepciones
+                transaction.Rollback();
+                return DBOResponse<bool>.Error("Error al crear la Parte-casa: " + ex.Message);
+            }
+        }
+
+
         public async Task<DBOResponse<IEnumerable<ParteSucursal>>> ObtenerParteSucursalPorIdParte(string id)
         {
             try
@@ -124,7 +166,7 @@ namespace Dbo
                         .Build();
                     listParteSucursal.Add(parteSucursal);
                 }
-                    return DBOResponse<IEnumerable<ParteSucursal>>.Ok(listParteSucursal);
+                return DBOResponse<IEnumerable<ParteSucursal>>.Ok(listParteSucursal);
             }
             catch (SqlException ex)
             {
@@ -274,7 +316,7 @@ namespace Dbo
                         .Build();
                     partesSucursal.Add(parteSucursal);
                 }
-                    return DBOResponse<IEnumerable<ParteSucursal>>.Ok(partesSucursal);
+                return DBOResponse<IEnumerable<ParteSucursal>>.Ok(partesSucursal);
             }
             catch (SqlException ex)
             {

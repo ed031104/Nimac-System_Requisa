@@ -307,6 +307,10 @@
               "target": "Package",
               "version": "[9.0.6, )"
             },
+            "Microsoft.Web.WebView2": {
+              "target": "Package",
+              "version": "[1.0.3351.48, )"
+            },
             "ReportViewerCore.WinForms": {
               "target": "Package",
               "version": "[15.1.26, )"

@@ -35,7 +35,7 @@ namespace Dbo
                 var result = await cmd.ExecuteScalarAsync();
                 var numeroSucursal = result.ToString();
                 if (string.IsNullOrEmpty(numeroSucursal))
-                
+
                 {
                     return DBOResponse<string>.Error("No se pudo crear la sucursal. Verifique los datos.");
                 }
@@ -98,6 +98,53 @@ namespace Dbo
             }
         }
 
+        public async Task<DBOResponse<IEnumerable<Sucursal>>> ObtenerSucursalesPorCodigoCasa(string codigoCasa)
+        {
+            try
+            {
+                await using var conn = Conexion.conexion();
+                await conn.OpenAsync();
+
+                var query = new StringBuilder();
+                query.Append("select *  ");
+                query.Append("from Sucursal ");
+                query.Append("INNER JOIN Casa ON Casa.Codigo_Casa = Sucursal.Codigo_casa ");
+                query.Append("WHERE Casa.Codigo_Casa = @CodigoCasa");
+
+                using var cmd = conn.CreateCommand();
+                cmd.CommandText = query.ToString();
+                cmd.Parameters.AddWithValue("@CodigoCasa", codigoCasa);
+
+                await using var reader = await cmd.ExecuteReaderAsync();
+
+                var sucursales = new List<Sucursal>();
+
+                while (await reader.ReadAsync())
+                {
+                    var casa = new Casa.Builder()
+                        .SetCodigoCasa(reader.GetString(5))
+                        .SetNombreCasa(reader.GetString(6))
+                        .SetFechaRegistro(reader.GetDateTime(7))
+                        .SetFechaModificacion(reader.GetDateTime(8))
+                        .Build();
+
+                    Sucursal sucursal = new Sucursal.Builder()
+                        .SetNumeroSucursal(reader.GetString(0))
+                        .SetNombreSucursal(reader.GetString(1))
+                        .SetFechaRegistro(reader.GetDateTime(2))
+                        .SetFechaModificacion(reader.GetDateTime(3))
+                        .SetCasa(casa)
+                        .Build();
+                    sucursales.Add(sucursal);
+                }
+                return DBOResponse<IEnumerable<Sucursal>>.Ok(sucursales);
+            }
+            catch (SqlException ex)
+            {
+                return DBOResponse<IEnumerable<Sucursal>>.Error("Error al obtener el usuario: " + ex.Message);
+            }
+        }
+
         public async Task<DBOResponse<IEnumerable<Sucursal>>> ObtenerSucursalPorNombre(string nombre)
         {
             try
@@ -134,7 +181,7 @@ namespace Dbo
                         .Build();
                     sucursales.Add(sucursal);
                 }
-                    return DBOResponse<IEnumerable<Sucursal>>.Ok(sucursales);
+                return DBOResponse<IEnumerable<Sucursal>>.Ok(sucursales);
             }
             catch (SqlException ex)
             {
@@ -257,6 +304,46 @@ namespace Dbo
             catch (SqlException ex)
             {
                 return DBOResponse<IEnumerable<Sucursal>>.Error("Error al obtener las sucursales: " + ex.Message);
+            }
+        }
+
+        public async Task<DBOResponse<bool>> CrearSucursalesTransaction(List<Sucursal> sucursal)
+        {
+            await using var conn = Conexion.conexion();
+            await conn.OpenAsync();
+
+            using SqlTransaction transaction = conn.BeginTransaction();
+            try
+            {
+                var query = @"
+                insert into Sucursal (Numero_Sucursal, Nombre_Sucursal, FechaRegistro, FechaModificacion, Codigo_casa)
+                values(@Numero_Sucursal, @Nombre_Sucursal, @FechaRegistro, @FechaModificacion, @CodigoCasa); 
+                ";
+
+                foreach (var suc in sucursal)
+                {
+
+                    var cmd = conn.CreateCommand();
+
+                    cmd.Transaction = transaction;
+                    cmd.CommandText = query.ToString();
+
+                    cmd.Parameters.AddWithValue("@Numero_Sucursal", suc.NumeroSucursal);
+                    cmd.Parameters.AddWithValue("@Nombre_Sucursal", suc.NombreSucursal);
+                    cmd.Parameters.AddWithValue("@FechaRegistro", suc.FechaRegistro);
+                    cmd.Parameters.AddWithValue("@FechaModificacion", suc.FechaModificacion);
+                    cmd.Parameters.AddWithValue("@CodigoCasa", suc.Casa.CodigoCasa);
+                    await cmd.ExecuteScalarAsync();
+                }
+
+                transaction.Commit();
+                return DBOResponse<bool>.Ok(true);
+            }
+            catch (SqlException ex)
+            {
+                transaction.Rollback();
+                // Manejo de excepciones
+                return DBOResponse<bool>.Error("Error al crear el Rol: " + ex.Message);
             }
         }
     }
