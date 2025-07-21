@@ -59,6 +59,43 @@ namespace Servicios
             }
         }
 
+        public async Task<ServiceResponse<bool>> CrearPartes(List<Parte> parte)
+        {
+            try
+            {
+                if (parte == null)
+                {
+                    return new ServiceResponse<bool>.Builder()
+                        .SetSuccess(false)
+                        .SetErrorMessage("El objeto Parte no puede ser nulo.")
+                        .Build();
+                }
+
+                var response = await _parteDbo.CrearParteTransaction(parte);
+
+                if (!response.Success)
+                {
+                    return new ServiceResponse<bool>.Builder()
+                        .SetSuccess(false)
+                        .SetErrorMessage(response.Message)
+                        .Build();
+                }
+
+                return new ServiceResponse<bool>.Builder()
+                    .SetData(true)
+                    .SetSuccess(true)
+                    .SetMessage("Parte creada exitosamente.")
+                    .Build();
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponse<bool>.Builder()
+                    .SetSuccess(false)
+                    .SetErrorMessage("Error al crear la Parte: " + ex.Message)
+                    .Build();
+            }
+        }
+
         public async Task<ServiceResponse<Parte>> ObtenerPartePorId(string id)
         {
             try

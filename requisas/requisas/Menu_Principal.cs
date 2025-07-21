@@ -1,4 +1,5 @@
-﻿using Modelos.login;
+﻿using CapaVista.Components;
+using Modelos.login;
 using requisas;
 using System;
 using System.Collections.Generic;
@@ -344,6 +345,34 @@ namespace CapaVista
             }
 
             GestionRequisaAjuste m1 = new GestionRequisaAjuste();
+            m1.MdiParent = this;
+            m1.Show();
+
+            currentChildForm = m1;
+        }
+
+        private void ajustesRequisaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentChildForm != null && !currentChildForm.IsDisposed)
+            {
+                currentChildForm.Close();
+            }
+
+            ReportRequisaAjusteEstado m1 = new ReportRequisaAjusteEstado();
+            m1.MdiParent = this;
+            m1.Show();
+
+            currentChildForm = m1;
+        }
+
+        private void requisasCompletadasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentChildForm != null && !currentChildForm.IsDisposed)
+            {
+                currentChildForm.Close();
+            }
+
+            ReportRequisaAjustes m1 = new ReportRequisaAjustes();
             m1.MdiParent = this;
             m1.Show();
 

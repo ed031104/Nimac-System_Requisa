@@ -12,7 +12,7 @@ namespace Dbo
 {
     public class ParteDbo
     {
-        public ParteDbo() {}
+        public ParteDbo() { }
 
         public async Task<DBOResponse<string>> CrearParte(Parte parte)
         {
@@ -45,6 +45,47 @@ namespace Dbo
                 return DBOResponse<string>.Error("Error al crear la Parte: " + ex.Message);
             }
         }
+
+        public async Task<DBOResponse<bool>> CrearParteTransaction(List<Parte> partes)
+        {
+            await using var conn = Conexion.conexion();
+            await conn.OpenAsync();
+
+            await using var transaction = await conn.BeginTransactionAsync();
+            try
+            {
+                var query = @"
+                    INSERT INTO Parte (Numero_Parte, Descripcion_Parte, FechaRegistro, FechaModificacion)
+                    VALUES (@Numero_Parte, @Descripcion_Parte, @FechaRegistro, @FechaModificacion);
+                ";
+
+                await using var cmd = conn.CreateCommand();
+                cmd.Transaction = (SqlTransaction)transaction;
+                cmd.CommandText = query;
+
+                foreach (var parte in partes)
+                {
+                    cmd.Parameters.Clear();
+                    cmd.Parameters.AddWithValue("@Numero_Parte", parte.NumeroParte);
+                    cmd.Parameters.AddWithValue("@Descripcion_Parte", parte.DescripcionParte);
+                    cmd.Parameters.AddWithValue("@FechaRegistro", parte.FechaRegistro);
+                    cmd.Parameters.AddWithValue("@FechaModificacion", parte.FechaModificacion);
+
+                    var response = await cmd.ExecuteScalarAsync();
+                    var codigoParte = Convert.ToString(response);
+                }
+
+                await transaction.CommitAsync();
+                return DBOResponse<bool>.Ok(true);
+            }
+            catch (SqlException ex)
+            {
+                await transaction.RollbackAsync();
+                return DBOResponse<bool>.Error("Error al crear la Parte: " + ex.Message);
+            }
+        }
+
+
 
         public async Task<DBOResponse<Parte>> ObtenerPartePorId(string id)
         {

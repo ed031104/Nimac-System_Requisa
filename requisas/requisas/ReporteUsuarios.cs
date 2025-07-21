@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Configuraciones;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Reporting.WinForms;
 using Servicios.report;
 using System;
@@ -18,7 +19,10 @@ namespace CapaVista
     {
         private readonly ReporteServices _reporteServices;
 
-        string path = @"D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\report\UsuariosReporte.rdlc";
+        private string nameReport = Configuracion.Get("nameReports:userReport");
+        string rutaReporte = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UsuariosReporte.rdlc");
+
+//        string path = @"D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\report\UsuariosReporte.rdlc";
 
         public ReporteUsuarios()
         {
@@ -53,7 +57,7 @@ namespace CapaVista
 
             reportViewer1.Reset();
             reportViewer1.ProcessingMode = ProcessingMode.Local;
-            reportViewer1.LocalReport.ReportPath = path;
+            reportViewer1.LocalReport.ReportPath = rutaReporte;
 
             ReportDataSource reportDataSource = new ReportDataSource("UsuariosDataSet", response.Data);
             reportViewer1.LocalReport.DataSources.Clear();

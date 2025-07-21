@@ -1,4 +1,6 @@
-﻿using Modelos;
+﻿using CapaVista.Components;
+using CapaVista.utils;
+using Modelos;
 using Servicios;
 using System;
 using System.Collections.Generic;
@@ -16,6 +18,7 @@ namespace CapaVista
     {
 
         private ParteServices _parteServices;
+        private ExcelReader _excelReader = new ExcelReader();
 
         public GestionPartes()
         {
@@ -202,6 +205,59 @@ namespace CapaVista
         {
             await LoadDataAsync();
             MostrarButton.Visible = false;
+        }
+
+        private async void cargaMasivaButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ImportarExcelParte importarExcel = new ImportarExcelParte();
+                string ruta = string.Empty;
+
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Archivos PDF (*.xlsx)|*.xlsx";
+                openFileDialog.Title = "Selecciona un archivo Excel";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    ruta = openFileDialog.FileName;
+                    MessageBox.Show("Excel cargado correctamente:\n" + ruta);
+                }
+
+                var dataParserExcel = await _excelReader.ParserExcelAndParte(ruta);
+
+                if (dataParserExcel.Success == false || !dataParserExcel.Data.Any())
+                {
+                    MessageBox.Show($"Error al procesar el archivo: {dataParserExcel.ErrorMessage}");
+                    return;
+                }
+
+                IEnumerable<Parte> listDataExcel = dataParserExcel.Data;
+
+                importarExcel.ListParte = listDataExcel.ToList();
+                importarExcel.ShowDialog();
+
+                if (importarExcel.DialogResult != DialogResult.OK)
+                {
+                    MessageBox.Show("Importación cancelada.");
+                    return;
+                }
+
+                var response = await _parteServices.CrearPartes(importarExcel.ListParte);
+                if (!response.Success)
+                {
+                    MessageBox.Show($"Error al importar casas: {response.ErrorMessage}");
+                    return;
+                }
+
+                MessageBox.Show("Casas importadas correctamente.");
+
+                await LoadDataAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al importar Excel: {ex.Message}");
+            }
         }
     }
 }

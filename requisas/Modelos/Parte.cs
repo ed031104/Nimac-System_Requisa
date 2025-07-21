@@ -33,7 +33,7 @@ namespace Modelos
 
         public override string ToString()
         {
-            return NumeroParte + " - " + DescripcionParte;
+            return NumeroParte;
         }
 
         #region Builder Pattern

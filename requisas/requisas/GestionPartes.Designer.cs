@@ -44,6 +44,7 @@
             fechaRegistroColumn = new DataGridViewTextBoxColumn();
             fechaModificacionColumn = new DataGridViewTextBoxColumn();
             MostrarButton = new Button();
+            cargaMasivaButton = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)table).BeginInit();
             SuspendLayout();
@@ -103,7 +104,7 @@
             groupBox1.Controls.Add(numeroParteInput);
             groupBox1.Location = new Point(23, 12);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(790, 113);
+            groupBox1.Size = new Size(1154, 113);
             groupBox1.TabIndex = 13;
             groupBox1.TabStop = false;
             groupBox1.Text = "Datos Usuario";
@@ -142,12 +143,13 @@
             // 
             // table
             // 
+            table.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             table.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             table.Columns.AddRange(new DataGridViewColumn[] { numeroParteColumn, decripcionParteColumn, fechaRegistroColumn, fechaModificacionColumn });
             table.Location = new Point(14, 237);
             table.Name = "table";
             table.RowHeadersWidth = 51;
-            table.Size = new Size(997, 259);
+            table.Size = new Size(1163, 291);
             table.TabIndex = 12;
             table.CellClick += table_CellClick;
             // 
@@ -197,11 +199,22 @@
             MostrarButton.UseVisualStyleBackColor = true;
             MostrarButton.Click += MostrarButton_Click;
             // 
+            // cargaMasivaButton
+            // 
+            cargaMasivaButton.Location = new Point(1004, 183);
+            cargaMasivaButton.Name = "cargaMasivaButton";
+            cargaMasivaButton.Size = new Size(173, 29);
+            cargaMasivaButton.TabIndex = 20;
+            cargaMasivaButton.Text = "Carga Masiva";
+            cargaMasivaButton.UseVisualStyleBackColor = true;
+            cargaMasivaButton.Click += cargaMasivaButton_Click;
+            // 
             // GestionPartes
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1023, 540);
+            ClientSize = new Size(1189, 540);
+            Controls.Add(cargaMasivaButton);
             Controls.Add(MostrarButton);
             Controls.Add(label3);
             Controls.Add(codigoInput);
@@ -238,5 +251,6 @@
         private DataGridViewTextBoxColumn fechaRegistroColumn;
         private DataGridViewTextBoxColumn fechaModificacionColumn;
         private Button MostrarButton;
+        private Button cargaMasivaButton;
     }
 }

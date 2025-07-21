@@ -21,6 +21,8 @@ namespace Servicios
         private readonly EstadoDbo _estadoDbo;
         private readonly RequisaEstadoDBO _requisaEstadoDbo;
         private readonly RequisaRechazadaDbo _requisaRechazadaDbo;
+        private readonly DocumentoDbo _documentoDbo;
+        private readonly ReclamoDbo _reclamoDbo;
         #endregion
 
         public RequisaServices()
@@ -30,6 +32,8 @@ namespace Servicios
             _requisaEstadoDbo = new RequisaEstadoDBO();
             _estadoDbo = new EstadoDbo();
             _requisaRechazadaDbo = new RequisaRechazadaDbo();
+            _documentoDbo = new DocumentoDbo();
+            _reclamoDbo = new ReclamoDbo();
         }
 
         public async Task<ServiceResponse<bool>> crearRequisaConAjustes(Requisa requisa, IEnumerable<RequisaAjuste> ajustes)
@@ -134,7 +138,7 @@ namespace Servicios
 
                 var requisaResponse = await _requisaDbo.ObtenerRequisaPorId(numeroRequisa);
 
-                if( requisaResponse == null || !requisaResponse.Success || requisaResponse.Data == null)
+                if (requisaResponse == null || !requisaResponse.Success || requisaResponse.Data == null)
                 {
                     return new ServiceResponse<bool>.Builder()
                         .SetData(false)
@@ -153,7 +157,7 @@ namespace Servicios
                     .Build();
 
                 var response = await _requisaEstadoDbo.crearEstadoRequisa(requisaEstado);
-                
+
                 if (!response.Success || !response.Data)
                 {
                     return new ServiceResponse<bool>.Builder()
@@ -255,6 +259,69 @@ namespace Servicios
                 return new ServiceResponse<bool>.Builder()
                     .SetData(false)
                     .SetErrorMessage("Error al crear el estado de la requisa: " + ex.Message)
+                    .SetSuccess(false)
+                    .Build();
+            }
+        }
+
+        public async Task<ServiceResponse<bool>> AsginarDocuemtoReclamoAjuste(Documento doc, int idReclamo)
+        {
+            try
+            {
+                doc.CreadoPor = UserSession.Instance.NombreUsuario;
+                doc.FechaCreacion = DateTime.Now;
+                doc.ModificadoPor = UserSession.Instance.NombreUsuario;
+                doc.FechaModificacion = DateTime.Now;
+                var responseDocumento = await _documentoDbo.CrearDocumento(doc);
+                doc.IdDocumento = responseDocumento.Data;
+
+                if (!responseDocumento.Success || responseDocumento.Data <= 0)
+                {
+                    return new ServiceResponse<bool>.Builder()
+                        .SetData(false)
+                        .SetErrorMessage(responseDocumento.Message ?? "Excepción no manejada.")
+                        .SetSuccess(false)
+                        .Build();
+                }
+
+                var reclamoResponse = await _reclamoDbo.obtenerReclamoPorId(idReclamo);
+
+                if (reclamoResponse == null || !reclamoResponse.Success || reclamoResponse.Data == null)
+                {
+                    return new ServiceResponse<bool>.Builder()
+                        .SetData(false)
+                        .SetErrorMessage("No se pudo encontrar el reclamo con el ID proporcionado.")
+                        .SetSuccess(false)
+                        .Build();
+                }
+
+                var reclamo = reclamoResponse.Data;
+                reclamo.DocumentoReclamo = doc;
+                reclamo.ModificadoPor = UserSession.Instance.NombreUsuario;
+                reclamo.FechaModificacion = DateTime.Now;
+
+                var response = await _reclamoDbo.ActualizarReclamo(reclamo);
+
+                if (!response.Success || !response.Data)
+                {
+                    return new ServiceResponse<bool>.Builder()
+                        .SetData(false)
+                        .SetErrorMessage(response.Message ?? "Excepción no manejada.")
+                        .SetSuccess(false)
+                        .Build();
+                }
+                return new ServiceResponse<bool>.Builder()
+                    .SetData(true)
+                    .SetMessage("Documento del reclamo asignado exitosamente.")
+                    .SetSuccess(true)
+                    .Build();
+
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponse<bool>.Builder()
+                    .SetData(false)
+                    .SetErrorMessage("Error al asignar el documento del reclamo: " + ex.Message)
                     .SetSuccess(false)
                     .Build();
             }
@@ -388,7 +455,7 @@ namespace Servicios
                 }
 
                 var response = await _requisaEstadoDbo.obtenerEstadosRequisaPorIdRequisa(idRequisa);
-                
+
                 if (!response.Success || response.Data == null)
                 {
                     return new ServiceResponse<IEnumerable<RequisaEstado>>.Builder()
@@ -412,7 +479,7 @@ namespace Servicios
                     .Build();
             }
         }
-        
+
         public async Task<ServiceResponse<IEnumerable<Estado>>> obtenerTodosLosEstados()
         {
             try
@@ -440,7 +507,7 @@ namespace Servicios
                     .Build();
             }
         }
-        
+
         public async Task<ServiceResponse<RequisaRechazada>> obtenerRequisasRechazadasPorNumeroRequisa(string numeroRequisa)
         {
             try
@@ -454,7 +521,7 @@ namespace Servicios
                         .Build();
                 }
                 var response = await _requisaRechazadaDbo.obtenerRequisasRechazadasPorNumeroRequisa(numeroRequisa);
-                
+
                 if (!response.Success || response.Data == null)
                 {
                     return new ServiceResponse<RequisaRechazada>.Builder()

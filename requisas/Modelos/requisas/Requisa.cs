@@ -34,6 +34,11 @@ namespace Modelos.requisas
         public Sucursal Sucursal { get => _sucursal ; set => _sucursal = value; }
         public bool Estado { get => estado; set => estado = value; }
 
+        public override string ToString()
+        {
+            return _nDocumentoRequisa;
+        }
+
         #region Builder Pattern
         public class Builder
         {

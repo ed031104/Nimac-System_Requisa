@@ -288,3 +288,6 @@ D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windo
 D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.Components.ImportarExcelSucursal.resources
 D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.Components.ImportarExcelParteSucursal.resources
 D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.Components.ViewParteSucursales.resources
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.Components.ReportRequisaAjustes.resources
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.Components.ReportRequisaAjusteEstado.resources
+D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.Components.ImportarExcelParte.resources

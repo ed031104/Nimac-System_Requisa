@@ -230,7 +230,44 @@ namespace CapaVista.utils
             }
         }
 
-        public async Task<ServiceResponse<IEnumerable<Casa>>> ParserExcelAndParte(string filePath) { return null; }
+        public async Task<ServiceResponse<IEnumerable<Parte>>> ParserExcelAndParte(string filePath) {
+            var partes = new List<Parte>();
+            try
+            {
+                ExcelPackage.License.SetNonCommercialOrganization("My Noncommercial organization");
+
+                using var package = new ExcelPackage(new FileInfo(filePath));
+                var hoja = package.Workbook.Worksheets[0]; // Asumiendo que los datos están en la primera hoja
+
+                int filaInicio = 2; // Asumiendo que la primera fila es el encabezado
+                int totalFilas = hoja.Dimension.Rows;
+
+                for (int fila = filaInicio; fila <= totalFilas; fila++)
+                {
+
+                    var parte = new Parte.Builder()
+                        .SetNumeroParte(hoja.Cells[fila, 1].Text)
+                        .SetDescripcionParte(hoja.Cells[fila, 2].Text)
+                        .SetFechaRegistro(DateTime.Now)
+                        .SetFechaModificacion(DateTime.Now)
+                        .Build();
+                    partes.Add(parte);
+                }
+
+                return new ServiceResponse<IEnumerable<Parte>>.Builder()
+                    .SetData(partes)
+                    .SetMessage("Archivo procesado correctamente.")
+                    .SetSuccess(true)
+                    .Build();
+            }
+            catch (Exception e)
+            {
+                return new ServiceResponse<IEnumerable<Parte>>.Builder()
+                    .SetErrorMessage("Error al procesar el archivo: " + e.Message)
+                    .SetSuccess(false)
+                    .Build();
+            }
+        }
 
 
         private bool validarColumnas()

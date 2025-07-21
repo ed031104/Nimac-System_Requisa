@@ -1,6 +1,7 @@
 ﻿using Dbo;
 using Modelos;
 using Modelos.Enums;
+using Modelos.login;
 using Modelos.requisas;
 using Servicios;
 using System;
@@ -17,7 +18,7 @@ namespace CapaVista
 {
     public partial class DetallesRequisa : Form
     {
-
+        Reclamo _reclamo;
         private RequisaServices _requisaServices = new RequisaServices();
 
         public DetallesRequisa()
@@ -90,6 +91,7 @@ namespace CapaVista
             dt.Columns.Add("idTipoAjusteColumn", typeof(Object)); // Tipo de ajuste
             dt.Columns.Add("tipoAjusteColumn", typeof(Object));
             dt.Columns.Add("numeroParteColumn", typeof(Object));
+            dt.Columns.Add("nombreParteColumn", typeof(Object)); // Monto del ajuste
             dt.Columns.Add("cantidadColumn", typeof(decimal));
             dt.Columns.Add("DescripciónAjusteColumn", typeof(string));
             dt.Columns.Add("costoPromedioColumn", typeof(decimal));
@@ -111,12 +113,13 @@ namespace CapaVista
                     ra.IdRequisaAjuste,
                     ra.TipoAjuste,
                     ra.ParteSucursal?.Parte,
+                    ra.ParteSucursal?.Parte?.DescripcionParte ?? "Parte Vacía",
                     ra.MontoAjuste ?? 0,
                     ra.Descripcion ?? "",
                     ra.ParteSucursal?.CostoUnitario ?? 0,
                     ra?.CostoPromedioExtendido ?? 0,
-                    ra?.ParteSucursal?.Sucursal?.Casa?.NombreCasa ?? "Casa Vacía",
-                    ra?.ParteSucursal?.Sucursal?.NombreSucursal ?? "Sucursal Vacía",
+                    ra?.ParteSucursal?.Sucursal?.Casa?.CodigoCasa ?? "Casa Vacía",
+                    ra?.ParteSucursal?.Sucursal?.NumeroSucursal ?? "Sucursal Vacía",
                     ra.ParteSucursal?.CostoUnitario ?? 0,
                     ra?.Reclamo,
                     ra?.Transferencia,
@@ -134,11 +137,11 @@ namespace CapaVista
                 "",
                 "Total",
                 null,
+                null,
                 totalCantidad,
                 "",
                 totalCostoPromedio,
                 totalCostoPromedioExtendido,
-                null,
                 null,
                 null,
                 null,
@@ -219,7 +222,7 @@ namespace CapaVista
 
             var dateCreatedRequisa = response.Data.FirstOrDefault()?.Requisa.FechaRegistro;
 
-            TimeSpan daysDelayed =  DateTime.Now - dateCreatedRequisa.Value;
+            TimeSpan daysDelayed = DateTime.Now - dateCreatedRequisa.Value;
 
             if (daysDelayed.Days < 0)
             {
@@ -232,8 +235,9 @@ namespace CapaVista
             }
         }
 
-        private async Task loadRequisaRechazada() { 
-            
+        private async Task loadRequisaRechazada()
+        {
+
             var numeroRequisa = numeroRequisaLabel.Text;
             if (string.IsNullOrEmpty(numeroRequisa))
             {
@@ -248,6 +252,90 @@ namespace CapaVista
 
             requisaRechazadaLabel.Text = string.IsNullOrEmpty(response.Data.Descripcion) ? "No" : "Si";
             descripcionRequisaRechazadaInput.Text = string.IsNullOrEmpty(response.Data.Descripcion) ? "La requisa no ha sido Rechazada" : response.Data.Descripcion;
+        }
+
+        private async void cargarPdfButton_Click(object sender, EventArgs e)
+        {
+            Documento archivo = new Documento();
+            try
+            {
+                string ruta = string.Empty;
+
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Archivos PDF (*.pdf)|*.pdf";
+                openFileDialog.Title = "Selecciona un archivo Excel";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    ruta = openFileDialog.FileName;
+                    MessageBox.Show("Documento cargado correctamente:\n" + ruta);
+                }
+
+                Byte[] fileBytes = File.ReadAllBytes(ruta);
+                archivo.DocumentoBytes = fileBytes;
+                archivo.Nombre = Path.GetFileName(ruta);
+
+                int idReclamo = (int)_reclamo.IdReclamo;
+
+                var response = await _requisaServices.AsginarDocuemtoReclamoAjuste(archivo, idReclamo);
+
+                if (!response.Success)
+                {
+                    MessageBox.Show("Error al cargar el PDF: " + response.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                MessageBox.Show("PDF cargado correctamente al reclamo.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await loadDataAjusteTable();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar el PDF: {ex.Message}");
+                return;
+            }
+        }
+
+        private void tableAjustes_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 || e.ColumnIndex >= 0)
+            {
+                try
+                {
+                    var ajuste = tableAjustes.Rows[e.RowIndex].Cells["tipoAjusteColumn"].Value as TipoAjuste;
+                    var reclamo = tableAjustes.Rows[e.RowIndex].Cells["reclamoColumn"].Value as Reclamo;
+
+                    if (tableAjustes.Columns[e.ColumnIndex].Name == "visualizarColumn")
+                    {
+                        return;
+                    }
+
+                    if (reclamo?.DocumentoReclamo?.IdDocumento != null)
+                    {
+                        MessageBox.Show("Ya el reclamo tiene asociado un PDF.");
+                        cargarPdfButton.Visible = false;
+                        return;
+                    }
+
+                    if (ajuste.TipoAjusteId != (int)Ajustes.Reverso && ajuste.TipoAjusteId != (int)Ajustes.MalEnviado)
+                    {
+                        return;
+                    }
+
+                    if (UserSession.Instance.IdRol != (int)UserRol.Analista)
+                    {
+                        MessageBox.Show("No tienes permisos para cargar un PDF en el reclamo.", "Permiso Denegado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    _reclamo = reclamo;
+                    cargarPdfButton.Visible = true;
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al seleccionar la fila: {ex.Message}");
+                }
+            }
         }
     }
 }

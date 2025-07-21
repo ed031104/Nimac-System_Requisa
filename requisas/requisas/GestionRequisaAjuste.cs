@@ -1,6 +1,7 @@
 ﻿using Dbo;
 using Microsoft.ReportingServices.RdlExpressions.ExpressionHostObjectModel;
 using Modelos;
+using Modelos.Dto;
 using Modelos.Enums;
 using Modelos.login;
 using Servicios;
@@ -23,6 +24,7 @@ namespace CapaVista
         private RequisaServices _requisaServices = new RequisaServices();
 
         private string _numeroRequisaSeleccionada = string.Empty;
+        private List<RequisaJoinEstado> _requisaJoinEstado;
 
         public GestionRequisaAjuste()
         {
@@ -31,7 +33,15 @@ namespace CapaVista
 
         private async void GestionRequisaAjuste_Load(object sender, EventArgs e)
         {
+            var response = await _requisaServices.ObtenerRequisasagrupadasPorEstado();
+            if (!response.Success || response.Data == null)
+            {
+                MessageBox.Show("Error al cargar las requisas: " + response.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            _requisaJoinEstado = response.Data.ToList();
             await cargarRequisasTable();
+            await cargarEstadosFiltros();
         }
 
         private void table_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -141,7 +151,16 @@ namespace CapaVista
                     return;
                 }
                 MessageBox.Show("Estado agregado correctamente a la requisa.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                await cargarRequisasTable();
+
+                var requisasResponse = await _requisaServices.ObtenerRequisasagrupadasPorEstado();
+                if (requisasResponse.Success == false || requisasResponse.Data == null)
+                { 
+                    MessageBox.Show("Error al obtener las requisas actualizadas: " + requisasResponse.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                _requisaJoinEstado.Clear();
+                _requisaJoinEstado = requisasResponse.Data.ToList();
+                await ConvertListDataTableLoadDataGrid(requisasResponse.Data.ToList());
             }
             catch
             {
@@ -154,8 +173,8 @@ namespace CapaVista
             try
             {
                 bool Aceptar = MessageBox.Show("¿Está seguro de que desea rechazar la requisa seleccionada?, una vez rechazada ya no se puede utilizar", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
-                
-                if(!Aceptar)
+
+                if (!Aceptar)
                 {
                     return; // Si el usuario no acepta, salir del método
                 }
@@ -169,7 +188,7 @@ namespace CapaVista
                 }
 
                 string numeroRequisa = _numeroRequisaSeleccionada;
-                
+
                 if (string.IsNullOrEmpty(numeroRequisa))
                 {
                     MessageBox.Show("Por favor, seleccione una requisa para rechazar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -177,7 +196,7 @@ namespace CapaVista
                 }
 
                 var responseStatus = await _requisaServices.obtenerTodosLosEstados();
-                
+
                 if (!responseStatus.Success || responseStatus.Data == null)
                 {
                     MessageBox.Show("Error al obtener los estados de la requisa: " + responseStatus.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -201,64 +220,28 @@ namespace CapaVista
                 }
 
                 MessageBox.Show("Requisa rechazada correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-              
+
                 await cargarRequisasTable();
                 _numeroRequisaSeleccionada = string.Empty; // Limpiar la selección después de rechazar
             }
-            catch { 
+            catch
+            {
                 MessageBox.Show("Error al rechazar la requisa.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-    
+
         private async Task cargarRequisasTable()
         {
-            var response = await _requisaServices.ObtenerRequisasagrupadasPorEstado();
 
+            var listRequisas = _requisaJoinEstado;
 
-            if (!response.Success || response.Data == null)
-            {
-                MessageBox.Show("Error al cargar las requisas: " + response.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            
-            var listOrderByDescAmount = response.Data.OrderByDescending(
+            var listOrderByDescAmount = listRequisas.OrderByDescending(
                     r => r.costoTotal
-                );
+            );
 
-            var dt = new DataTable();
-            dt.Columns.Add("numeroRequisaColumn", typeof(string));
-            dt.Columns.Add("descripcionRequisaColumn", typeof(string));
-            dt.Columns.Add("usuarioColumn", typeof(string));
-            dt.Columns.Add("cantidadAjusteColumn", typeof(int));
-            dt.Columns.Add("costoTotalColumn", typeof(string));
-            dt.Columns.Add("estadoRequisaColumn", typeof(Object));
-            dt.Columns.Add("viewDatalleColumn", typeof(string));
-            dt.Columns.Add("fechaCreacionColumn", typeof(DateTime));
-            foreach (var item in  listOrderByDescAmount)
-            {
-                CultureInfo cultura = new CultureInfo("es-NI");
-
-                var amountFormatted = item.costoTotal.ToString("N2", cultura);
-
-                dt.Rows.Add(item.CodigoRequisa, item.descripcionRequisa, item.Usuario, item.cantidadAjuste, amountFormatted, item.EstadoRequisa, "Revisar", item.FechaCreacion.Date);
-            }
-
-            CultureInfo culturaSum = new CultureInfo("es-NI");
-
-            var SumCantidadAjuste = response.Data.Sum(row => row.cantidadAjuste);
-            var SumCostoTotal = response.Data.Sum(row => row.costoTotal);
-
-            DataRow dtRow = dt.Rows.Add("Total", "", "", SumCantidadAjuste, SumCostoTotal.ToString("N2", culturaSum), null);
-            
-            int rowIndex = dt.Rows.IndexOf(dtRow);
-            
-            table.DataSource = null;
-            table.AutoGenerateColumns = false;
-            table.DataSource = dt;
-            
-            table.Rows[rowIndex].DefaultCellStyle.Font = new Font(table.DefaultCellStyle.Font, FontStyle.Bold);
+            await ConvertListDataTableLoadDataGrid(listOrderByDescAmount.ToList());
         }
-        
+
         private async Task<bool> validateState(int id)
         {
             bool isValid = false;
@@ -334,28 +317,10 @@ namespace CapaVista
                     }
                     #endregion
                     break;
-                case (int)Estados.PENDIENTE_A_APLICAR:
-                    #region Validación de estado 'Pendiente a Aplicar'
-
-                    var stateRequirePendienteAplicar = new[] { (int)Estados.CREADA, (int)Estados.PENDIENTE_A_REVISION, (int)Estados.PENDIENTE_A_APROBACION_1, (int)Estados.PENDIENTE_A_APROBACION_2 };
-                    var statePendienteAplicar = stateRequirePendienteAplicar.All(stateRequired =>
-                        estadosRequisa.Any(e => e.Estado.IdEstado == stateRequired)
-                    );
-
-                    if (statePendienteAplicar && UserSession.Instance.IdRol == (int)UserRol.Analista)
-                    {
-                        isValid = true;
-                    }
-                    else
-                    {
-                        MessageBox.Show("No se puede agregar el estado 'Pendiente a Aplicar' porque la requisa no tiene los estados: 'Creado', 'Pendiente a Revisión', 'Aprobación 1', 'Aprobación 2'. O no tienes los permisos necesarios.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                    #endregion
-                    break;
                 case (int)Estados.APLICADA:
                     #region Validación de estado 'Aplicado'
 
-                    var stateRequireAplicado = new[] { (int)Estados.CREADA, (int)Estados.PENDIENTE_A_REVISION, (int)Estados.PENDIENTE_A_APROBACION_1, (int)Estados.PENDIENTE_A_APROBACION_2, (int)Estados.PENDIENTE_A_APLICAR };
+                    var stateRequireAplicado = new[] { (int)Estados.CREADA, (int)Estados.PENDIENTE_A_REVISION, (int)Estados.PENDIENTE_A_APROBACION_1, (int)Estados.PENDIENTE_A_APROBACION_2 };
                     var stateAplicado = stateRequireAplicado.All(stateRequired =>
                         estadosRequisa.Any(e => e.Estado.IdEstado == stateRequired)
                     );
@@ -379,5 +344,211 @@ namespace CapaVista
             return isValid;
         }
 
+        private async void filtroComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            int indexComboBox = filtroComboBox.SelectedIndex;
+
+            if (indexComboBox < 0)
+            {
+                return; // Evitar errores si el índice es inválido
+            }
+
+            switch ((requisaFilter)indexComboBox)
+            {
+                case requisaFilter.FechaCreacion:
+                    filtroEstadoComboBox.Visible = false;
+                    var listOrderByFecha = _requisaJoinEstado.OrderByDescending(r => r.FechaCreacion).ToList();
+                    await ConvertListDataTableLoadDataGrid(listOrderByFecha);
+                    break;
+                case requisaFilter.CostoTotal:
+                    filtroEstadoComboBox.Visible = false;
+                    var listOrderByCosto = _requisaJoinEstado.OrderByDescending(r => r.costoTotal).ToList();
+                    await ConvertListDataTableLoadDataGrid(listOrderByCosto);
+                    break;
+                case requisaFilter.diasDeDemora:
+                    filtroEstadoComboBox.Visible = false;
+                    var listOrderByDiasDemora = _requisaJoinEstado.OrderByDescending(r => (DateTime.Now.Date - r.FechaCreacion.Date).Days).ToList();
+                    await ConvertListDataTableLoadDataGrid(listOrderByDiasDemora);
+                    break;
+                case requisaFilter.CantidadDeItems:
+                    filtroEstadoComboBox.Visible = false;
+                    var listOrderByCantidad = _requisaJoinEstado.OrderByDescending(r => r.cantidadAjuste).ToList();
+                    await ConvertListDataTableLoadDataGrid(listOrderByCantidad);
+                    break;
+                case requisaFilter.estadoRequisa:
+                    filtroEstadoComboBox.Visible = true;
+                    break;
+                default:
+                    filtroEstadoComboBox.Visible = false;
+                    break;
+            }
+        }
+
+        private async void filtroEstadoComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var estado = filtroEstadoComboBox.SelectedItem as Estado;
+
+            if (estado == null)
+            {
+                MessageBox.Show("Por favor, seleccione un estado válido.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int indexComboBox = estado.IdEstado;
+
+            if (indexComboBox < 0)
+            {
+                return; // Evitar errores si el índice es inválido
+            }
+
+            switch ((Estados)indexComboBox)
+            {
+                case Estados.CREADA:
+
+                    var listOrderByEstadoCreado = _requisaJoinEstado
+                        .OrderBy(r => r.EstadoRequisa.IdEstado != (int)Estados.CREADA)
+                        .ThenBy(r => r.EstadoRequisa.IdEstado)
+                        .ToList();
+
+                    await ConvertListDataTableLoadDataGrid(listOrderByEstadoCreado);
+
+                    break;
+                case Estados.PENDIENTE_A_REVISION:
+
+                    var listOrderByEstadoRevisado = _requisaJoinEstado
+                                           .OrderBy(r => r.EstadoRequisa.IdEstado != (int)Estados.PENDIENTE_A_REVISION)
+                                           .ThenBy(r => r.EstadoRequisa.IdEstado)
+                                           .ToList();
+
+                    await ConvertListDataTableLoadDataGrid(listOrderByEstadoRevisado);
+
+                    break;
+                case Estados.PENDIENTE_A_APROBACION_1:
+
+                    var listOrderByEstadoAprobacion1 = _requisaJoinEstado
+                                               .OrderBy(r => r.EstadoRequisa.IdEstado != (int)Estados.PENDIENTE_A_APROBACION_1)
+                                               .ThenBy(r => r.EstadoRequisa.IdEstado)
+                                               .ToList();
+
+                    await ConvertListDataTableLoadDataGrid(listOrderByEstadoAprobacion1);
+
+                    break;
+                case Estados.PENDIENTE_A_APROBACION_2:
+
+                    var listOrderByEstadoAprobacion2 = _requisaJoinEstado
+                                               .OrderBy(r => r.EstadoRequisa.IdEstado != (int)Estados.PENDIENTE_A_APROBACION_2)
+                                               .ThenBy(r => r.EstadoRequisa.IdEstado)
+                                               .ToList();
+                    await ConvertListDataTableLoadDataGrid(listOrderByEstadoAprobacion2);
+                    break;
+                case Estados.APLICADA:
+
+                    var listOrderByEstadoAplicada = _requisaJoinEstado
+                                               .OrderBy(r => r.EstadoRequisa.IdEstado != (int)Estados.APLICADA)
+                                               .ThenBy(r => r.EstadoRequisa.IdEstado)
+                                               .ToList();
+
+                    await ConvertListDataTableLoadDataGrid(listOrderByEstadoAplicada);
+
+                    break;
+                case Estados.RECHAZADA:
+
+                    var listOrderByEstadoRechazada = _requisaJoinEstado
+                                               .OrderBy(r => r.EstadoRequisa.IdEstado != (int)Estados.RECHAZADA)
+                                               .ThenBy(r => r.EstadoRequisa.IdEstado)
+                                               .ToList();
+
+                    await ConvertListDataTableLoadDataGrid(listOrderByEstadoRechazada);
+
+                    break;
+                default:
+                    filtroEstadoComboBox.Visible = false;
+                    break;
+            }
+        }
+
+        #region additional methods
+        private async Task ConvertListDataTableLoadDataGrid(List<RequisaJoinEstado> list)
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("numeroRequisaColumn", typeof(string));
+            dt.Columns.Add("descripcionRequisaColumn", typeof(string));
+            dt.Columns.Add("usuarioColumn", typeof(string));
+            dt.Columns.Add("cantidadAjusteColumn", typeof(int));
+            dt.Columns.Add("costoTotalColumn", typeof(string));
+            dt.Columns.Add("estadoRequisaColumn", typeof(Object));
+            dt.Columns.Add("viewDatalleColumn", typeof(string));
+            dt.Columns.Add("fechaCreacionColumn", typeof(DateTime));
+            dt.Columns.Add("diasDemoraColumn", typeof(string));
+            foreach (var item in list)
+            {
+                CultureInfo cultura = new CultureInfo("es-NI");
+
+                var amountFormatted = item.costoTotal.ToString("N2", cultura);
+
+                TimeSpan diasDemora = DateTime.Now.Date - item.FechaCreacion.Date;
+
+                dt.Rows.Add(item.CodigoRequisa, item.descripcionRequisa, item.Usuario, item.cantidadAjuste, amountFormatted, item.EstadoRequisa, "Revisar", item.FechaCreacion.Date, diasDemora.Days);
+            }
+
+            CultureInfo culturaSum = new CultureInfo("es-NI");
+
+            var SumCantidadAjuste = list.Sum(row => row.cantidadAjuste);
+            var SumCostoTotal = list.Sum(row => row.costoTotal);
+
+            DataRow dtRow = dt.Rows.Add("Total", "", "", SumCantidadAjuste, SumCostoTotal.ToString("N2", culturaSum), null);
+
+            int rowIndex = dt.Rows.IndexOf(dtRow);
+
+            table.DataSource = null;
+            table.AutoGenerateColumns = false;
+            table.DataSource = dt;
+
+            table.Rows[rowIndex].DefaultCellStyle.Font = new Font(table.DefaultCellStyle.Font, FontStyle.Bold);
+        }
+
+        private enum requisaFilter
+        {
+            FechaCreacion = 0,
+            CostoTotal = 1,
+            diasDeDemora = 2,
+            CantidadDeItems = 3,
+            estadoRequisa = 4
+        }
+
+        private async Task cargarEstadosFiltros()
+        {
+
+            var response = await _requisaServices.obtenerTodosLosEstados();
+
+            if (!response.Success || response.Data == null)
+            {
+                MessageBox.Show("Error al cargar los estados: " + response.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            filtroEstadoComboBox.DataSource = response.Data.ToList();
+        }
+        #endregion
+
+        private async void numeroRequisaInput_TextChanged(object sender, EventArgs e)
+        {
+            table.DataSource = null;
+
+            var listTemp = _requisaJoinEstado;
+
+            if (String.IsNullOrEmpty(numeroRequisaInput.Text))
+            {
+                await cargarRequisasTable() ;
+            }
+
+            var listFilter = listTemp.Where(x =>
+                x.CodigoRequisa.ToLower().Contains(numeroRequisaInput.Text.ToLower()
+            ))
+            .ToList();
+
+            await ConvertListDataTableLoadDataGrid(listFilter);
+        }
     }
 }

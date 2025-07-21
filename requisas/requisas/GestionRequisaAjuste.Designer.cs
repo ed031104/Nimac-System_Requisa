@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            MostrarButton = new Button();
             label7 = new Label();
             numeroRequisaInput = new TextBox();
             RechazarButton = new Button();
@@ -39,24 +38,18 @@
             table = new DataGridView();
             numeroRequisaColumn = new DataGridViewTextBoxColumn();
             descripcionRequisaColumn = new DataGridViewTextBoxColumn();
-            usuarioColumn = new DataGridViewTextBoxColumn();
             cantidadAjusteColumn = new DataGridViewTextBoxColumn();
             costoTotalColumn = new DataGridViewTextBoxColumn();
             estadoRequisaColumn = new DataGridViewTextBoxColumn();
-            viewDatalleColumn = new DataGridViewButtonColumn();
             fechaCreacionColumn = new DataGridViewTextBoxColumn();
+            diasDemoraColumn = new DataGridViewTextBoxColumn();
+            usuarioColumn = new DataGridViewTextBoxColumn();
+            viewDatalleColumn = new DataGridViewButtonColumn();
+            filtroComboBox = new ComboBox();
+            filtroEstadoComboBox = new ComboBox();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)table).BeginInit();
             SuspendLayout();
-            // 
-            // MostrarButton
-            // 
-            MostrarButton.Location = new Point(496, 162);
-            MostrarButton.Name = "MostrarButton";
-            MostrarButton.Size = new Size(94, 29);
-            MostrarButton.TabIndex = 29;
-            MostrarButton.Text = "👁";
-            MostrarButton.UseVisualStyleBackColor = true;
             // 
             // label7
             // 
@@ -73,6 +66,7 @@
             numeroRequisaInput.Name = "numeroRequisaInput";
             numeroRequisaInput.Size = new Size(221, 27);
             numeroRequisaInput.TabIndex = 27;
+            numeroRequisaInput.TextChanged += numeroRequisaInput_TextChanged;
             // 
             // RechazarButton
             // 
@@ -126,8 +120,9 @@
             // 
             // table
             // 
+            table.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             table.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            table.Columns.AddRange(new DataGridViewColumn[] { numeroRequisaColumn, descripcionRequisaColumn, usuarioColumn, cantidadAjusteColumn, costoTotalColumn, estadoRequisaColumn, viewDatalleColumn, fechaCreacionColumn });
+            table.Columns.AddRange(new DataGridViewColumn[] { numeroRequisaColumn, descripcionRequisaColumn, cantidadAjusteColumn, costoTotalColumn, estadoRequisaColumn, fechaCreacionColumn, diasDemoraColumn, usuarioColumn, viewDatalleColumn });
             table.Location = new Point(23, 217);
             table.Name = "table";
             table.RowHeadersWidth = 51;
@@ -151,14 +146,6 @@
             descripcionRequisaColumn.MinimumWidth = 6;
             descripcionRequisaColumn.Name = "descripcionRequisaColumn";
             descripcionRequisaColumn.Width = 125;
-            // 
-            // usuarioColumn
-            // 
-            usuarioColumn.DataPropertyName = "usuarioColumn";
-            usuarioColumn.HeaderText = "Creado Por";
-            usuarioColumn.MinimumWidth = 6;
-            usuarioColumn.Name = "usuarioColumn";
-            usuarioColumn.Width = 125;
             // 
             // cantidadAjusteColumn
             // 
@@ -184,14 +171,6 @@
             estadoRequisaColumn.Name = "estadoRequisaColumn";
             estadoRequisaColumn.Width = 125;
             // 
-            // viewDatalleColumn
-            // 
-            viewDatalleColumn.DataPropertyName = "viewDatalleColumn";
-            viewDatalleColumn.HeaderText = "Ver Detalles";
-            viewDatalleColumn.MinimumWidth = 6;
-            viewDatalleColumn.Name = "viewDatalleColumn";
-            viewDatalleColumn.Width = 125;
-            // 
             // fechaCreacionColumn
             // 
             fechaCreacionColumn.DataPropertyName = "fechaCreacionColumn";
@@ -200,12 +179,58 @@
             fechaCreacionColumn.Name = "fechaCreacionColumn";
             fechaCreacionColumn.Width = 125;
             // 
+            // diasDemoraColumn
+            // 
+            diasDemoraColumn.DataPropertyName = "diasDemoraColumn";
+            diasDemoraColumn.HeaderText = "Días de demora";
+            diasDemoraColumn.MinimumWidth = 6;
+            diasDemoraColumn.Name = "diasDemoraColumn";
+            diasDemoraColumn.ReadOnly = true;
+            diasDemoraColumn.Width = 125;
+            // 
+            // usuarioColumn
+            // 
+            usuarioColumn.DataPropertyName = "usuarioColumn";
+            usuarioColumn.HeaderText = "Creado Por";
+            usuarioColumn.MinimumWidth = 6;
+            usuarioColumn.Name = "usuarioColumn";
+            usuarioColumn.Width = 125;
+            // 
+            // viewDatalleColumn
+            // 
+            viewDatalleColumn.DataPropertyName = "viewDatalleColumn";
+            viewDatalleColumn.HeaderText = "Ver Detalles";
+            viewDatalleColumn.MinimumWidth = 6;
+            viewDatalleColumn.Name = "viewDatalleColumn";
+            viewDatalleColumn.Width = 125;
+            // 
+            // filtroComboBox
+            // 
+            filtroComboBox.FormattingEnabled = true;
+            filtroComboBox.Items.AddRange(new object[] { "Fecha Creación", "Costo Total", "dias de demora", "Cantidad de Items", "Estado" });
+            filtroComboBox.Location = new Point(1005, 167);
+            filtroComboBox.Name = "filtroComboBox";
+            filtroComboBox.Size = new Size(151, 28);
+            filtroComboBox.TabIndex = 30;
+            filtroComboBox.SelectedIndexChanged += filtroComboBox_SelectedIndexChanged;
+            // 
+            // filtroEstadoComboBox
+            // 
+            filtroEstadoComboBox.FormattingEnabled = true;
+            filtroEstadoComboBox.Location = new Point(801, 167);
+            filtroEstadoComboBox.Name = "filtroEstadoComboBox";
+            filtroEstadoComboBox.Size = new Size(151, 28);
+            filtroEstadoComboBox.TabIndex = 31;
+            filtroEstadoComboBox.Visible = false;
+            filtroEstadoComboBox.SelectedIndexChanged += filtroEstadoComboBox_SelectedIndexChanged;
+            // 
             // GestionRequisaAjuste
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1187, 535);
-            Controls.Add(MostrarButton);
+            Controls.Add(filtroEstadoComboBox);
+            Controls.Add(filtroComboBox);
             Controls.Add(label7);
             Controls.Add(numeroRequisaInput);
             Controls.Add(groupBox1);
@@ -221,8 +246,6 @@
         }
 
         #endregion
-
-        private Button MostrarButton;
         private Label label7;
         private TextBox numeroRequisaInput;
         private Button RechazarButton;
@@ -233,11 +256,14 @@
         private DataGridView table;
         private DataGridViewTextBoxColumn numeroRequisaColumn;
         private DataGridViewTextBoxColumn descripcionRequisaColumn;
-        private DataGridViewTextBoxColumn usuarioColumn;
         private DataGridViewTextBoxColumn cantidadAjusteColumn;
         private DataGridViewTextBoxColumn costoTotalColumn;
         private DataGridViewTextBoxColumn estadoRequisaColumn;
-        private DataGridViewButtonColumn viewDatalleColumn;
         private DataGridViewTextBoxColumn fechaCreacionColumn;
+        private DataGridViewTextBoxColumn diasDemoraColumn;
+        private DataGridViewTextBoxColumn usuarioColumn;
+        private DataGridViewButtonColumn viewDatalleColumn;
+        private ComboBox filtroComboBox;
+        private ComboBox filtroEstadoComboBox;
     }
 }

@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="report\RequisasReporte.rdlc" />
+    <EmbeddedResource Include="report\RequisasGeneral.rdlc" />
     <EmbeddedResource Include="report\UsuariosReporte.rdlc" />
   </ItemGroup>
 

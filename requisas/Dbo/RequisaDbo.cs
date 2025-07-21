@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Dbo.utils;
+using Microsoft.Data.SqlClient;
 using Modelos;
 using Modelos.data;
 using Modelos.Dto;
@@ -163,13 +164,18 @@ namespace Dbo
                 await using var conn = Conexion.conexion();
                 await conn.OpenAsync();
 
-                var query = new StringBuilder();
-                query.Append("select r.N_DocumentoRequisa, r.FechaRegistro, r.Descripcion, r.Estado, r.IdSucursal, s.Numero_Sucursal, s.Nombre_Sucursal, s.FechaRegistro, s.FechaModificacion, c.Codigo_Casa, c.FechaModificacion, c.FechaRegistro, c.Nombre_Casa from Requisa r  ");
-                query.Append("inner join Sucursal s on r.IdSucursal = s.Numero_Sucursal ");
-                query.Append("inner join Casa c on c.Codigo_Casa = s.Codigo_Casa ");
+                string query = @"
+                select	
+	                r.N_DocumentoRequisa [NumeroRequisa], r.FechaRegistro[FechaRegistroRequisa], r.Descripcion[DescripcionRequisa], r.Estado [idEstadoRequisa], r.IdSucursal [idSucursalRequisa], 
+	                s.Numero_Sucursal [NumeroSucursal], s.Nombre_Sucursal [NombreSucursal], s.FechaRegistro [FechaRegistroSucursal], s.FechaModificacion [FechaModificacionSucursal], 
+	                c.Codigo_Casa [CodigoCasa], c.FechaModificacion [FechaModificacionCasa], c.FechaRegistro [FechaResgistroCasa], c.Nombre_Casa [NombreCasa]
+                from Requisa r
+                LEFT join Sucursal s on r.IdSucursal = s.Numero_Sucursal 
+                LEFT join Casa c on c.Codigo_Casa = s.Codigo_Casa 
+                ";
 
                 using var cmd = conn.CreateCommand();
-                cmd.CommandText = query.ToString();
+                cmd.CommandText = query;
 
                 await using var reader = await cmd.ExecuteReaderAsync();
 
@@ -177,25 +183,25 @@ namespace Dbo
                 while (await reader.ReadAsync())
                 {
                     var casa = new Casa.Builder()
-                        .SetCodigoCasa(reader.GetString(9))
-                        .SetFechaModificacion(reader.GetDateTime(10))
-                        .SetFechaRegistro(reader.GetDateTime(11))
-                        .SetNombreCasa(reader.GetString(12))
+                        .SetCodigoCasa(reader.validateTypeData<string>("CodigoCasa"))
+                        .SetFechaModificacion(reader.validateTypeData<DateTime>("FechaModificacionCasa"))
+                        .SetFechaRegistro(reader.validateTypeData<DateTime>("FechaResgistroCasa"))
+                        .SetNombreCasa(reader.validateTypeData<string>("NombreCasa"))
                         .Build();
 
                     var sucursal = new Sucursal.Builder()
-                        .SetNumeroSucursal(reader.GetString(5))
-                        .SetNombreSucursal(reader.GetString(6))
-                        .SetFechaRegistro(reader.GetDateTime(7))
-                        .SetFechaModificacion(reader.GetDateTime(8))
+                        .SetNumeroSucursal(reader.validateTypeData<string>("NumeroSucursal"))
+                        .SetNombreSucursal(reader.validateTypeData<string>("NombreSucursal"))
+                        .SetFechaRegistro(reader.validateTypeData<DateTime>("FechaRegistroSucursal"))
+                        .SetFechaModificacion(reader.validateTypeData<DateTime>("FechaModificacionSucursal"))
                         .SetCasa(casa)
                         .Build();
 
                     var requisa = new Requisa.Builder()
-                        .SetNDocumentoRequisa(reader.GetString(0))
-                        .SetFechaRegistro(reader.GetDateTime(1))
-                        .SetDescripcion(reader.GetString(2))
-                        .SetEstado(Convert.ToBoolean(reader.GetString(3)))
+                        .SetNDocumentoRequisa(reader.validateTypeData<string>("NumeroRequisa"))
+                        .SetFechaRegistro(reader.validateTypeData<DateTime>("FechaRegistroRequisa"))
+                        .SetDescripcion(reader.validateTypeData<string>("DescripcionRequisa"))
+                        .SetEstado(reader.validateTypeData<bool>("idEstadoRequisa"))
                         .SetSucursal(sucursal)
                         .Build();
                     requisas.Add(requisa);

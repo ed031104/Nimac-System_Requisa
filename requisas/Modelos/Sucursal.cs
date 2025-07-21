@@ -36,7 +36,7 @@ namespace Modelos
 
         public override string ToString()
         {
-            return NombreSucursal;
+            return _numeroSucursal;
         }
 
         #region Builder Pattern

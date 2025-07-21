@@ -30,6 +30,7 @@
         {
             panel1 = new Panel();
             groupBox3 = new GroupBox();
+            cargarPdfButton = new Button();
             tableAjustes = new DataGridView();
             groupBox2 = new GroupBox();
             tableEstados = new DataGridView();
@@ -56,6 +57,7 @@
             label1 = new Label();
             idTipoAjusteColumn = new DataGridViewTextBoxColumn();
             numeroParteColumn = new DataGridViewTextBoxColumn();
+            nombreParteColumn = new DataGridViewTextBoxColumn();
             casaColumn = new DataGridViewTextBoxColumn();
             sucursalColumn = new DataGridViewTextBoxColumn();
             DescripciónAjusteColumn = new DataGridViewTextBoxColumn();
@@ -90,31 +92,46 @@
             // groupBox3
             // 
             groupBox3.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox3.Controls.Add(cargarPdfButton);
             groupBox3.Controls.Add(tableAjustes);
-            groupBox3.Location = new Point(15, 605);
+            groupBox3.Location = new Point(15, 195);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(1518, 372);
+            groupBox3.Size = new Size(1518, 421);
             groupBox3.TabIndex = 3;
             groupBox3.TabStop = false;
             groupBox3.Text = "Historial de Ajustes";
+            // 
+            // cargarPdfButton
+            // 
+            cargarPdfButton.BackColor = SystemColors.Info;
+            cargarPdfButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            cargarPdfButton.Location = new Point(1319, 26);
+            cargarPdfButton.Name = "cargarPdfButton";
+            cargarPdfButton.Size = new Size(185, 29);
+            cargarPdfButton.TabIndex = 1;
+            cargarPdfButton.Text = "Cargar PDF";
+            cargarPdfButton.UseVisualStyleBackColor = false;
+            cargarPdfButton.Visible = false;
+            cargarPdfButton.Click += cargarPdfButton_Click;
             // 
             // tableAjustes
             // 
             tableAjustes.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             tableAjustes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            tableAjustes.Columns.AddRange(new DataGridViewColumn[] { idTipoAjusteColumn, numeroParteColumn, casaColumn, sucursalColumn, DescripciónAjusteColumn, tipoAjusteColumn, cantidadColumn, costoUnitarioColumn, costoPromedioColumn, costoPromedioExtendidoColumn, reclamoColumn, transferenciaColumn, visualizarColumn });
-            tableAjustes.Location = new Point(20, 55);
+            tableAjustes.Columns.AddRange(new DataGridViewColumn[] { idTipoAjusteColumn, numeroParteColumn, nombreParteColumn, casaColumn, sucursalColumn, DescripciónAjusteColumn, tipoAjusteColumn, cantidadColumn, costoUnitarioColumn, costoPromedioColumn, costoPromedioExtendidoColumn, reclamoColumn, transferenciaColumn, visualizarColumn });
+            tableAjustes.Location = new Point(20, 90);
             tableAjustes.Name = "tableAjustes";
             tableAjustes.RowHeadersWidth = 51;
-            tableAjustes.Size = new Size(1484, 295);
+            tableAjustes.Size = new Size(1484, 313);
             tableAjustes.TabIndex = 0;
+            tableAjustes.CellClick += tableAjustes_CellClick;
             tableAjustes.CellContentClick += tableAjustes_CellContentClick;
             // 
             // groupBox2
             // 
             groupBox2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             groupBox2.Controls.Add(tableEstados);
-            groupBox2.Location = new Point(15, 213);
+            groupBox2.Location = new Point(15, 622);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(1518, 352);
             groupBox2.TabIndex = 2;
@@ -339,6 +356,7 @@
             idTipoAjusteColumn.HeaderText = "Id de Tipo de Ajuste";
             idTipoAjusteColumn.MinimumWidth = 6;
             idTipoAjusteColumn.Name = "idTipoAjusteColumn";
+            idTipoAjusteColumn.Visible = false;
             idTipoAjusteColumn.Width = 125;
             // 
             // numeroParteColumn
@@ -348,6 +366,14 @@
             numeroParteColumn.MinimumWidth = 6;
             numeroParteColumn.Name = "numeroParteColumn";
             numeroParteColumn.Width = 125;
+            // 
+            // nombreParteColumn
+            // 
+            nombreParteColumn.DataPropertyName = "nombreParteColumn";
+            nombreParteColumn.HeaderText = "Nombre de Parte";
+            nombreParteColumn.MinimumWidth = 6;
+            nombreParteColumn.Name = "nombreParteColumn";
+            nombreParteColumn.Width = 125;
             // 
             // casaColumn
             // 
@@ -484,8 +510,10 @@
         private TextBox descripcionRequisaRechazadaInput;
         private Label requisaRechazadaLabel;
         private Label label4;
+        private Button cargarPdfButton;
         private DataGridViewTextBoxColumn idTipoAjusteColumn;
         private DataGridViewTextBoxColumn numeroParteColumn;
+        private DataGridViewTextBoxColumn nombreParteColumn;
         private DataGridViewTextBoxColumn casaColumn;
         private DataGridViewTextBoxColumn sucursalColumn;
         private DataGridViewTextBoxColumn DescripciónAjusteColumn;

@@ -16,6 +16,7 @@ namespace CapaVista.Components
     {
 
         private string _parteSucursal;
+        private List<ParteSucursal> _parteSucursales = new List<ParteSucursal>();
 
         public string ParteSucursal
         {
@@ -25,12 +26,55 @@ namespace CapaVista.Components
 
         private ParteSucursalServices _parteSucursalServices = new ParteSucursalServices();
 
+        private async void ViewParteSucursales_Load(object sender, EventArgs e)
+        {
+            var response = await _parteSucursalServices.ObtenerPartesSucursal();
+            if (!response.Success || response.Data == null)
+            {
+                MessageBox.Show("Error al cargar los datos de las partes sucursales.");
+                return; // Manejo de error
+            }
+            _parteSucursales = response.Data.ToList();
+
+            await loadData();
+        }
+
         public ViewParteSucursales()
         {
             InitializeComponent();
         }
 
-        private void table_CellContentClick(object sender, DataGridViewCellEventArgs e)
+
+        private async void buscarPorNombreInput_TextChanged(object sender, EventArgs e)
+        {
+            table.DataSource = null;
+
+            var listTemp = _parteSucursales;
+
+            if (String.IsNullOrEmpty(buscarPorNombreInput.Text))
+            {
+                await loadData();
+            }
+
+            var listFilter = listTemp.Where(x =>
+                x.Parte.DescripcionParte.ToLower().Contains(buscarPorNombreInput.Text.ToLower()
+            ))
+            .ToList();
+
+            table.AutoGenerateColumns = false;
+            table.DataSource = listFilter.Select(ps => new
+            {
+                idparteSucursalColumn = ps.IdParteSucursal,
+                numeroParteColumn = ps.Parte.NumeroParte,
+                nombreParteColumn = ps.Parte.DescripcionParte,
+                costoUnitarioColumn = ps.CostoUnitario,
+                sucursalColumn = ps.Sucursal,
+                stockColumn = ps.Stock
+            }).ToList();
+
+        }
+
+        private void table_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
             {
@@ -41,16 +85,10 @@ namespace CapaVista.Components
                     MessageBox.Show($"Valor seleccionado: {cellValue.ToString()}");
                 }
 
-                _parteSucursal = row.Cells["numeroParteColumn"].Value.ToString() ?? string.Empty;
+                _parteSucursal = row.Cells["numeroParteColumn"].Value?.ToString() ?? string.Empty;
 
                 this.Close();
             }
-
-        }
-
-        private async void ViewParteSucursales_Load(object sender, EventArgs e)
-        {
-            await loadData();
         }
 
         #region services
@@ -58,22 +96,17 @@ namespace CapaVista.Components
         {
             table.AutoGenerateColumns = false;
 
-            var response = await _parteSucursalServices.ObtenerPartesSucursal();
-
-            if (!response.Success || response.Data == null) { 
-                return; // Manejo de error
-            }
-
-            table.DataSource = response.Data.Select(ps => new
+            table.DataSource = _parteSucursales.Select(ps => new
             {
                 idparteSucursalColumn = ps.IdParteSucursal,
                 numeroParteColumn = ps.Parte.NumeroParte,
+                nombreParteColumn = ps.Parte.DescripcionParte,
                 costoUnitarioColumn = ps.CostoUnitario,
                 sucursalColumn = ps.Sucursal,
-                fechaRegistroColumn = ps.FechaRegistro,
-                fechaModificacionColumn = ps.FechaModificacion
+                stockColumn = ps.Stock
             }).ToList();
         }
         #endregion
+
     }
 }

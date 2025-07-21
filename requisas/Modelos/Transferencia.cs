@@ -10,8 +10,8 @@ namespace Dbo
     public class Transferencia
     {
         private int? _idTransferencia;
-        private Sucursal? _Sucursal;
-        private Casa? _casa;
+        private Sucursal? _sucursalPrecedencia;
+        private Sucursal? _sucursalTransferida;
         private string? _creadoPor;
         private string? _modificadoPor;
         private DateTime? _fechaCreacion;
@@ -20,11 +20,11 @@ namespace Dbo
         #region constructores
         public Transferencia() { }
 
-        public Transferencia(int? idTransferencia, Sucursal? idSucursal, Casa? casa, string? creadoPor, string? modificadoPor, DateTime? fechaCreacion, DateTime? fechaModificacion)
+        public Transferencia(int? idTransferencia, Sucursal? sucursalPrecedencia, Sucursal? sucursalTransferida, string? creadoPor, string? modificadoPor, DateTime? fechaCreacion, DateTime? fechaModificacion)
         {
             _idTransferencia = idTransferencia;
-            _Sucursal = idSucursal;
-            _casa = casa;
+            _sucursalPrecedencia = sucursalPrecedencia;
+            _sucursalTransferida = sucursalTransferida;
             _creadoPor = creadoPor;
             _modificadoPor = modificadoPor;
             _fechaCreacion = fechaCreacion;
@@ -33,8 +33,8 @@ namespace Dbo
         #endregion
 
         public int? IdTransferencia { get => _idTransferencia; set => _idTransferencia = value; }
-        public Sucursal? Sucursal { get => _Sucursal; set => _Sucursal = value; }
-        public Casa? Casa { get => _casa; set => _casa = value; }
+        public Sucursal? SucursalPrecedencia { get => _sucursalPrecedencia; set => _sucursalPrecedencia = value; }
+        public Sucursal? SucursalTransferida { get => _sucursalTransferida; set => _sucursalTransferida = value; }
         public string? CreadoPor { get => _creadoPor; set => _creadoPor = value; }
         public string? ModificadoPor { get => _modificadoPor; set => _modificadoPor = value; }
         public DateTime? FechaCreacion { get => _fechaCreacion; set => _fechaCreacion = value; }
@@ -42,15 +42,15 @@ namespace Dbo
 
         public override string ToString()
         {
-            return $"Transferencia ID: {IdTransferencia}, Sucursal: {Sucursal}, Casa: {Casa}";
+            return $"Se transfiere de sucursal {_sucursalPrecedencia} a {_sucursalTransferida}";
         }
 
         #region Builder Pattern
         public class Builder
         {
             private int? _idTransferencia;
-            private Sucursal? _sucursal;
-            private Casa? _casa;
+            private Sucursal? _sucursalPrecedencia;
+            private Sucursal? _sucursalTransferida;
             private string? _creadoPor;
             private string? _modificadoPor;
             private DateTime? _fechaCreacion;
@@ -61,14 +61,14 @@ namespace Dbo
                 _idTransferencia = idTransferencia;
                 return this;
             }
-            public Builder SetSucursal(Sucursal? Sucursal)
+            public Builder SetSucursalPrecedencia(Sucursal? SucursalPrecedencia)
             {
-                _sucursal = Sucursal;
+                _sucursalPrecedencia = SucursalPrecedencia;
                 return this;
             }
-            public Builder SetCasa(Casa? casa)
+            public Builder SetSucursalTransferida(Sucursal? sucursalTransferida)
             {
-                _casa = casa;
+                _sucursalTransferida = sucursalTransferida;
                 return this;
             }
             public Builder SetCreadoPor(string? creadoPor)
@@ -93,7 +93,7 @@ namespace Dbo
             }
             public Transferencia Build()
             {
-                return new Transferencia(_idTransferencia, _sucursal, _casa, _creadoPor, _modificadoPor, _fechaCreacion, _fechaModificacion);
+                return new Transferencia(_idTransferencia, _sucursalPrecedencia, _sucursalTransferida, _creadoPor, _modificadoPor, _fechaCreacion, _fechaModificacion);
             }
         }
         #endregion|

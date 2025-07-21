@@ -34,7 +34,7 @@ namespace Modelos
 
         public override string ToString()
         {
-            return NombreCasa + " - " + CodigoCasa;
+            return CodigoCasa;
         }
 
         #region Builder Pattern
