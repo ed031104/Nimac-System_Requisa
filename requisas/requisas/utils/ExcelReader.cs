@@ -36,7 +36,9 @@ namespace CapaVista.utils
                 int filaInicio = 2; // Asumiendo que la primera fila es el encabezado
                 int totalFilas = hoja.Dimension.Rows;
 
-                for(int fila = filaInicio; fila <= totalFilas; fila++)
+             
+
+                for (int fila = filaInicio; fila <= totalFilas; fila++)
                 {
 
                     var responseParteSucursal = await _parteSucursalServices.obtenerPartePorNumeroParte(hoja.Cells[fila, 3].Text);
@@ -111,6 +113,16 @@ namespace CapaVista.utils
                 int filaInicio = 2; // Asumiendo que la primera fila es el encabezado
                 int totalFilas = hoja.Dimension.Rows;
 
+                var validatorColumnsExcel = validarColumnas(filePath, new List<string> { "Codigo Casa", "Nombre Casa" });
+
+                if (!validatorColumnsExcel)
+                {
+                    return new ServiceResponse<IEnumerable<Casa>>.Builder()
+                        .SetErrorMessage("El archivo no contiene las columnas esperadas: \n \"Codigo Casa\", \"Nombre Casa\"")
+                        .SetSuccess(false)
+                        .Build();
+                }
+
                 for (int fila = filaInicio; fila <= totalFilas; fila++)
                 {
 
@@ -149,6 +161,16 @@ namespace CapaVista.utils
 
                 int filaInicio = 2; // Asumiendo que la primera fila es el encabezado
                 int totalFilas = hoja.Dimension.Rows;
+
+                var validatorColumnsExcel = validarColumnas(filePath, new List<string> { "Numero Sucursal", "Nombre Sucursal", "Codigo Casa" });
+
+                if (!validatorColumnsExcel)
+                {
+                    return new ServiceResponse<IEnumerable<Sucursal>>.Builder()
+                        .SetErrorMessage("El archivo no contiene las columnas esperadas: \n \"Numero Sucursal\", \"Nombre Sucursal\", \"Codigo Casa\"")
+                        .SetSuccess(false)
+                        .Build();
+                }
 
                 for (int fila = filaInicio; fila <= totalFilas; fila++)
                 {
@@ -192,6 +214,16 @@ namespace CapaVista.utils
 
                 int filaInicio = 2; // Asumiendo que la primera fila es el encabezado
                 int totalFilas = hoja.Dimension.Rows;
+
+                var validatorColumnsExcel = validarColumnas(filePath, new List<string> { "Numero de Parte", "Costo Unitario", "Stock", "Numero de Sucursal" });
+
+                if (!validatorColumnsExcel)
+                {
+                    return new ServiceResponse<IEnumerable<ParteSucursal>>.Builder()
+                        .SetErrorMessage("El archivo no contiene las columnas esperadas: \n \"Numero de Parte\", \"Costo Unitario\", \"Stock\", \"Numero de Sucursal\" ")
+                        .SetSuccess(false)
+                        .Build();
+                }
 
                 for (int fila = filaInicio; fila <= totalFilas; fila++)
                 {
@@ -242,6 +274,16 @@ namespace CapaVista.utils
                 int filaInicio = 2; // Asumiendo que la primera fila es el encabezado
                 int totalFilas = hoja.Dimension.Rows;
 
+                var validatorColumnsExcel = validarColumnas(filePath, new List<string> { "Numero Parte", "Descripcion Parte" });
+
+                if (!validatorColumnsExcel)
+                {
+                    return new ServiceResponse<IEnumerable<Parte>>.Builder()
+                        .SetErrorMessage("El archivo no contiene las columnas esperadas: \n 'Numero Parte', 'Descripcion Parte' ")
+                        .SetSuccess(false)
+                        .Build();
+                }
+
                 for (int fila = filaInicio; fila <= totalFilas; fila++)
                 {
 
@@ -269,11 +311,27 @@ namespace CapaVista.utils
             }
         }
 
-
-        private bool validarColumnas()
+        private bool validarColumnas(string filePath, List<string>encabezadosEsperados)
         {
 
-            return false;
+            ExcelPackage.License.SetNonCommercialOrganization("My Noncommercial organization");
+
+            using (var package = new ExcelPackage(new FileInfo(filePath)))
+            {
+                var worksheet = package.Workbook.Worksheets[0]; // Primera hoja
+                int totalColumnas = worksheet.Dimension.End.Column;
+
+                for (int col = 1; col <= encabezadosEsperados.Count; col++)
+                {
+                    string valorCelda = worksheet.Cells[1, col].Text.Trim(); // Primera fila
+
+                    if (!string.Equals(valorCelda, encabezadosEsperados[col - 1].Trim(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false; // Encabezado incorrecto
+                    }
+                }
+            }
+            return true; // Todos los encabezados son correctos
         }
     }
 }

@@ -143,6 +143,8 @@
             // 
             // casaComboBox
             // 
+            casaComboBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            casaComboBox.AutoCompleteSource = AutoCompleteSource.ListItems;
             casaComboBox.FormattingEnabled = true;
             casaComboBox.Location = new Point(767, 47);
             casaComboBox.Name = "casaComboBox";

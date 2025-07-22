@@ -150,8 +150,22 @@ namespace Dbo
                     IdReclamo = null;
                     await cmdRequisaAjuste.ExecuteNonQueryAsync();
                     #endregion
-                }
 
+                    #region Restar Stock de Parte Sucursal
+                    //using SqlCommand cmdParteSucursal = conn.CreateCommand();
+                    //cmdParteSucursal.Transaction = transaction;
+                    //string queryUpdateStock = @"
+                    //    update Parte_Sucursal
+                    //    set
+	                   //     Stock = Stock - @Cantidad
+                    //    where Numero_Parte = @idParte and IdSucursal = @idSucursal;
+                    //";
+                    //cmdParteSucursal.CommandText = queryUpdateStock;
+                    //cmdParteSucursal.Parameters.AddWithValue("@idParte", requisaAjusteRecorrido.ParteSucursal.Parte.NumeroParte);
+                    //cmdParteSucursal.Parameters.AddWithValue("@idSucursal", requisaAjusteRecorrido.ParteSucursal.Sucursal.NumeroSucursal);
+                    //cmdParteSucursal.Parameters.AddWithValue("@Cantidad", requisaAjusteRecorrido);
+                    #endregion
+                }
                 await transaction.CommitAsync();
                 return DBOResponse<string>.Ok(IdRequisa);
             }
