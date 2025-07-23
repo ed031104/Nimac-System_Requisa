@@ -115,7 +115,7 @@
             estadoComboBox.FormattingEnabled = true;
             estadoComboBox.Location = new Point(88, 42);
             estadoComboBox.Name = "estadoComboBox";
-            estadoComboBox.Size = new Size(151, 28);
+            estadoComboBox.Size = new Size(275, 28);
             estadoComboBox.TabIndex = 5;
             // 
             // table

@@ -9,19 +9,21 @@ namespace Modelos
     public class ParteSucursal
     {
         private int? _IdParteSucursal { get; set; }
-        private Parte _parte { get; set; }
+        private string _parte { get; set; }
         private decimal _costoUnitario { get; set; }
         private int? _stock { get; set; }
         private DateTime _fechaRegistro { get; set; }
         private DateTime _fechaModificacion { get; set; }
-        private Sucursal _sucursal { get; set; }
+        private string _sucursal { get; set; }
+        private string _casa { get; set; }
+        private string _descripcion { get; set; }
 
         #region constructor
         public ParteSucursal() 
         {
         }
 
-        public ParteSucursal(int? idParteSucursal, Parte parte, Sucursal sucursal, decimal costoUnitario, int? stock, DateTime fechaRegistro, DateTime fechaModificacion)
+        public ParteSucursal(int? idParteSucursal, string parte, string sucursal, decimal costoUnitario, int? stock, DateTime fechaRegistro, DateTime fechaModificacion, string casa, string descripcion)
         {
             _IdParteSucursal = idParteSucursal;
             _parte = parte;
@@ -30,16 +32,20 @@ namespace Modelos
             _stock = stock;
             _fechaRegistro = fechaRegistro;
             _fechaModificacion = fechaModificacion;
+            _casa = casa;
+            _descripcion = descripcion;
         }
         #endregion
 
         public int? IdParteSucursal { get => _IdParteSucursal; set => _IdParteSucursal = value; }
-        public Parte Parte { get => _parte; set => _parte = value; }
-        public Sucursal Sucursal { get => _sucursal; set => _sucursal  = value; }
+        public string Parte { get => _parte; set => _parte = value; }
+        public string Sucursal { get => _sucursal; set => _sucursal  = value; }
         public decimal CostoUnitario { get => _costoUnitario; set => _costoUnitario = value; }
         public int? Stock { get => _stock; set => _stock = value; }
         public DateTime FechaRegistro { get => _fechaRegistro; set => _fechaRegistro = value; }
         public DateTime FechaModificacion { get => _fechaModificacion; set => _fechaModificacion = value; }
+        public string Casa { get => _casa; set => _casa = value; }
+        public string Descripcion { get => _descripcion; set => _descripcion = value; }
 
         #region Builder Pattern
         public class Builder
@@ -54,12 +60,12 @@ namespace Modelos
                 _ParteSucursal._IdParteSucursal = id;
                 return this;
             }
-            public Builder SetParte(Parte parte)
+            public Builder SetParte(string parte)
             {
                 _ParteSucursal._parte = parte;
                 return this;
             }
-            public Builder SetSucursal(Sucursal sucursal)
+            public Builder SetSucursal(string sucursal)
             {
                 _ParteSucursal._sucursal = sucursal;
                 return this;
@@ -82,6 +88,16 @@ namespace Modelos
             public Builder SetFechaModificacion(DateTime fecha)
             {
                 _ParteSucursal._fechaModificacion = fecha;
+                return this;
+            }
+            public Builder SetCasa(string casa)
+            {
+                _ParteSucursal._casa = casa;
+                return this;
+            }
+            public Builder SetDescripcion(string descripcion)
+            {
+                _ParteSucursal._descripcion = descripcion;
                 return this;
             }
             public ParteSucursal Build()

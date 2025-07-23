@@ -22,8 +22,6 @@ namespace requisas
         private RequisaServices _requisaServices = new RequisaServices();
         private TipoAjusteServices _tipoAjusteServices = new TipoAjusteServices();
         private ParteSucursalServices _parteSucursalServices = new ParteSucursalServices();
-        private SucursalServices _sucursalServices = new SucursalServices();
-        private CasaServices _casaServices = new CasaServices();
         private ExcelReader _excelReader = new ExcelReader();
 
         private (string? nombre, Byte[]? value) archivo;
@@ -78,6 +76,7 @@ namespace requisas
             }
             if (e.KeyCode == Keys.F1)
             {
+            
                 nParteAjusteInput.Enabled = false;
 
                 ViewParteSucursales viewParteSucursales = new ViewParteSucursales();
@@ -87,6 +86,7 @@ namespace requisas
 
                 if (partesucursalSeleccionada == null)
                 {
+                    nParteAjusteInput.Enabled = true;
                     MessageBox.Show("No se ha seleccionado ninguna parte sucursal.");
                     return;
                 }
@@ -102,14 +102,14 @@ namespace requisas
 
         private async void agregarButton_Click(object sender, EventArgs e)
         {
-            var casa = casaRequisaComboBox.SelectedItem as Casa;
-            var sucursal = sucursalRequisaComboBox.SelectedItem as Sucursal;
+            var casa = casaRequisaComboBox.SelectedItem as string;
+            var sucursal = sucursalRequisaComboBox.SelectedItem as string;
             var tipoAjuste = tipoAjusteRequisaComboBox.SelectedItem as TipoAjuste;
             Reclamo reclamo = null;
             Transferencia transferencia = null;
             Documento documento = null;
 
-            if (casa == null || sucursal == null || tipoAjuste == null)
+            if (string.IsNullOrEmpty(casa)  || string.IsNullOrEmpty(sucursal) || tipoAjuste == null)
             {
                 MessageBox.Show("Por favor, seleccione una casa, sucursal y tipo de ajuste válidos.");
                 return;
@@ -174,8 +174,8 @@ namespace requisas
                     MessageBox.Show("Por favor, seleccione una casa y sucursal para la transferencia.");
                     return;
                 }
-                var sucursalTransferir = sucursalTransferirComboBox.SelectedItem as Sucursal;
-                var sucursalProcedencia = sucursalRequisaComboBox.SelectedItem as Sucursal;
+                var sucursalTransferir = sucursalTransferirComboBox.SelectedItem.ToString();
+                var sucursalProcedencia = sucursalRequisaComboBox.SelectedItem as string;
 
                 if (sucursalTransferir == null)
                 {
@@ -195,12 +195,12 @@ namespace requisas
             #endregion
        
             var parteSucursalBuscada = partesSucursales
-                .Where(ps => ps.Parte.NumeroParte.Equals(nParteAjusteInput.Text))
-                .Where(ps => ps.Sucursal.NumeroSucursal.Equals(sucursal.NumeroSucursal))
-                .Where(ps => ps.Sucursal.Casa.CodigoCasa.Equals(casa.CodigoCasa))
+                .Where(ps => ps.Parte.Equals(nParteAjusteInput.Text))
+                .Where(ps => ps.Sucursal.Equals(sucursal))
+                .Where(ps => ps.Casa.Equals(casa))
                 .FirstOrDefault();
 
-            string idRequisaAjuste = sucursal.NumeroSucursal + "-" + tipoAjuste.Descripcion.Substring(0, 1);
+            string idRequisaAjuste = sucursal + "-" + tipoAjuste.Descripcion.Substring(0, 1);
 
             var requisaAjuste = new RequisaAjuste.Builder()
                 .SetIdRequisaAjuste(idRequisaAjuste)
@@ -221,11 +221,17 @@ namespace requisas
             requisaAjustes.Add(requisaAjuste);
 
             await cargarTipoAjusteTabla();
+
+            archivo.nombre = null;
+            archivo.value = null; // Reiniciar el archivo cargado
+            observacionReclamoInput.Clear(); // Limpiar el campo de observación del reclamo
+            cantidadParteInput.Clear(); // Limpiar el campo de cantidad
+            descripcionParteInput.Clear(); // Limpiar el campo de descripción
         }
 
         private void casaRequisaComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var casaSeleccionada = casaRequisaComboBox.SelectedItem as Casa;
+            var casaSeleccionada = casaRequisaComboBox.SelectedItem as string;
             if (casaSeleccionada == null)
             {
                 MessageBox.Show("Por favor, seleccione una casa válida.");
@@ -233,13 +239,11 @@ namespace requisas
                 return;
             }
             var sucursales = partesSucursales
-                .Where(ps => ps.Sucursal.Casa.CodigoCasa == casaSeleccionada.CodigoCasa)
+                .Where(ps => ps.Casa == casaSeleccionada)
                 .Select(ps => ps.Sucursal)
                 .Distinct()
                 .ToList();
             sucursalRequisaComboBox.DataSource = sucursales;
-            sucursalRequisaComboBox.DisplayMember = "NombreSucursal";
-            sucursalRequisaComboBox.ValueMember = "NumeroSucursal";
         }
 
         private async void guardarButton_Click(object sender, EventArgs e)
@@ -267,11 +271,6 @@ namespace requisas
 
                 guardarButton.Enabled = false;
 
-                if (String.IsNullOrEmpty(descripcionParteInput.Text))
-                {
-                    MessageBox.Show("Por favor, ingrese una descripción para la requisa.");
-                    return;
-                }
 
                 var requisa = new Requisa.Builder()
                     .SetDescripcion(descripcionRequisaInput.Text)
@@ -287,14 +286,7 @@ namespace requisas
                     return;
                 }
                 MessageBox.Show("Requisa creada exitosamente.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al crear la requisa: {ex.Message}");
-                return;
-            }
-            finally
-            {
+
                 requisaAjustes.Clear();
                 table.DataSource = null; // Limpiar la tabla
                 guardarButton.Enabled = true;
@@ -303,6 +295,12 @@ namespace requisas
                 observacionReclamoInput.Clear(); // Limpiar el campo de observación del reclamo
                 cantidadParteInput.Clear(); // Limpiar el campo de cantidad
                 descripcionParteInput.Clear(); // Limpiar el campo de descripción
+            }
+            catch (Exception ex)
+            {
+                guardarButton.Enabled = true;
+                MessageBox.Show($"Error al crear la requisa: {ex.Message}");
+                return;
             }
         }
 
@@ -446,19 +444,7 @@ namespace requisas
             int limiteInferiorSucursal = Convert.ToInt32(Configuracion.Get("LimiteInferiorSucursalesTransferencia"));
             int limiteSuperiorSucursal = Convert.ToInt32(Configuracion.Get("LimiteSuperiorSucursalesTransferencia"));
 
-            var responseSucursales = await _sucursalServices.ObtenerSucursales();
-
-            if (responseSucursales.Success == false || responseSucursales.Data == null)
-            {
-                MessageBox.Show($"Error al cargar sucursales: {responseSucursales.ErrorMessage}");
-                return;
-            }
-            var sucursalesfiltradas = responseSucursales.Data
-                .Where(s => {
-                    int numeroSucursal = Convert.ToInt32(s.NumeroSucursal);
-                    return numeroSucursal >= limiteInferiorSucursal && numeroSucursal <= limiteSuperiorSucursal;
-                })
-                .ToList();
+            List<int> sucursalesfiltradas = new List<int>() { 60,61,62,63,64,65,66,67,68 }; 
 
             sucursalTransferirComboBox.DataSource = sucursalesfiltradas;
         }
@@ -470,6 +456,7 @@ namespace requisas
             var dt = new DataTable();
             dt.Columns.Add("tipoAjusteColumn", typeof(Object));
             dt.Columns.Add("numeroParteColumn", typeof(Object));
+            dt.Columns.Add("nombreParteColumn", typeof(Object));
             dt.Columns.Add("cantidadColumn", typeof(decimal));
             dt.Columns.Add("descripcionColumn", typeof(string));
             dt.Columns.Add("costoPromedioCOlumn", typeof(decimal));
@@ -487,17 +474,18 @@ namespace requisas
             {
                 dt.Rows.Add(
                     ra.TipoAjuste,
-                    ra.ParteSucursal.Parte,
-                    ra.MontoAjuste ?? 0,
-                    ra.Descripcion,
-                    ra.ParteSucursal?.CostoUnitario ?? 0,
-                    ra.CostoPromedioExtendido,
-                    ra.ParteSucursal?.Sucursal?.Casa,
-                    ra.ParteSucursal?.Sucursal,
-                    ra.ParteSucursal?.CostoUnitario ?? 0,
-                    ra.Reclamo,
-                    ra.Transferencia,
-                    ra.Reclamo?.DocumentoReclamo?.DocumentoBytes != null ? "Ver Documento" : "Sin Documento",
+                    ra?.ParteSucursal?.Parte,
+                    ra?.ParteSucursal?.Descripcion,
+                    ra?.MontoAjuste ?? 0,
+                    ra?.Descripcion,
+                    ra?.ParteSucursal?.CostoUnitario ?? 0,
+                    ra?.CostoPromedioExtendido,
+                    ra?.ParteSucursal?.Casa,
+                    ra?.ParteSucursal?.Sucursal,
+                    ra?.ParteSucursal?.CostoUnitario ?? 0,
+                    ra?.Reclamo,
+                    ra?.Transferencia,
+                    ra?.Reclamo?.DocumentoReclamo?.DocumentoBytes != null ? "Ver Documento" : "Sin Documento",
                     ra
                 );
             }
@@ -511,6 +499,7 @@ namespace requisas
             dt.Rows.Add(
                 "Total",
                 null,
+                "",
                 totalCantidad,
                 "",
                 totalCostoPromedio,
@@ -539,11 +528,11 @@ namespace requisas
             }
             partesSucursales = response.Data.ToList();
 
-            descripcionLabel.Text = partesSucursales.FirstOrDefault()?.Parte.DescripcionParte ?? string.Empty;
+            descripcionLabel.Text = partesSucursales.FirstOrDefault()?.Descripcion ?? string.Empty;
             casaRequisaComboBox.DataSource = partesSucursales
-                    .Select(ps => ps.Sucursal.Casa)
-                    .Where(ps => ps != null)
-                    .GroupBy(ps => ps.CodigoCasa)
+                    .Select(ps => ps.Casa)
+                    .Where(casa => !string.IsNullOrEmpty(casa))
+                    .GroupBy(casa => casa)
                     .Select(g => g.First())
                     .ToList();
         }

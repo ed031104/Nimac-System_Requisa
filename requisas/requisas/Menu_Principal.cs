@@ -150,8 +150,6 @@ namespace CapaVista
                     nUEVAToolStripMenuItem.Visible = false;
                     editMenu.Visible = true;
                     viewMenu.Visible = true;
-                    toolsMenu.Visible = true;
-                    windowsMenu.Visible = true;
                     helpMenu.Visible = true;
                     rEPORTESToolStripMenuItem.Visible = true;
                     timerNotification();
@@ -161,8 +159,6 @@ namespace CapaVista
                     nUEVAToolStripMenuItem.Visible = false;
                     editMenu.Visible = true;
                     viewMenu.Visible = true;
-                    toolsMenu.Visible = true;
-                    windowsMenu.Visible = true;
                     helpMenu.Visible = true;
                     rEPORTESToolStripMenuItem.Visible = true;
                     timerNotification();
@@ -172,8 +168,6 @@ namespace CapaVista
                     nUEVAToolStripMenuItem.Visible = false;
                     editMenu.Visible = true;
                     viewMenu.Visible = true;
-                    toolsMenu.Visible = true;
-                    windowsMenu.Visible = true;
                     helpMenu.Visible = true;
                     rEPORTESToolStripMenuItem.Visible = true;
                     timerNotification();
@@ -182,8 +176,6 @@ namespace CapaVista
                     editMenu.Visible = true;
                     viewMenu.Visible = false;
                     usuariosToolStripMenuItem.Visible = false;
-                    toolsMenu.Visible = false;
-                    windowsMenu.Visible = false;
                     helpMenu.Visible = false;
                     rEPORTESToolStripMenuItem.Visible = false;
                     break;
@@ -192,8 +184,6 @@ namespace CapaVista
                     usuariosToolStripMenuItem.Visible = false;
                     editMenu.Visible = true;
                     viewMenu.Visible = false;
-                    toolsMenu.Visible = false;
-                    windowsMenu.Visible = false;
                     helpMenu.Visible = false;
                     rEPORTESToolStripMenuItem.Visible = true;
                     break;
@@ -253,19 +243,6 @@ namespace CapaVista
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
-            // Cerrar el formulario actualmente abierto si existe
-            if (currentChildForm != null && !currentChildForm.IsDisposed)
-            {
-                currentChildForm.Close();
-            }
-
-            GestionCasa gesitonCasaView = new GestionCasa();
-            gesitonCasaView.MdiParent = this;
-            gesitonCasaView.Show();
-
-            currentChildForm = gesitonCasaView;
-
         }
 
         private void gestionarToolStripMenuItem_Click(object sender, EventArgs e)
@@ -298,30 +275,12 @@ namespace CapaVista
 
         private void ShowNewForm(object sender, EventArgs e)
         {
-            if (currentChildForm != null && !currentChildForm.IsDisposed)
-            {
-                currentChildForm.Close();
-            }
-
-            GestionSucursal m1 = new GestionSucursal();
-            m1.MdiParent = this;
-            m1.Show();
-
-            currentChildForm = m1;
+            
         }
 
         private void ToolBarToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (currentChildForm != null && !currentChildForm.IsDisposed)
-            {
-                currentChildForm.Close();
-            }
-
-            GestionPartes m1 = new GestionPartes();
-            m1.MdiParent = this;
-            m1.Show();
-
-            currentChildForm = m1;
+          
         }
         private void StatusBarToolStripMenuItem_Click(object sender, EventArgs e)
         {

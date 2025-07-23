@@ -57,7 +57,7 @@ namespace CapaVista.Components
             }
 
             var listFilter = listTemp.Where(x =>
-                x.Parte.DescripcionParte.ToLower().Contains(buscarPorNombreInput.Text.ToLower()
+                x.Descripcion.ToLower().Contains(buscarPorNombreInput.Text.ToLower()
             ))
             .ToList();
 
@@ -65,11 +65,12 @@ namespace CapaVista.Components
             table.DataSource = listFilter.Select(ps => new
             {
                 idparteSucursalColumn = ps.IdParteSucursal,
-                numeroParteColumn = ps.Parte.NumeroParte,
-                nombreParteColumn = ps.Parte.DescripcionParte,
+                numeroParteColumn = ps.Parte,
+                nombreParteColumn = ps.Descripcion,
                 costoUnitarioColumn = ps.CostoUnitario,
                 sucursalColumn = ps.Sucursal,
-                stockColumn = ps.Stock
+                stockColumn = ps.Stock,
+                casaColumn = ps.Casa
             }).ToList();
 
         }
@@ -91,6 +92,35 @@ namespace CapaVista.Components
             }
         }
 
+        private async void numeroParteSearchInput_TextChanged(object sender, EventArgs e)
+        {
+            table.DataSource = null;
+
+            var listTemp = _parteSucursales;
+
+            if (String.IsNullOrEmpty(buscarPorNombreInput.Text))
+            {
+                await loadData();
+            }
+
+            var listFilter = listTemp.Where(x =>
+                x.Parte.ToLower().Contains(numeroParteSearchInput.Text.ToLower()
+            ))
+            .ToList();
+
+            table.AutoGenerateColumns = false;
+            table.DataSource = listFilter.Select(ps => new
+            {
+                idparteSucursalColumn = ps.IdParteSucursal,
+                numeroParteColumn = ps.Parte,
+                nombreParteColumn = ps.Descripcion,
+                costoUnitarioColumn = ps.CostoUnitario,
+                sucursalColumn = ps.Sucursal,
+                stockColumn = ps.Stock,
+                casaColumn = ps.Casa
+            }).ToList();
+        }
+ 
         #region services
         private async Task loadData()
         {
@@ -99,11 +129,12 @@ namespace CapaVista.Components
             table.DataSource = _parteSucursales.Select(ps => new
             {
                 idparteSucursalColumn = ps.IdParteSucursal,
-                numeroParteColumn = ps.Parte.NumeroParte,
-                nombreParteColumn = ps.Parte.DescripcionParte,
+                numeroParteColumn = ps.Parte,
+                nombreParteColumn = ps.Descripcion,
                 costoUnitarioColumn = ps.CostoUnitario,
                 sucursalColumn = ps.Sucursal,
-                stockColumn = ps.Stock
+                stockColumn = ps.Stock,
+                casaColumn = ps.Casa
             }).ToList();
         }
         #endregion

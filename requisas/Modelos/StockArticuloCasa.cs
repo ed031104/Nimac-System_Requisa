@@ -10,7 +10,7 @@ namespace Modelos
     {
         private int? _idStock;
         private Articulos _articulo;
-        private Casa _casa;
+        private string _casa;
         private int? _cantidad;
         private DateTime _fechaRegistro;
         private DateTime _fechaModificacion;
@@ -19,7 +19,7 @@ namespace Modelos
         public StockArticuloCasa()
         {
         }
-        public StockArticuloCasa(int? idStock, Articulos articulo, Casa casa, int? cantidad, DateTime fechaRegistro, DateTime fechaModificacion)
+        public StockArticuloCasa(int? idStock, Articulos articulo, string casa, int? cantidad, DateTime fechaRegistro, DateTime fechaModificacion)
         {
             _idStock = idStock;
             _articulo = articulo;
@@ -32,7 +32,7 @@ namespace Modelos
 
         public int? IdStock { get => _idStock; set => _idStock = value; }
         public Articulos Articulo { get => _articulo; set => _articulo = value; }
-        public Casa Casa { get => _casa; set => _casa = value; }
+        public string Casa { get => _casa; set => _casa = value; }
         public int? Cantidad { get => _cantidad; set => _cantidad = value; }
         public DateTime FechaRegistro { get => _fechaRegistro; set => _fechaRegistro = value; }
         public DateTime FechaModificacion { get => _fechaModificacion; set => _fechaModificacion = value; }
@@ -55,7 +55,7 @@ namespace Modelos
                 _stockArticuloCasa._articulo = articulo;
                 return this;
             }
-            public Builder SetCasa(Casa casa)
+            public Builder SetCasa(string casa)
             {
                 _stockArticuloCasa._casa = casa;
                 return this;

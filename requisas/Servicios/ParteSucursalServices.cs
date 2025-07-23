@@ -93,7 +93,6 @@ namespace Servicios
             }
         }
 
-
         public async Task<ServiceResponse<IEnumerable<ParteSucursal>>> obtenerPartePorNumeroParte(string numeroParte) {
             try { 
            

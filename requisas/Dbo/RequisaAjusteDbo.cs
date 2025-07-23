@@ -39,13 +39,12 @@ namespace Dbo
                     DECLARE @NuevoID NVARCHAR(50)
                     SET @NuevoID = 'DOC-' + FORMAT(NEXT VALUE FOR Seq_Casa, '0000');
                     INSERT INTO Requisa (N_DocumentoRequisa,FechaRegistro, Descripcion, Estado)
-                    VALUES (@NuevoID,@FechaRegistro, @Descripcion, @Estado); 
+                    VALUES (@NuevoID,@FechaRegistro, @Descripcion, @Estado);
                     SELECT @NuevoID;
                     ";
                 cmdRequisa.CommandText = queryRequisa;
                 cmdRequisa.Parameters.AddWithValue("@FechaRegistro", requisa.FechaRegistro);
                 cmdRequisa.Parameters.AddWithValue("@Descripcion", requisa.Descripcion);
-                //     cmdRequisa.Parameters.AddWithValue("@IdSucursal", requisa.Sucursal.NumeroSucursal);
                 cmdRequisa.Parameters.AddWithValue("@Estado", requisa.Estado);
 
                 var responseRequisa = await cmdRequisa.ExecuteScalarAsync();
@@ -106,8 +105,8 @@ namespace Dbo
                         VALUES(@sucursalPrecedencia, @sucursalTransferencia, @CreadoPor, @ModificadoPor, @FechaCreacion, @FechaModificacion)
                         SELECT SCOPE_IDENTITY();";
                         cmdTransferencia.CommandText = queryTransferencia.ToString();
-                        cmdTransferencia.Parameters.AddWithValue("@sucursalPrecedencia", requisaAjusteRecorrido.Transferencia.SucursalPrecedencia.NumeroSucursal);
-                        cmdTransferencia.Parameters.AddWithValue("@sucursalTransferencia", requisaAjusteRecorrido.Transferencia.SucursalTransferida.NumeroSucursal);
+                        cmdTransferencia.Parameters.AddWithValue("@sucursalPrecedencia", requisaAjusteRecorrido.Transferencia.SucursalPrecedencia);
+                        cmdTransferencia.Parameters.AddWithValue("@sucursalTransferencia", requisaAjusteRecorrido.Transferencia.SucursalTransferida);
                         cmdTransferencia.Parameters.AddWithValue("@CreadoPor", requisaAjusteRecorrido.Transferencia.CreadoPor);
                         cmdTransferencia.Parameters.AddWithValue("@ModificadoPor", requisaAjusteRecorrido.Transferencia.ModificadoPor);
                         cmdTransferencia.Parameters.AddWithValue("@FechaCreacion", requisaAjusteRecorrido.Transferencia.FechaCreacion);
@@ -186,34 +185,20 @@ namespace Dbo
                 #region query
                 var query = @"
                SELECT
-                    ra.id_Requisa_Ajuste [idRequisaAjuste], ra.CreadoPor [requisaAjusteCreadaPor], ra.ModificadoPor [requisaAjusteModificadaPor], ra.FechaCreacion [fechaCreacionRequisaAjuste], ra.FechaModificacion [fechaModificacionRequisaAjuste], ra.Monto [montoAjuste], ra.Descripcion [decripcionRequisaAjuste], ra.costoPromedio [costoPromedioRequisaAjuste], ra.costoPromedioExtendido [costoPromedioExtendidoRequisaAjuste],
-                    r.N_DocumentoRequisa [idRequisa], r.Descripcion [descripcionRequisa], r.Estado [estadoRequisa], r.FechaRegistro [fechaRegistroRequisa],
-                    ta.id_TipoAjuste [idTipoAjuste], ta.Descripcion_TipoAjuste [descripcionTipoAjuste], ta.Simbolo_TipoAjuste [simboloTipoAjuste], ta.FechaRegistro [fechaRegistroTipoAjuste], ta.FechaModificacion [fechaModificacionTipoAjuste],
-                    ps.id_ParteCasa [idParteSucursal], ps.Numero_Parte [numeroParte], ps.CostoUnitario [costoUnitario], ps.Stock [stock], ps.FechaRegistro [fechaRegistroParteSucursal], ps.FechaModificacion [fechaRegistroParteSucursal],
-                    s.Numero_Sucursal [numeroSucursal], s.Nombre_Sucursal [nombreSucursal], s.FechaRegistro [fechaRegistroSucursal], s.FechaModificacion [fechaModificacionSucursal],
-                    c.Codigo_Casa [codigoCasa], c.Nombre_Casa [nombreCasa], c.FechaRegistro [fechaRegistroCasa], c.FechaModificacion [fechaModificacionCasa],
-                    parte.Numero_Parte [numeroParte], parte.Descripcion_Parte [descripcionParte], parte.FechaRegistro [parteFechaRegistro], parte.FechaModificacion [parteFechaModificacion],
-                    reclamo.id_Reclamo [idReclamo], reclamo.observacion [observacion], reclamo.CreadoPor [reclamoCreadoPor], reclamo.ModificadoPor [reclamoModificadoPor], reclamo.FechaCreacion [reclamoFechaCreacion], reclamo.FechaModificacion [reclamoFechaModificacion],
-                    doc.id_Documento [idDocumento], doc.Nombre [nombreDocumento], doc.documento [documento], doc.CreadoPor [documentoCreadoPor], doc.ModificadoPor [documentoModificadoPor], doc.FechaCreacion [documentoFechaCreacion], doc.FechaModificacion [documentoFechaModificacion],
-                    trr.id_TransferenciaRequisa [idTransferencia], trr.SucursalPrecedencia [SucursaPrecedencia], trr.SucursalTransferida [SucursalTransferida], trr.CreadoPor [transferenciaCreadaPor], trr.ModificadoPor [transferenciaModificadaPor], trr.FechaCreacion [transferenciaFechaCreacion], trr.FechaModificacion [transferenciaFechaModificacion],
-                    stp.Numero_Sucursal [numeroSucursalTransferenciaProcedencia], stp.Nombre_Sucursal [nombreSucursalTransferenciaProcedencia], stp.FechaRegistro [fechaRegistroSucursalTransferenciaProcedencia], stp.FechaModificacion [fechaModificacionSucursalTransferenciaProcedencia], 
-	                cstp.Codigo_Casa [idCasaTransferenciaProcedencia], cstp.Nombre_Casa [nombreCasaTransferenciaProcedencia], cstp.FechaRegistro [fechaRegistroCasaTransferencia], cstp.FechaModificacion [fechaModificacionCasaTransferenciaProcedencia],
-                    stt.Numero_Sucursal [numeroSucursalTransferenciaTransferida], stt.Nombre_Sucursal [nombreSucursalTransferenciaTransferida], stt.FechaRegistro [fechaRegistroSucursalTransferenciaTransferida], stt.FechaModificacion [fechaModificacionSucursalTransferenciaTransferida],
-                    cstt.Codigo_Casa [codigoCasaSucursalTransferenciaTransferida], cstt.Nombre_Casa [nombreCasaSucursalTransferenciaTransferida], cstt.FechaRegistro [fechaCreacionCasaSucursalTransferenciaTransferida], cstt.FechaModificacion [fechaModificacionCasaSucursalTransferenciaTransferida]
-                FROM Requisa_Ajuste ra
-                INNER JOIN Requisa r on ra.id_requisa = r.N_DocumentoRequisa
-                INNER JOIN Tipo_Ajuste ta on ra.id_Tipo_Ajuste = ta.id_TipoAjuste
-                INNER JOIN Parte_Sucursal ps on ps.id_ParteCasa = ra.Id_parte_Sucursal
-                INNER JOIN Sucursal s on s.Numero_Sucursal = ps.IdSucursal
-                INNER JOIN Casa c on c.Codigo_Casa = s.Codigo_Casa
-                INNER JOIN Parte parte on parte.Numero_Parte = ps.Numero_Parte
-                LEFT JOIN Reclamo reclamo on reclamo.id_Reclamo = ra.Id_Reclamo
-                LEFT JOIN Documento doc on doc.id_Documento = reclamo.id_documento
-                LEFT JOIN TransferenciaRequisa trr on trr.id_TransferenciaRequisa = ra.id_TransferenciaRequisa
-                LEFT JOIN Sucursal stp on stp.Numero_Sucursal = trr.SucursalPrecedencia
-                LEFT JOIN Casa cstp on cstp.Codigo_Casa = stp.Codigo_Casa
-                LEFT JOIN Sucursal stt on stt.Numero_Sucursal = trr.SucursalTransferida
-                LEFT JOIN Casa cstt on cstt.Codigo_Casa = stt.Codigo_Casa
+                     ra.id_Requisa_Ajuste [idRequisaAjuste], ra.CreadoPor [requisaAjusteCreadaPor], ra.ModificadoPor [requisaAjusteModificadaPor], ra.FechaCreacion [fechaCreacionRequisaAjuste], ra.FechaModificacion [fechaModificacionRequisaAjuste], ra.Monto [montoAjuste], ra.Descripcion [decripcionRequisaAjuste], ra.costoPromedio [costoPromedioRequisaAjuste], ra.costoPromedioExtendido [costoPromedioExtendidoRequisaAjuste],
+                     r.N_DocumentoRequisa [idRequisa], r.Descripcion [descripcionRequisa], r.Estado [estadoRequisa], r.FechaRegistro [fechaRegistroRequisa], r.IdSucursal [sucursalRequisa],
+                     ta.id_TipoAjuste [idTipoAjuste], ta.Descripcion_TipoAjuste [descripcionTipoAjuste], ta.Simbolo_TipoAjuste [simboloTipoAjuste], ta.FechaRegistro [fechaRegistroTipoAjuste], ta.FechaModificacion [fechaModificacionTipoAjuste],
+                     ps.id_ParteCasa [idParteSucursal], ps.Numero_Parte [numeroParte], ps.CostoUnitario [costoUnitario], ps.Stock [stock], ps.FechaRegistro [fechaRegistroParteSucursal], ps.FechaModificacion [fechaRegistroParteSucursal], ps.IdSucursal [sucursalParteSucursal], ps.idCasa [casaParteSucursal], ps.DescripcionParte [descripcionParteSucursal],
+                     reclamo.id_Reclamo [idReclamo], reclamo.observacion [observacion], reclamo.CreadoPor [reclamoCreadoPor], reclamo.ModificadoPor [reclamoModificadoPor], reclamo.FechaCreacion [reclamoFechaCreacion], reclamo.FechaModificacion [reclamoFechaModificacion],
+                     doc.id_Documento [idDocumento], doc.Nombre [nombreDocumento], doc.documento [documento], doc.CreadoPor [documentoCreadoPor], doc.ModificadoPor [documentoModificadoPor], doc.FechaCreacion [documentoFechaCreacion], doc.FechaModificacion [documentoFechaModificacion],
+                     trr.id_TransferenciaRequisa [idTransferencia], trr.SucursalPrecedencia [SucursaPrecedencia], trr.SucursalTransferida [SucursalTransferida], trr.CreadoPor [transferenciaCreadaPor], trr.ModificadoPor [transferenciaModificadaPor], trr.FechaCreacion [transferenciaFechaCreacion], trr.FechaModificacion [transferenciaFechaModificacion], trr.SucursalPrecedencia [sucursalPrecedencia], trr.SucursalTransferida [sucursalTransferida]
+                 FROM Requisa_Ajuste ra
+                 INNER JOIN Requisa r on ra.id_requisa = r.N_DocumentoRequisa
+                 INNER JOIN Tipo_Ajuste ta on ra.id_Tipo_Ajuste = ta.id_TipoAjuste
+                 INNER JOIN Parte_Sucursal ps on ps.id_ParteCasa = ra.Id_parte_Sucursal
+                 LEFT JOIN Reclamo reclamo on reclamo.id_Reclamo = ra.Id_Reclamo
+                 LEFT JOIN Documento doc on doc.id_Documento = reclamo.id_documento
+                 LEFT JOIN TransferenciaRequisa trr on trr.id_TransferenciaRequisa = ra.id_TransferenciaRequisa
                 ";
                 #endregion
 
@@ -235,33 +220,15 @@ namespace Dbo
                         .SetFechaModificacion(reader.validateTypeData<DateTime>("fechaModificacionTipoAjuste"))
                         .Build();
 
-                    var casa = new Casa.Builder()
-                        .SetCodigoCasa(reader.validateTypeData<string>("codigoCasa"))
-                        .SetNombreCasa(reader.validateTypeData<string>("nombreCasa"))
-                        .SetFechaRegistro(reader.validateTypeData<DateTime>("fechaRegistroCasa"))
-                        .SetFechaModificacion(reader.validateTypeData<DateTime>("fechaModificacionCasa"))
-                        .Build();
-
-                    var sucursal = new Sucursal.Builder()
-                        .SetNumeroSucursal(reader.validateTypeData<string>("numeroSucursal"))
-                        .SetNombreSucursal(reader.validateTypeData<string>("nombreSucursal"))
-                        .SetFechaRegistro(reader.validateTypeData<DateTime>("fechaRegistroSucursal"))
-                        .SetFechaModificacion(reader.validateTypeData<DateTime>("fechaModificacionSucursal"))
-                        .SetCasa(casa)
-                        .Build();
-
-                    var parte = new Parte.Builder()
-                        .SetNumeroParte(reader.validateTypeData<string>("numeroParte"))
-                        .SetDescripcionParte(reader.validateTypeData<string>("descripcionParte"))
-                        .SetFechaRegistro(reader.validateTypeData<DateTime>("parteFechaRegistro"))
-                        .SetFechaModificacion(reader.validateTypeData<DateTime>("parteFechaModificacion"))
-                        .Build();
 
                     var parteSucursal = new ParteSucursal.Builder()
                         .SetIdParteSucursal(reader.validateTypeData<int>("idParteSucursal"))
-                        .SetParte(parte)
+                        .SetParte(reader.validateTypeData<string>("numeroParte"))
                         .SetCostoUnitario(reader.validateTypeData<decimal>("costoUnitario"))
                         .SetCantidad(reader.validateTypeData<int>("stock"))
+                        .SetSucursal(reader.validateTypeData<string>("sucursalParteSucursal"))
+                        .SetCasa(reader.validateTypeData<string>("casaParteSucursal"))
+                        .SetDescripcion(reader.validateTypeData<string>("descripcionParteSucursal"))
                         .SetFechaRegistro(reader.validateTypeData<DateTime>("fechaRegistroParteSucursal"))
                         .SetFechaModificacion(reader.validateTypeData<DateTime>("fechaRegistroParteSucursal"))
                         .Build();
@@ -271,7 +238,7 @@ namespace Dbo
                         .SetFechaRegistro(reader.validateTypeData<DateTime>("fechaRegistroRequisa"))
                         .SetDescripcion(reader.validateTypeData<string>("descripcionRequisa"))
                         .SetEstado(reader.validateTypeData<bool>("estadoRequisa"))
-                        .SetSucursal(sucursal)
+                        .SetSucursal(reader.validateTypeData<string>("sucursalRequisa"))
                         .Build();
 
                     var documento = new Documento.Builder()
@@ -296,36 +263,8 @@ namespace Dbo
 
                     var transferencia = new Transferencia.Builder()
                         .SetIdTransferencia(reader.validateTypeData<int>("idTransferencia"))
-                        .SetSucursalPrecedencia(
-                             new Sucursal.Builder()
-                                .SetNumeroSucursal(reader.validateTypeData<string>("numeroSucursalTransferenciaProcedencia"))
-                                .SetNombreSucursal(reader.validateTypeData<string>("nombreSucursalTransferenciaProcedencia"))
-                                .SetFechaRegistro(reader.validateTypeData<DateTime>("fechaRegistroSucursalTransferenciaProcedencia"))
-                                .SetFechaModificacion(reader.validateTypeData<DateTime>("fechaModificacionSucursalTransferenciaProcedencia"))
-                                .SetCasa(
-                                    new Casa.Builder()
-                                        .SetCodigoCasa(reader.validateTypeData<string>("idCasaTransferenciaProcedencia"))
-                                        .SetNombreCasa(reader.validateTypeData<string>("nombreCasaTransferenciaProcedencia"))
-                                        .SetFechaRegistro(reader.validateTypeData<DateTime>("fechaRegistroCasaTransferencia"))
-                                        .SetFechaModificacion(reader.validateTypeData<DateTime>("fechaModificacionCasaTransferenciaProcedencia"))
-                                        .Build()
-                                ).Build()
-                        )
-                        .SetSucursalTransferida(
-                            new Sucursal.Builder()
-                                .SetNumeroSucursal(reader.validateTypeData<string>("numeroSucursalTransferenciaTransferida"))
-                                .SetNombreSucursal(reader.validateTypeData<string>("nombreSucursalTransferenciaTransferida"))
-                                .SetFechaRegistro(reader.validateTypeData<DateTime>("fechaRegistroSucursalTransferenciaTransferida"))
-                                .SetFechaModificacion(reader.validateTypeData<DateTime>("fechaModificacionSucursalTransferenciaTransferida"))
-                                .SetCasa(
-                                    new Casa.Builder()
-                                        .SetCodigoCasa(reader.validateTypeData<string>("codigoCasaSucursalTransferenciaTransferida"))
-                                        .SetNombreCasa(reader.validateTypeData<string>("nombreCasaSucursalTransferenciaTransferida"))
-                                        .SetFechaRegistro(reader.validateTypeData<DateTime>("fechaCreacionCasaSucursalTransferenciaTransferida"))
-                                        .SetFechaModificacion(reader.validateTypeData<DateTime>("fechaModificacionCasaSucursalTransferenciaTransferida"))
-                                        .Build()
-                                ).Build()
-                        )
+                        .SetSucursalPrecedencia(reader.validateTypeData<string>("SucursaPrecedencia"))
+                        .SetSucursalTransferida(reader.validateTypeData<string>("SucursalTransferida"))
                         .SetCreadoPor(reader.validateTypeData<string>("transferenciaCreadaPor"))
                         .SetModificadoPor(reader.validateTypeData<string>("transferenciaModificadaPor"))
                         .SetFechaCreacion(reader.validateTypeData<DateTime>("transferenciaFechaCreacion"))
@@ -371,35 +310,21 @@ namespace Dbo
                 #region query
                 var query = @"
                 SELECT
-                    ra.id_Requisa_Ajuste [idRequisaAjuste], ra.CreadoPor [requisaAjusteCreadaPor], ra.ModificadoPor [requisaAjusteModificadaPor], ra.FechaCreacion [fechaCreacionRequisaAjuste], ra.FechaModificacion [fechaModificacionRequisaAjuste], ra.Monto [montoAjuste], ra.Descripcion [decripcionRequisaAjuste], ra.costoPromedio [costoPromedioRequisaAjuste], ra.costoPromedioExtendido [costoPromedioExtendidoRequisaAjuste],
-                    r.N_DocumentoRequisa [idRequisa], r.Descripcion [descripcionRequisa], r.Estado [estadoRequisa], r.FechaRegistro [fechaRegistroRequisa],
-                    ta.id_TipoAjuste [idTipoAjuste], ta.Descripcion_TipoAjuste [descripcionTipoAjuste], ta.Simbolo_TipoAjuste [simboloTipoAjuste], ta.FechaRegistro [fechaRegistroTipoAjuste], ta.FechaModificacion [fechaModificacionTipoAjuste],
-                    ps.id_ParteCasa [idParteSucursal], ps.Numero_Parte [numeroParte], ps.CostoUnitario [costoUnitario], ps.Stock [stock], ps.FechaRegistro [fechaRegistroParteSucursal], ps.FechaModificacion [fechaRegistroParteSucursal],
-                    s.Numero_Sucursal [numeroSucursal], s.Nombre_Sucursal [nombreSucursal], s.FechaRegistro [fechaRegistroSucursal], s.FechaModificacion [fechaModificacionSucursal],
-                    c.Codigo_Casa [codigoCasa], c.Nombre_Casa [nombreCasa], c.FechaRegistro [fechaRegistroCasa], c.FechaModificacion [fechaModificacionCasa],
-                    parte.Numero_Parte [numeroParte], parte.Descripcion_Parte [descripcionParte], parte.FechaRegistro [parteFechaRegistro], parte.FechaModificacion [parteFechaModificacion],
-                    reclamo.id_Reclamo [idReclamo], reclamo.observacion [observacion], reclamo.CreadoPor [reclamoCreadoPor], reclamo.ModificadoPor [reclamoModificadoPor], reclamo.FechaCreacion [reclamoFechaCreacion], reclamo.FechaModificacion [reclamoFechaModificacion],
-                    doc.id_Documento [idDocumento], doc.Nombre [nombreDocumento], doc.documento [documento], doc.CreadoPor [documentoCreadoPor], doc.ModificadoPor [documentoModificadoPor], doc.FechaCreacion [documentoFechaCreacion], doc.FechaModificacion [documentoFechaModificacion],
-                    trr.id_TransferenciaRequisa [idTransferencia], trr.SucursalPrecedencia [SucursaPrecedencia], trr.SucursalTransferida [SucursalTransferida], trr.CreadoPor [transferenciaCreadaPor], trr.ModificadoPor [transferenciaModificadaPor], trr.FechaCreacion [transferenciaFechaCreacion], trr.FechaModificacion [transferenciaFechaModificacion],
-                    stp.Numero_Sucursal [numeroSucursalTransferenciaProcedencia], stp.Nombre_Sucursal [nombreSucursalTransferenciaProcedencia], stp.FechaRegistro [fechaRegistroSucursalTransferenciaProcedencia], stp.FechaModificacion [fechaModificacionSucursalTransferenciaProcedencia], 
-	                cstp.Codigo_Casa [idCasaTransferenciaProcedencia], cstp.Nombre_Casa [nombreCasaTransferenciaProcedencia], cstp.FechaRegistro [fechaRegistroCasaTransferencia], cstp.FechaModificacion [fechaModificacionCasaTransferenciaProcedencia],
-                    stt.Numero_Sucursal [numeroSucursalTransferenciaTransferida], stt.Nombre_Sucursal [nombreSucursalTransferenciaTransferida], stt.FechaRegistro [fechaRegistroSucursalTransferenciaTransferida], stt.FechaModificacion [fechaModificacionSucursalTransferenciaTransferida],
-                    cstt.Codigo_Casa [codigoCasaSucursalTransferenciaTransferida], cstt.Nombre_Casa [nombreCasaSucursalTransferenciaTransferida], cstt.FechaRegistro [fechaCreacionCasaSucursalTransferenciaTransferida], cstt.FechaModificacion [fechaModificacionCasaSucursalTransferenciaTransferida]
-                FROM Requisa_Ajuste ra
-                INNER JOIN Requisa r on ra.id_requisa = r.N_DocumentoRequisa
-                INNER JOIN Tipo_Ajuste ta on ra.id_Tipo_Ajuste = ta.id_TipoAjuste
-                INNER JOIN Parte_Sucursal ps on ps.id_ParteCasa = ra.Id_parte_Sucursal
-                INNER JOIN Sucursal s on s.Numero_Sucursal = ps.IdSucursal
-                INNER JOIN Casa c on c.Codigo_Casa = s.Codigo_Casa
-                INNER JOIN Parte parte on parte.Numero_Parte = ps.Numero_Parte
-                LEFT JOIN Reclamo reclamo on reclamo.id_Reclamo = ra.Id_Reclamo
-                LEFT JOIN Documento doc on doc.id_Documento = reclamo.id_documento
-                LEFT JOIN TransferenciaRequisa trr on trr.id_TransferenciaRequisa = ra.id_TransferenciaRequisa
-                LEFT JOIN Sucursal stp on stp.Numero_Sucursal = trr.SucursalPrecedencia
-                LEFT JOIN Casa cstp on cstp.Codigo_Casa = stp.Codigo_Casa
-                LEFT JOIN Sucursal stt on stt.Numero_Sucursal = trr.SucursalTransferida
-                LEFT JOIN Casa cstt on cstt.Codigo_Casa = stt.Codigo_Casa
-                WHERE r.N_DocumentoRequisa = @NDocumentoRequisa
+                     ra.id_Requisa_Ajuste [idRequisaAjuste], ra.CreadoPor [requisaAjusteCreadaPor], ra.ModificadoPor [requisaAjusteModificadaPor], ra.FechaCreacion [fechaCreacionRequisaAjuste], ra.FechaModificacion [fechaModificacionRequisaAjuste], ra.Monto [montoAjuste], ra.Descripcion [decripcionRequisaAjuste], ra.costoPromedio [costoPromedioRequisaAjuste], ra.costoPromedioExtendido [costoPromedioExtendidoRequisaAjuste],
+                     r.N_DocumentoRequisa [idRequisa], r.Descripcion [descripcionRequisa], r.Estado [estadoRequisa], r.FechaRegistro [fechaRegistroRequisa], r.IdSucursal [sucursalRequisa],
+                     ta.id_TipoAjuste [idTipoAjuste], ta.Descripcion_TipoAjuste [descripcionTipoAjuste], ta.Simbolo_TipoAjuste [simboloTipoAjuste], ta.FechaRegistro [fechaRegistroTipoAjuste], ta.FechaModificacion [fechaModificacionTipoAjuste],
+                     ps.id_ParteCasa [idParteSucursal], ps.Numero_Parte [numeroParte], ps.CostoUnitario [costoUnitario], ps.Stock [stock], ps.FechaRegistro [fechaRegistroParteSucursal], ps.FechaModificacion [fechaRegistroParteSucursal], ps.IdSucursal [sucursalParteSucursal], ps.idCasa [casaParteSucursal], ps.DescripcionParte [descripcionParteSucursal],
+                     reclamo.id_Reclamo [idReclamo], reclamo.observacion [observacion], reclamo.CreadoPor [reclamoCreadoPor], reclamo.ModificadoPor [reclamoModificadoPor], reclamo.FechaCreacion [reclamoFechaCreacion], reclamo.FechaModificacion [reclamoFechaModificacion],
+                     doc.id_Documento [idDocumento], doc.Nombre [nombreDocumento], doc.documento [documento], doc.CreadoPor [documentoCreadoPor], doc.ModificadoPor [documentoModificadoPor], doc.FechaCreacion [documentoFechaCreacion], doc.FechaModificacion [documentoFechaModificacion],
+                     trr.id_TransferenciaRequisa [idTransferencia], trr.SucursalPrecedencia [SucursaPrecedencia], trr.SucursalTransferida [SucursalTransferida], trr.CreadoPor [transferenciaCreadaPor], trr.ModificadoPor [transferenciaModificadaPor], trr.FechaCreacion [transferenciaFechaCreacion], trr.FechaModificacion [transferenciaFechaModificacion], trr.SucursalPrecedencia [sucursalPrecedencia], trr.SucursalTransferida [sucursalTransferida]
+                 FROM Requisa_Ajuste ra
+                 INNER JOIN Requisa r on ra.id_requisa = r.N_DocumentoRequisa
+                 INNER JOIN Tipo_Ajuste ta on ra.id_Tipo_Ajuste = ta.id_TipoAjuste
+                 INNER JOIN Parte_Sucursal ps on ps.id_ParteCasa = ra.Id_parte_Sucursal
+                 LEFT JOIN Reclamo reclamo on reclamo.id_Reclamo = ra.Id_Reclamo
+                 LEFT JOIN Documento doc on doc.id_Documento = reclamo.id_documento
+                 LEFT JOIN TransferenciaRequisa trr on trr.id_TransferenciaRequisa = ra.id_TransferenciaRequisa
+                 WHERE r.N_DocumentoRequisa = @NDocumentoRequisa
                 ";
                 #endregion
 
@@ -415,41 +340,22 @@ namespace Dbo
                 {
                     #region construir objetos
                     var tipoAjuste = new TipoAjuste.Builder()
-                       .SetTipoAjusteId(reader.validateTypeData<int>("idTipoAjuste"))
-                       .SetDescripcion(reader.validateTypeData<string>("descripcionTipoAjuste"))
-                       .SetSimboloTipoAjuste(reader.validateTypeData<string>("simboloTipoAjuste"))
-                       .SetFechaRegistro(reader.validateTypeData<DateTime>("fechaRegistroTipoAjuste"))
-                       .SetFechaModificacion(reader.validateTypeData<DateTime>("fechaModificacionTipoAjuste"))
-                       .Build();
-
-                    var casa = new Casa.Builder()
-                        .SetCodigoCasa(reader.validateTypeData<string>("codigoCasa"))
-                        .SetNombreCasa(reader.validateTypeData<string>("nombreCasa"))
-                        .SetFechaRegistro(reader.validateTypeData<DateTime>("fechaRegistroCasa"))
-                        .SetFechaModificacion(reader.validateTypeData<DateTime>("fechaModificacionCasa"))
+                        .SetTipoAjusteId(reader.validateTypeData<int?>("idTipoAjuste"))
+                        .SetDescripcion(reader.validateTypeData<string>("descripcionTipoAjuste"))
+                        .SetSimboloTipoAjuste(reader.validateTypeData<string>("simboloTipoAjuste"))
+                        .SetFechaRegistro(reader.validateTypeData<DateTime>("fechaRegistroTipoAjuste"))
+                        .SetFechaModificacion(reader.validateTypeData<DateTime>("fechaModificacionTipoAjuste"))
                         .Build();
 
-                    var sucursal = new Sucursal.Builder()
-                        .SetNumeroSucursal(reader.validateTypeData<string>("numeroSucursal"))
-                        .SetNombreSucursal(reader.validateTypeData<string>("nombreSucursal"))
-                        .SetFechaRegistro(reader.validateTypeData<DateTime>("fechaRegistroSucursal"))
-                        .SetFechaModificacion(reader.validateTypeData<DateTime>("fechaModificacionSucursal"))
-                        .SetCasa(casa)
-                        .Build();
-
-                    var parte = new Parte.Builder()
-                        .SetNumeroParte(reader.validateTypeData<string>("numeroParte"))
-                        .SetDescripcionParte(reader.validateTypeData<string>("descripcionParte"))
-                        .SetFechaRegistro(reader.validateTypeData<DateTime>("parteFechaRegistro"))
-                        .SetFechaModificacion(reader.validateTypeData<DateTime>("parteFechaModificacion"))
-                        .Build();
 
                     var parteSucursal = new ParteSucursal.Builder()
-                        .SetIdParteSucursal(reader.validateTypeData<int>("idParteSucursal"))
-                        .SetSucursal(sucursal)
-                        .SetParte(parte)
+                        .SetIdParteSucursal(reader.validateTypeData<int?>("idParteSucursal"))
+                        .SetParte(reader.validateTypeData<string>("numeroParte"))
                         .SetCostoUnitario(reader.validateTypeData<decimal>("costoUnitario"))
                         .SetCantidad(reader.validateTypeData<int>("stock"))
+                        .SetSucursal(reader.validateTypeData<string>("sucursalParteSucursal"))
+                        .SetCasa(reader.validateTypeData<string>("casaParteSucursal"))
+                        .SetDescripcion(reader.validateTypeData<string>("descripcionParteSucursal"))
                         .SetFechaRegistro(reader.validateTypeData<DateTime>("fechaRegistroParteSucursal"))
                         .SetFechaModificacion(reader.validateTypeData<DateTime>("fechaRegistroParteSucursal"))
                         .Build();
@@ -459,7 +365,7 @@ namespace Dbo
                         .SetFechaRegistro(reader.validateTypeData<DateTime>("fechaRegistroRequisa"))
                         .SetDescripcion(reader.validateTypeData<string>("descripcionRequisa"))
                         .SetEstado(reader.validateTypeData<bool>("estadoRequisa"))
-                        .SetSucursal(sucursal)
+                        .SetSucursal(reader.validateTypeData<string>("sucursalRequisa"))
                         .Build();
 
                     var documento = new Documento.Builder()
@@ -484,36 +390,8 @@ namespace Dbo
 
                     var transferencia = new Transferencia.Builder()
                         .SetIdTransferencia(reader.validateTypeData<int?>("idTransferencia"))
-                        .SetSucursalPrecedencia(
-                             new Sucursal.Builder()
-                                .SetNumeroSucursal(reader.validateTypeData<string>("numeroSucursalTransferenciaProcedencia"))
-                                .SetNombreSucursal(reader.validateTypeData<string>("nombreSucursalTransferenciaProcedencia"))
-                                .SetFechaRegistro(reader.validateTypeData<DateTime>("fechaRegistroSucursalTransferenciaProcedencia"))
-                                .SetFechaModificacion(reader.validateTypeData<DateTime>("fechaModificacionSucursalTransferenciaProcedencia"))
-                                .SetCasa(
-                                    new Casa.Builder()
-                                        .SetCodigoCasa(reader.validateTypeData<string>("idCasaTransferenciaProcedencia"))
-                                        .SetNombreCasa(reader.validateTypeData<string>("nombreCasaTransferenciaProcedencia"))
-                                        .SetFechaRegistro(reader.validateTypeData<DateTime>("fechaRegistroCasaTransferencia"))
-                                        .SetFechaModificacion(reader.validateTypeData<DateTime>("fechaModificacionCasaTransferenciaProcedencia"))
-                                        .Build()
-                                ).Build()
-                        )
-                        .SetSucursalTransferida(
-                            new Sucursal.Builder()
-                                .SetNumeroSucursal(reader.validateTypeData<string>("numeroSucursalTransferenciaTransferida"))
-                                .SetNombreSucursal(reader.validateTypeData<string>("nombreSucursalTransferenciaTransferida"))
-                                .SetFechaRegistro(reader.validateTypeData<DateTime>("fechaRegistroSucursalTransferenciaTransferida"))
-                                .SetFechaModificacion(reader.validateTypeData<DateTime>("fechaModificacionSucursalTransferenciaTransferida"))
-                                .SetCasa(
-                                    new Casa.Builder()
-                                        .SetCodigoCasa(reader.validateTypeData<string>("codigoCasaSucursalTransferenciaTransferida"))
-                                        .SetNombreCasa(reader.validateTypeData<string>("nombreCasaSucursalTransferenciaTransferida"))
-                                        .SetFechaRegistro(reader.validateTypeData<DateTime>("fechaCreacionCasaSucursalTransferenciaTransferida"))
-                                        .SetFechaModificacion(reader.validateTypeData<DateTime>("fechaModificacionCasaSucursalTransferenciaTransferida"))
-                                        .Build()
-                                ).Build()
-                        )
+                        .SetSucursalPrecedencia(reader.validateTypeData<string>("SucursaPrecedencia"))
+                        .SetSucursalTransferida(reader.validateTypeData<string>("SucursalTransferida"))
                         .SetCreadoPor(reader.validateTypeData<string>("transferenciaCreadaPor"))
                         .SetModificadoPor(reader.validateTypeData<string>("transferenciaModificadaPor"))
                         .SetFechaCreacion(reader.validateTypeData<DateTime>("transferenciaFechaCreacion"))

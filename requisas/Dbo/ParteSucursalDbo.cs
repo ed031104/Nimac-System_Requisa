@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Dbo.utils;
+using Microsoft.Data.SqlClient;
 using Modelos;
 using Modelos.data;
 using System;
@@ -18,22 +19,23 @@ namespace Dbo
             await using var conn = Conexion.conexion();
             await conn.OpenAsync();
 
-            var query = new StringBuilder();
-
-            query.Append("Insert into Parte_Sucursal(Numero_Parte, CostoUnitario, Stock, FechaRegistro, FechaModificacion, IdSucursal) ");
-            query.Append("VALUES(@NumeroParte, @CostoUnitario, @Stock, @FechaRegistro, @FechaModificacion, @IdSucursal); ");
-            query.Append("SELECT SCOPE_IDENTITY();");
+            string query = @"
+            Insert into Parte_Sucursal(Numero_Parte, CostoUnitario, Stock, FechaRegistro, FechaModificacion, IdSucursal, idCasa, DescripcionParte) 
+            VALUES(@NumeroParte, @CostoUnitario, @Stock, @FechaRegistro, @FechaModificacion, @IdSucursal, @idCasa, @descripcion);
+            SELECT SCOPE_IDENTITY();";
 
             var cmd = conn.CreateCommand();
 
             cmd.CommandText = query.ToString();
 
-            cmd.Parameters.AddWithValue("@NumeroParte", parteSucursal.Parte.NumeroParte);
+            cmd.Parameters.AddWithValue("@NumeroParte", parteSucursal.Parte);
             cmd.Parameters.AddWithValue("@CostoUnitario", parteSucursal.CostoUnitario);
             cmd.Parameters.AddWithValue("@Stock", parteSucursal.Stock);
             cmd.Parameters.AddWithValue("@FechaRegistro", parteSucursal.FechaRegistro);
             cmd.Parameters.AddWithValue("@FechaModificacion", parteSucursal.FechaModificacion);
-            cmd.Parameters.AddWithValue("@IdSucursal", parteSucursal.Sucursal.NumeroSucursal);
+            cmd.Parameters.AddWithValue("@IdSucursal", parteSucursal.Sucursal);
+            cmd.Parameters.AddWithValue("@idCasa", parteSucursal.Casa);
+            cmd.Parameters.AddWithValue("@descripcion", parteSucursal.Descripcion);
 
             try
             {
@@ -55,9 +57,10 @@ namespace Dbo
 
             try
             {
-                var query = @"
-                    Insert into Parte_Sucursal(Numero_Parte, CostoUnitario, Stock, FechaRegistro, FechaModificacion, IdSucursal) 
-                    VALUES(@NumeroParte, @CostoUnitario, @Stock, @FechaRegistro, @FechaModificacion, @IdSucursal)
+                string query = @"
+                    Insert into Parte_Sucursal(Numero_Parte, CostoUnitario, Stock, FechaRegistro, FechaModificacion, IdSucursal, idCasa, DescripcionParte) 
+                    VALUES(@NumeroParte, @CostoUnitario, @Stock, @FechaRegistro, @FechaModificacion, @IdSucursal, @idCasa, @descripcion);
+                    SELECT SCOPE_IDENTITY();
                 ";
 
                 foreach (var ps in parteSucursal)
@@ -66,13 +69,15 @@ namespace Dbo
                     cmd.Transaction = transaction;
                     cmd.CommandText = query;
 
-                    cmd.Parameters.AddWithValue("@NumeroParte", ps.Parte.NumeroParte);
+                    cmd.Parameters.AddWithValue("@NumeroParte", ps.Parte);
                     cmd.Parameters.AddWithValue("@CostoUnitario", ps.CostoUnitario);
                     cmd.Parameters.AddWithValue("@Stock", ps.Stock);
                     cmd.Parameters.AddWithValue("@FechaRegistro", ps.FechaRegistro);
                     cmd.Parameters.AddWithValue("@FechaModificacion", ps.FechaModificacion);
-                    cmd.Parameters.AddWithValue("@IdSucursal", ps.Sucursal.NumeroSucursal);
-                    
+                    cmd.Parameters.AddWithValue("@IdSucursal", ps.Sucursal);
+                    cmd.Parameters.AddWithValue("@idCasa", ps.Casa);
+                    cmd.Parameters.AddWithValue("@descripcion", ps.Descripcion);
+
                     await cmd.ExecuteNonQueryAsync();
                 }
 
@@ -87,7 +92,6 @@ namespace Dbo
             }
         }
 
-
         public async Task<DBOResponse<IEnumerable<ParteSucursal>>> ObtenerParteSucursalPorIdParte(string id)
         {
             try
@@ -97,33 +101,19 @@ namespace Dbo
 
                 var query = @"
                 select 
-                    ps.id_ParteCasa, 
-                    ps.CostoUnitario, 
-                    ps.Stock, 
-                    ps.fechaRegistro, 
-                    ps.fechaModificacion, 
-                    s.Numero_Sucursal , 
-                    s.Nombre_Sucursal, 
-                    s.FechaRegistro as 'fechaRegistroSucursal', 
-                    s.FechaModificacion as 'fechaModificacionSucursal', 
-                    c.Codigo_Casa, 
-                    c.Nombre_Casa, 
-                    c.FechaRegistro as 'fechaRegistroCasa', 
-                    c.FechaModificacion as 'fechaModificacionCasa', 
-                    p.Numero_Parte, 
-                    p.Descripcion_Parte, 
-                    p.FechaRegistro as 'fechaRegistroParte', 
-                    p.FechaModificacion as 'fechaModificacionParte' 
+	                ps.id_ParteCasa,
+	                ps.CostoUnitario,
+	                ps.Stock,
+	                ps.FechaRegistro,
+	                ps.FechaModificacion,
+	                ps.Numero_Parte,
+	                ps.IdSucursal,
+	                ps.idCasa,
+	                ps.DescripcionParte
                 from 
-                    Parte_Sucursal as ps
-                inner JOIN 
-                    Sucursal as s on s.Numero_Sucursal = ps.IdSucursal
-                INNER join 
-                    Casa as c on c.Codigo_Casa = s.Codigo_Casa 
-                inner JOIN 
-                    Parte as p on p.Numero_Parte = ps.Numero_Parte 
-                where 
-                    p.Numero_Parte = @NumeroParte
+	                Parte_Sucursal ps
+                where  
+                    ps.Numero_Parte = @NumeroParte
                 ";
 
                 using var cmd = conn.CreateCommand();
@@ -136,33 +126,16 @@ namespace Dbo
 
                 while (await reader.ReadAsync())
                 {
-                    var Parte = new Parte.Builder()
-                        .SetNumeroParte(reader.GetString(reader.GetOrdinal("Numero_Parte")))
-                        .SetDescripcionParte(reader.GetString(reader.GetOrdinal("Descripcion_Parte")))
-                        .SetFechaRegistro(reader.GetDateTime(reader.GetOrdinal("fechaRegistroParte")))
-                        .SetFechaModificacion(reader.GetDateTime(reader.GetOrdinal("fechaModificacionParte")))
-                        .Build();
-                    var Casa = new Casa.Builder()
-                        .SetCodigoCasa(reader.GetString(reader.GetOrdinal("Codigo_Casa")))
-                        .SetNombreCasa(reader.GetString(reader.GetOrdinal("Nombre_Casa")))
-                        .SetFechaRegistro(reader.GetDateTime(reader.GetOrdinal("fechaRegistroCasa")))
-                        .SetFechaModificacion(reader.GetDateTime(reader.GetOrdinal("fechaModificacionCasa")))
-                        .Build();
-                    var Sucursal = new Sucursal.Builder()
-                        .SetNumeroSucursal(reader.GetString(reader.GetOrdinal("Numero_Sucursal")))
-                        .SetNombreSucursal(reader.GetString(reader.GetOrdinal("Nombre_Sucursal")))
-                        .SetFechaRegistro(reader.GetDateTime(reader.GetOrdinal("fechaRegistroSucursal")))
-                        .SetFechaModificacion(reader.GetDateTime(reader.GetOrdinal("fechaModificacionSucursal")))
-                        .SetCasa(Casa)
-                        .Build();
                     var parteSucursal = new ParteSucursal.Builder()
-                        .SetIdParteSucursal(reader.GetInt32(reader.GetOrdinal("id_ParteCasa")))
-                        .SetParte(Parte)
-                        .SetSucursal(Sucursal)
-                        .SetCostoUnitario(reader.GetDecimal(reader.GetOrdinal("CostoUnitario")))
-                        .SetCantidad(reader.GetInt32(reader.GetOrdinal("Stock")))
-                        .SetFechaRegistro(reader.GetDateTime(reader.GetOrdinal("fechaRegistro")))
-                        .SetFechaModificacion(reader.GetDateTime(reader.GetOrdinal("fechaModificacion")))
+                        .SetIdParteSucursal(reader.validateTypeData<int>("id_ParteCasa"))
+                        .SetParte(reader.validateTypeData<string>("Numero_Parte"))
+                        .SetSucursal(reader.validateTypeData<string>("IdSucursal"))
+                        .SetCostoUnitario(reader.validateTypeData<decimal>("CostoUnitario"))
+                        .SetCantidad(reader.validateTypeData<int>("Stock"))
+                        .SetFechaRegistro(reader.validateTypeData<DateTime>("FechaRegistro"))
+                        .SetFechaModificacion(reader.validateTypeData<DateTime>("FechaModificacion"))
+                        .SetCasa(reader.validateTypeData<string>("idCasa"))
+                        .SetDescripcion(reader.validateTypeData<string>("DescripcionParte"))
                         .Build();
                     listParteSucursal.Add(parteSucursal);
                 }
@@ -184,8 +157,7 @@ namespace Dbo
                 set
                     CostoUnitario = @CostoUnitario, 
                     Stock = @Stock,  
-                    fechaModificacion = @FechaModificacion, 
-                    IdSucursal = @IdSucursal
+                    fechaModificacion = @FechaModificacion
                 where id_ParteCasa = @IdParteCasa; ";
 
             var cmd = conn.CreateCommand();
@@ -195,7 +167,6 @@ namespace Dbo
             cmd.Parameters.AddWithValue("@CostoUnitario", parteSucursal.CostoUnitario);
             cmd.Parameters.AddWithValue("@Stock", parteSucursal.Stock);
             cmd.Parameters.AddWithValue("@FechaModificacion", parteSucursal.FechaModificacion);
-            cmd.Parameters.AddWithValue("@IdSucursal", parteSucursal.Sucursal.NumeroSucursal);
             cmd.Parameters.AddWithValue("@IdParteCasa", parteSucursal.IdParteSucursal);
             try
             {
@@ -253,31 +224,18 @@ namespace Dbo
 
                 var query = @"
                 select 
-                    ps.id_ParteCasa, 
-                    ps.CostoUnitario, 
-                    ps.Stock, 
-                    ps.fechaRegistro, 
-                    ps.fechaModificacion, 
-                    s.Numero_Sucursal , 
-                    s.Nombre_Sucursal, 
-                    s.FechaRegistro as 'fechaRegistroSucursal', 
-                    s.FechaModificacion as 'fechaModificacionSucursal', 
-                    c.Codigo_Casa, 
-                    c.Nombre_Casa, 
-                    c.FechaRegistro as 'fechaRegistroCasa', 
-                    c.FechaModificacion as 'fechaModificacionCasa', 
-                    p.Numero_Parte, 
-                    p.Descripcion_Parte, 
-                    p.FechaRegistro as 'fechaRegistroParte', 
-                    p.FechaModificacion as 'fechaModificacionParte' 
+	                ps.id_ParteCasa,
+	                ps.CostoUnitario,
+	                ps.Stock,
+	                ps.FechaRegistro,
+	                ps.FechaModificacion,
+	                ps.Numero_Parte,
+	                ps.IdSucursal,
+	                ps.idCasa,
+	                ps.DescripcionParte
                 from 
-                    Parte_Sucursal as ps
-                inner JOIN 
-                    Sucursal as s on s.Numero_Sucursal = ps.IdSucursal
-                INNER join 
-                    Casa as c on c.Codigo_Casa = s.Codigo_Casa 
-                inner JOIN 
-                    Parte as p on p.Numero_Parte = ps.Numero_Parte ";
+	                Parte_Sucursal ps
+                ";
 
                 using var cmd = conn.CreateCommand();
                 cmd.CommandText = query.ToString();
@@ -286,34 +244,17 @@ namespace Dbo
                 var partesSucursal = new List<ParteSucursal>();
                 while (await reader.ReadAsync())
                 {
-                    var Parte = new Parte.Builder()
-                        .SetNumeroParte(reader.GetString(reader.GetOrdinal("Numero_Parte")))
-                        .SetDescripcionParte(reader.GetString(reader.GetOrdinal("Descripcion_Parte")))
-                        .SetFechaRegistro(reader.GetDateTime(reader.GetOrdinal("fechaRegistroParte")))
-                        .SetFechaModificacion(reader.GetDateTime(reader.GetOrdinal("fechaModificacionParte")))
-                        .Build();
-                    var Casa = new Casa.Builder()
-                        .SetCodigoCasa(reader.GetString(reader.GetOrdinal("Codigo_Casa")))
-                        .SetNombreCasa(reader.GetString(reader.GetOrdinal("Nombre_Casa")))
-                        .SetFechaRegistro(reader.GetDateTime(reader.GetOrdinal("fechaRegistroCasa")))
-                        .SetFechaModificacion(reader.GetDateTime(reader.GetOrdinal("fechaModificacionCasa")))
-                        .Build();
-                    var Sucursal = new Sucursal.Builder()
-                        .SetNumeroSucursal(reader.GetString(reader.GetOrdinal("Numero_Sucursal")))
-                        .SetNombreSucursal(reader.GetString(reader.GetOrdinal("Nombre_Sucursal")))
-                        .SetFechaRegistro(reader.GetDateTime(reader.GetOrdinal("fechaRegistroSucursal")))
-                        .SetFechaModificacion(reader.GetDateTime(reader.GetOrdinal("fechaModificacionSucursal")))
-                        .SetCasa(Casa)
-                        .Build();
                     var parteSucursal = new ParteSucursal.Builder()
-                        .SetIdParteSucursal(reader.GetInt32(reader.GetOrdinal("id_ParteCasa")))
-                        .SetParte(Parte)
-                        .SetSucursal(Sucursal)
-                        .SetCostoUnitario(reader.GetDecimal(reader.GetOrdinal("CostoUnitario")))
-                        .SetCantidad(reader.GetInt32(reader.GetOrdinal("Stock")))
-                        .SetFechaRegistro(reader.GetDateTime(reader.GetOrdinal("fechaRegistro")))
-                        .SetFechaModificacion(reader.GetDateTime(reader.GetOrdinal("fechaModificacion")))
-                        .Build();
+                         .SetIdParteSucursal(reader.validateTypeData<int>("id_ParteCasa"))
+                         .SetParte(reader.validateTypeData<string>("Numero_Parte"))
+                         .SetSucursal(reader.validateTypeData<string>("IdSucursal"))
+                         .SetCostoUnitario(reader.validateTypeData<decimal>("CostoUnitario"))
+                         .SetCantidad(reader.validateTypeData<int>("Stock"))
+                         .SetFechaRegistro(reader.validateTypeData<DateTime>("FechaRegistro"))
+                         .SetFechaModificacion(reader.validateTypeData<DateTime>("FechaModificacion"))
+                         .SetCasa(reader.validateTypeData<string>("idCasa"))
+                         .SetDescripcion(reader.validateTypeData<string>("DescripcionParte"))
+                         .Build();
                     partesSucursal.Add(parteSucursal);
                 }
                 return DBOResponse<IEnumerable<ParteSucursal>>.Ok(partesSucursal);

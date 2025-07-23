@@ -10,8 +10,8 @@ namespace Dbo
     public class Transferencia
     {
         private int? _idTransferencia;
-        private Sucursal? _sucursalPrecedencia;
-        private Sucursal? _sucursalTransferida;
+        private string? _sucursalPrecedencia;
+        private string? _sucursalTransferida;
         private string? _creadoPor;
         private string? _modificadoPor;
         private DateTime? _fechaCreacion;
@@ -20,7 +20,7 @@ namespace Dbo
         #region constructores
         public Transferencia() { }
 
-        public Transferencia(int? idTransferencia, Sucursal? sucursalPrecedencia, Sucursal? sucursalTransferida, string? creadoPor, string? modificadoPor, DateTime? fechaCreacion, DateTime? fechaModificacion)
+        public Transferencia(int? idTransferencia, string? sucursalPrecedencia, string? sucursalTransferida, string? creadoPor, string? modificadoPor, DateTime? fechaCreacion, DateTime? fechaModificacion)
         {
             _idTransferencia = idTransferencia;
             _sucursalPrecedencia = sucursalPrecedencia;
@@ -33,8 +33,8 @@ namespace Dbo
         #endregion
 
         public int? IdTransferencia { get => _idTransferencia; set => _idTransferencia = value; }
-        public Sucursal? SucursalPrecedencia { get => _sucursalPrecedencia; set => _sucursalPrecedencia = value; }
-        public Sucursal? SucursalTransferida { get => _sucursalTransferida; set => _sucursalTransferida = value; }
+        public string? SucursalPrecedencia { get => _sucursalPrecedencia; set => _sucursalPrecedencia = value; }
+        public string? SucursalTransferida { get => _sucursalTransferida; set => _sucursalTransferida = value; }
         public string? CreadoPor { get => _creadoPor; set => _creadoPor = value; }
         public string? ModificadoPor { get => _modificadoPor; set => _modificadoPor = value; }
         public DateTime? FechaCreacion { get => _fechaCreacion; set => _fechaCreacion = value; }
@@ -49,8 +49,8 @@ namespace Dbo
         public class Builder
         {
             private int? _idTransferencia;
-            private Sucursal? _sucursalPrecedencia;
-            private Sucursal? _sucursalTransferida;
+            private string? _sucursalPrecedencia;
+            private string? _sucursalTransferida;
             private string? _creadoPor;
             private string? _modificadoPor;
             private DateTime? _fechaCreacion;
@@ -61,12 +61,12 @@ namespace Dbo
                 _idTransferencia = idTransferencia;
                 return this;
             }
-            public Builder SetSucursalPrecedencia(Sucursal? SucursalPrecedencia)
+            public Builder SetSucursalPrecedencia(string? SucursalPrecedencia)
             {
                 _sucursalPrecedencia = SucursalPrecedencia;
                 return this;
             }
-            public Builder SetSucursalTransferida(Sucursal? sucursalTransferida)
+            public Builder SetSucursalTransferida(string? sucursalTransferida)
             {
                 _sucursalTransferida = sucursalTransferida;
                 return this;

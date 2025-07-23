@@ -2,6 +2,7 @@
 using CapaVista.utils;
 using Microsoft.Identity.Client;
 using Modelos;
+using Modelos.Dto;
 using Servicios;
 using System;
 using System.Collections.Generic;
@@ -17,18 +18,30 @@ namespace CapaVista
 {
     public partial class AsignacionParteSucursal : Form
     {
-        private ParteServices _parteServices;
-        private SucursalServices _sucursalServices;
         private ParteSucursalServices _parteSucursalServices;
         private ExcelReader _excelReader = new ExcelReader();
+
+        private List<ParteSucursal> _listParteSucursal;
 
 
         public AsignacionParteSucursal()
         {
             InitializeComponent();
-            _parteServices = new ParteServices();
-            _sucursalServices = new SucursalServices();
             _parteSucursalServices = new ParteSucursalServices();
+            _listParteSucursal = new List<ParteSucursal>();
+        }
+
+        private async void AsignacionParteSucursal_Load(object sender, EventArgs e)
+        {
+            var response = await _parteSucursalServices.ObtenerPartesSucursal();
+            if (response.Success == false || response.Data.Count() <= 0)
+            {
+                MessageBox.Show($"Error al cargar partes sucursales: {response.ErrorMessage}");
+                return;
+            }
+            _listParteSucursal = response.Data.ToList();
+            await CargarParteSucursalesTabla();
+            idParteCasaInput.Enabled = false;
         }
 
         private void table_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -40,14 +53,11 @@ namespace CapaVista
                     idParteCasaInput.Text = table.Rows[e.RowIndex].Cells["idColumn"].Value.ToString() ?? "";
                     stockInput.Text = table.Rows[e.RowIndex].Cells["stockColumn"].Value.ToString() ?? "";
                     costoUnitarioInput.Text = table.Rows[e.RowIndex].Cells["costoUnitarioColumn"].Value.ToString() ?? "";
+                    descripcionInput.Text = table.Rows[e.RowIndex].Cells["descripcionColumn"].Value.ToString() ?? "";
+                    casaInput.Text = table.Rows[e.RowIndex].Cells["casaColumn"].Value.ToString() ?? "";
+                    parteInput.Text = table.Rows[e.RowIndex].Cells["parteColumn"].Value.ToString() ?? "";
+                    sucursalInput.Text = table.Rows[e.RowIndex].Cells["sucursalColumn"].Value.ToString() ?? "";
 
-                    parteComboBox.DataSource = null;
-
-                    parteComboBox.Items.Clear();
-                    parteComboBox.Items.Add(table.Rows[e.RowIndex].Cells["parteColumn"].Value);
-                    parteComboBox.SelectedIndex = 0;
-
-                    MostrarButton.Visible = true;
                 }
                 catch (Exception ex)
                 {
@@ -58,10 +68,6 @@ namespace CapaVista
 
         private async void MostrarButton_Click(object sender, EventArgs e)
         {
-            await dataTableLoad();
-            await dataParteLoad();
-            await dataSucursalLoad();
-            MostrarButton.Visible = false;
         }
 
         private async void numeroParteSearchInput_KeyDown(object sender, KeyEventArgs e)
@@ -83,9 +89,7 @@ namespace CapaVista
                         MessageBox.Show($"Error al buscar el número de parte: {response.ErrorMessage}");
                         return;
                     }
-                    parteComboBox.DataSource = null;
-                    parteComboBox.Items.Add(response.Data);
-                    parteComboBox.SelectedItem = 0;
+
                 }
 
             }
@@ -99,23 +103,25 @@ namespace CapaVista
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(stockInput.Text) || string.IsNullOrWhiteSpace(costoUnitarioInput.Text))
+                if (
+                    string.IsNullOrWhiteSpace(stockInput.Text) || string.IsNullOrWhiteSpace(costoUnitarioInput.Text) ||
+                    string.IsNullOrEmpty(parteInput.Text) || string.IsNullOrEmpty(sucursalInput.Text) ||
+                    string.IsNullOrEmpty(descripcionInput.Text) || string.IsNullOrEmpty(casaInput.Text)
+                )
                 {
                     MessageBox.Show("Por favor, complete todos los campos.");
                     return;
                 }
-                if (parteComboBox.SelectedItem == null || sucursalComboBox.SelectedItem == null)
-                {
-                    MessageBox.Show("Por favor, seleccione un parte y una sucursal.");
-                    return;
-                }
 
                 var parteSucursal = new ParteSucursal.Builder()
-                    .SetParte((Parte)parteComboBox.SelectedItem)
-                    .SetSucursal((Sucursal)sucursalComboBox.SelectedItem)
+                    .SetParte(parteInput.Text)
+                    .SetSucursal(sucursalInput.Text)
                     .SetCantidad(int.Parse(stockInput.Text.Trim()))
                     .SetCostoUnitario(decimal.Parse(costoUnitarioInput.Text.Trim()))
+                    .SetDescripcion(descripcionInput.Text)
+                    .SetCasa(casaInput.Text)
                     .Build();
+
                 var response = await _parteSucursalServices.CrearParteSucursal(parteSucursal);
                 if (!response.Success)
                 {
@@ -127,10 +133,22 @@ namespace CapaVista
                 idParteCasaInput.Clear();
                 stockInput.Clear();
                 costoUnitarioInput.Clear();
-                parteComboBox.SelectedIndex = -1;
-                sucursalComboBox.SelectedIndex = -1;
+                parteInput.Clear();
+                sucursalInput.Clear();
+                descripcionInput.Clear();
+                casaInput.Clear();
 
-                await dataTableLoad();
+                var responseParteSucursal = await _parteSucursalServices.ObtenerPartesSucursal();
+              
+                if (response.Success == false || response?.Data == null)
+                {
+                    MessageBox.Show($"Error al cargar partes sucursales: {response.ErrorMessage}");
+                    return;
+                }
+
+                _listParteSucursal.Clear();
+                _listParteSucursal = responseParteSucursal.Data.ToList();
+                await dataTableLoad(responseParteSucursal.Data.ToList());
             }
             catch (Exception ex)
             {
@@ -143,26 +161,25 @@ namespace CapaVista
             try
             {
 
-                if (string.IsNullOrWhiteSpace(idParteCasaInput.Text) || string.IsNullOrWhiteSpace(stockInput.Text) || string.IsNullOrWhiteSpace(costoUnitarioInput.Text))
+                if (
+                     string.IsNullOrWhiteSpace(stockInput.Text) || string.IsNullOrWhiteSpace(costoUnitarioInput.Text) ||
+                     string.IsNullOrEmpty(parteInput.Text) || string.IsNullOrEmpty(sucursalInput.Text) ||
+                     string.IsNullOrEmpty(descripcionInput.Text) || string.IsNullOrEmpty(casaInput.Text)
+                 )
                 {
                     MessageBox.Show("Por favor, complete todos los campos.");
                     return;
                 }
-                if (parteComboBox.SelectedItem == null || sucursalComboBox.SelectedItem == null)
-                {
-                    MessageBox.Show("Por favor, seleccione un parte y una sucursal.");
-                    return;
-                }
-                var parte = parteComboBox.SelectedItem as Parte;
-                var sucursal = sucursalComboBox.SelectedItem as Sucursal;
 
                 var parteSucursal = new ParteSucursal.Builder()
-                    .SetIdParteSucursal(int.Parse(idParteCasaInput.Text.Trim()))
-                    .SetParte(parte)
-                    .SetSucursal(sucursal)
+                    .SetParte(parteInput.Text)
+                    .SetSucursal(sucursalInput.Text)
                     .SetCantidad(int.Parse(stockInput.Text.Trim()))
                     .SetCostoUnitario(decimal.Parse(costoUnitarioInput.Text.Trim()))
+                    .SetDescripcion(descripcionInput.Text)
+                    .SetCasa(casaInput.Text)
                     .Build();
+
                 var response = await _parteSucursalServices.ActualizarParteSucursal(parteSucursal);
 
                 if (!response.Success)
@@ -172,15 +189,28 @@ namespace CapaVista
                 }
                 MessageBox.Show("Asignación de parte a sucursal editada correctamente.");
 
-                await dataTableLoad();
-                await dataParteLoad();
-                await dataSucursalLoad();
+                //await dataParteLoad();
+                //await dataSucursalLoad();
 
                 idParteCasaInput.Clear();
                 stockInput.Clear();
                 costoUnitarioInput.Clear();
-                parteComboBox.SelectedIndex = -1;
-                sucursalComboBox.SelectedIndex = -1;
+                parteInput.Clear();
+                sucursalInput.Clear();
+                descripcionInput.Clear();
+                casaInput.Clear();
+
+                var responseParteSucursal = await _parteSucursalServices.ObtenerPartesSucursal();
+                if (response.Success == false || response?.Data == null)
+                {
+                    MessageBox.Show($"Error al cargar partes sucursales: {response.ErrorMessage}");
+                    return;
+                }
+
+                _listParteSucursal.Clear();
+                _listParteSucursal = responseParteSucursal.Data.ToList();
+                await dataTableLoad(responseParteSucursal.Data.ToList());
+
             }
             catch (Exception ex)
             {
@@ -210,95 +240,27 @@ namespace CapaVista
                 idParteCasaInput.Clear();
                 stockInput.Clear();
                 costoUnitarioInput.Clear();
-                parteComboBox.SelectedIndex = -1;
-                sucursalComboBox.SelectedIndex = -1;
+                parteInput.Clear();
+                sucursalInput.Clear();
+                descripcionInput.Clear();
+                casaInput.Clear();
 
-                await dataTableLoad();
+                var responseParteSucursal = await _parteSucursalServices.ObtenerPartesSucursal();
+                if (response.Success == false || response?.Data == null)
+                {
+                    MessageBox.Show($"Error al cargar partes sucursales: {response.ErrorMessage}");
+                    return;
+                }
+
+                _listParteSucursal.Clear();
+                _listParteSucursal = responseParteSucursal.Data.ToList();
+                await dataTableLoad(responseParteSucursal.Data.ToList());
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al eliminar la asignación de parte a sucursal: {ex.Message}");
             }
         }
-
-        private async void AsignacionParteSucursal_Load(object sender, EventArgs e)
-        {
-            await dataParteLoad();
-            await dataSucursalLoad();
-            await dataTableLoad();
-            idParteCasaInput.Enabled = false;
-        }
-
-        #region additional methods for data loading
-        private async Task dataParteLoad()
-        {
-            try
-            {
-
-                var response = await _parteServices.ObtenerPartes();
-                if (response.Success == false || response.Data.Count() <= 0)
-                {
-                    MessageBox.Show($"Error al cargar partes: {response.ErrorMessage}");
-                    return;
-                }
-                parteComboBox.DataSource = null;
-                parteComboBox.DataSource = response.Data.ToList();
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al cargar los datos del parte: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private async Task dataSucursalLoad()
-        {
-            try
-            {
-                var response = await _sucursalServices.ObtenerSucursales();
-                if (response.Success == false || response.Data.Count() <= 0)
-                {
-                    MessageBox.Show($"Error al cargar sucursales: {response.ErrorMessage}");
-                    return;
-                }
-                sucursalComboBox.DataSource = null;
-                sucursalComboBox.DataSource = response.Data.ToList();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al cargar los datos de la sucursal: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private async Task dataTableLoad()
-        {
-            try
-            {
-                table.DataSource = null;
-
-                var response = await _parteSucursalServices.ObtenerPartesSucursal();
-                if (response.Success == false || response.Data.Count() <= 0)
-                {
-                    MessageBox.Show($"Error al cargar partes sucursales: {response.ErrorMessage}");
-                    return;
-                }
-                table.DataSource = response.Data.Select(ps => new
-                {
-                    idColumn = ps.IdParteSucursal,
-                    parteColumn = ps.Parte,
-                    costoUnitarioColumn = ps.CostoUnitario,
-                    stockColumn = ps.Stock,
-                    fechaRegistroColumn = ps.FechaRegistro.ToString("dd/MM/yyyy"),
-                    fechaModificacionColumn = ps.FechaModificacion.ToString("dd/MM/yyyy"),
-                    sucursalColumn = ps.Sucursal
-                }).ToList();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al cargar los datos de la tabla: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        #endregion
 
         private async void cargaMasivaButton_Click(object sender, EventArgs e)
         {
@@ -344,14 +306,78 @@ namespace CapaVista
                 }
 
                 MessageBox.Show("Sucursales importadas correctamente.");
-                
-                await dataTableLoad();
+
+                var responseParteSucursal = await _parteSucursalServices.ObtenerPartesSucursal();
+                if (response.Success == false || response?.Data == null)
+                {
+                    MessageBox.Show($"Error al cargar partes sucursales: {response.ErrorMessage}");
+                    return;
+                }
+
+                _listParteSucursal.Clear();
+                _listParteSucursal = responseParteSucursal.Data.ToList();
+                await dataTableLoad(responseParteSucursal.Data.ToList());
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al importar Sucursales: {ex.Message}");
 
             }
+        }
+
+        #region additional methods for data loading
+
+        private async Task CargarParteSucursalesTabla()
+        {
+            var listTemp = _listParteSucursal;
+            await dataTableLoad(listTemp);
+        }
+
+        private async Task dataTableLoad(List<ParteSucursal> list)
+        {
+            try
+            {
+                table.DataSource = null;
+
+
+                table.DataSource = list.Select(ps => new
+                {
+                    idColumn = ps.IdParteSucursal,
+                    parteColumn = ps.Parte,
+                    costoUnitarioColumn = ps.CostoUnitario,
+                    stockColumn = ps.Stock,
+                    fechaRegistroColumn = ps.FechaRegistro.ToString("dd/MM/yyyy"),
+                    fechaModificacionColumn = ps.FechaModificacion.ToString("dd/MM/yyyy"),
+                    sucursalColumn = ps.Sucursal,
+                    casaColumn = ps.Casa,
+                    descripcionColumn = ps.Descripcion
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar los datos de la tabla: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        #endregion
+
+        private async void numeroParteSearchInput_TextChanged(object sender, EventArgs e)
+        {
+            table.DataSource = null;
+
+            var listTemp = _listParteSucursal;
+
+            if (String.IsNullOrEmpty(numeroParteSearchInput.Text))
+            {
+                await CargarParteSucursalesTabla();
+            }
+
+            var listFilter = listTemp.Where(x =>
+                x.Parte.ToLower().Contains(numeroParteSearchInput.Text.ToLower()
+            ))
+            .ToList();
+
+            await dataTableLoad(listFilter);
         }
     }
 }

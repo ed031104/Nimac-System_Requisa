@@ -33,9 +33,11 @@
             label1 = new Label();
             table = new DataGridView();
             numeroParteColumn = new DataGridViewTextBoxColumn();
+            descripcionColumn = new DataGridViewTextBoxColumn();
             costoUnitarioColumn = new DataGridViewTextBoxColumn();
             stockColumn = new DataGridViewTextBoxColumn();
             numeroSucursalColumn = new DataGridViewTextBoxColumn();
+            casaColumn = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)table).BeginInit();
             SuspendLayout();
             // 
@@ -72,7 +74,7 @@
             // table
             // 
             table.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            table.Columns.AddRange(new DataGridViewColumn[] { numeroParteColumn, costoUnitarioColumn, stockColumn, numeroSucursalColumn });
+            table.Columns.AddRange(new DataGridViewColumn[] { numeroParteColumn, descripcionColumn, costoUnitarioColumn, stockColumn, numeroSucursalColumn, casaColumn });
             table.Location = new Point(35, 124);
             table.Name = "table";
             table.RowHeadersWidth = 51;
@@ -86,6 +88,14 @@
             numeroParteColumn.MinimumWidth = 6;
             numeroParteColumn.Name = "numeroParteColumn";
             numeroParteColumn.Width = 125;
+            // 
+            // descripcionColumn
+            // 
+            descripcionColumn.DataPropertyName = "descripcionColumn";
+            descripcionColumn.HeaderText = "Descripción de Parte";
+            descripcionColumn.MinimumWidth = 6;
+            descripcionColumn.Name = "descripcionColumn";
+            descripcionColumn.Width = 125;
             // 
             // costoUnitarioColumn
             // 
@@ -111,6 +121,14 @@
             numeroSucursalColumn.Name = "numeroSucursalColumn";
             numeroSucursalColumn.Width = 125;
             // 
+            // casaColumn
+            // 
+            casaColumn.DataPropertyName = "casaColumn";
+            casaColumn.HeaderText = "Número de Casa";
+            casaColumn.MinimumWidth = 6;
+            casaColumn.Name = "casaColumn";
+            casaColumn.Width = 125;
+            // 
             // ImportarExcelParteSucursal
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -135,8 +153,10 @@
         private Label label1;
         public DataGridView table;
         private DataGridViewTextBoxColumn numeroParteColumn;
+        private DataGridViewTextBoxColumn descripcionColumn;
         private DataGridViewTextBoxColumn costoUnitarioColumn;
         private DataGridViewTextBoxColumn stockColumn;
         private DataGridViewTextBoxColumn numeroSucursalColumn;
+        private DataGridViewTextBoxColumn casaColumn;
     }
 }

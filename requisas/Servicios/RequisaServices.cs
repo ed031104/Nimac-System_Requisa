@@ -421,7 +421,7 @@ namespace Servicios
                 if (!response.Success || !response.Data.Any())
                 {
                     return new ServiceResponse<IEnumerable<RequisaJoinEstado>>.Builder()
-                        .SetMessage(response.Message)
+                        .SetErrorMessage(response.Message)
                         .SetSuccess(false)
                         .Build();
                 }
@@ -435,7 +435,7 @@ namespace Servicios
             {
                 return new ServiceResponse<IEnumerable<RequisaJoinEstado>>.Builder()
                     .SetData(null)
-                    .SetMessage("Error al obtener las requisas agrupadas por estado: " + ex.Message)
+                    .SetErrorMessage("Error al obtener las requisas agrupadas por estado: " + ex.Message)
                     .SetSuccess(false)
                     .Build();
             }

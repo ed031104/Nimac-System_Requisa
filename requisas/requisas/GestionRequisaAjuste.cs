@@ -172,6 +172,12 @@ namespace CapaVista
         {
             try
             {
+                if(UserSession.Instance.IdRol == (int)UserRol.Auxiliar)
+                {
+                    MessageBox.Show("No tienes permisos para rechazar una requisa.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
                 bool Aceptar = MessageBox.Show("¿Está seguro de que desea rechazar la requisa seleccionada?, una vez rechazada ya no se puede utilizar", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
 
                 if (!Aceptar)

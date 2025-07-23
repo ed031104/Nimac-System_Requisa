@@ -52,9 +52,9 @@ namespace CapaVista.utils
                     }
 
                     var parteSucursal = responseParteSucursal.Data
-                        .Where(ps => ps.Sucursal.Casa.CodigoCasa == hoja.Cells[fila,1].Text)
-                        .Where(ps => ps.Sucursal.NumeroSucursal == hoja.Cells[fila, 2].Text)
-                        .Where(ps => ps.Parte.NumeroParte == hoja.Cells[fila, 3].Text)
+                        .Where(ps => ps.Casa == hoja.Cells[fila,1].Text)
+                        .Where(ps => ps.Sucursal == hoja.Cells[fila, 2].Text)
+                        .Where(ps => ps.Parte == hoja.Cells[fila, 3].Text)
                         .FirstOrDefault();
                  
                     if (parteSucursal == null) { 
@@ -99,110 +99,7 @@ namespace CapaVista.utils
                     .Build();
             }
         }
-
-        public async Task<ServiceResponse<IEnumerable<Casa>>> ParserExcelAndCasa(string filePath)
-        {
-            var casas = new List<Casa>();
-            try
-            {
-                ExcelPackage.License.SetNonCommercialOrganization("My Noncommercial organization");
-
-                using var package = new ExcelPackage(new FileInfo(filePath));
-                var hoja = package.Workbook.Worksheets[0]; // Asumiendo que los datos están en la primera hoja
-
-                int filaInicio = 2; // Asumiendo que la primera fila es el encabezado
-                int totalFilas = hoja.Dimension.Rows;
-
-                var validatorColumnsExcel = validarColumnas(filePath, new List<string> { "Codigo Casa", "Nombre Casa" });
-
-                if (!validatorColumnsExcel)
-                {
-                    return new ServiceResponse<IEnumerable<Casa>>.Builder()
-                        .SetErrorMessage("El archivo no contiene las columnas esperadas: \n \"Codigo Casa\", \"Nombre Casa\"")
-                        .SetSuccess(false)
-                        .Build();
-                }
-
-                for (int fila = filaInicio; fila <= totalFilas; fila++)
-                {
-
-                    var casa = new Casa.Builder()
-                        .SetCodigoCasa(hoja.Cells[fila, 1].Text)
-                        .SetNombreCasa(hoja.Cells[fila, 2].Text)
-                        .SetFechaRegistro(DateTime.Now)
-                        .SetFechaModificacion(DateTime.Now)
-                        .Build();
-                    casas.Add(casa);
-                }
-
-                return new ServiceResponse<IEnumerable<Casa>>.Builder()
-                    .SetData(casas)
-                    .SetMessage("Archivo procesado correctamente.")
-                    .SetSuccess(true)
-                    .Build();
-            }
-            catch (Exception e)
-            {
-                return new ServiceResponse<IEnumerable<Casa>>.Builder()
-                    .SetErrorMessage("Error al procesar el archivo: " + e.Message)
-                    .SetSuccess(false)
-                    .Build();
-            }
-        }
-
-        public async Task<ServiceResponse<IEnumerable<Sucursal>>> ParserExcelAndSucursal(string filePath) {
-            var sucursales = new List<Sucursal>();
-            try
-            {
-                ExcelPackage.License.SetNonCommercialOrganization("My Noncommercial organization");
-
-                using var package = new ExcelPackage(new FileInfo(filePath));
-                var hoja = package.Workbook.Worksheets[0]; // Asumiendo que los datos están en la primera hoja
-
-                int filaInicio = 2; // Asumiendo que la primera fila es el encabezado
-                int totalFilas = hoja.Dimension.Rows;
-
-                var validatorColumnsExcel = validarColumnas(filePath, new List<string> { "Numero Sucursal", "Nombre Sucursal", "Codigo Casa" });
-
-                if (!validatorColumnsExcel)
-                {
-                    return new ServiceResponse<IEnumerable<Sucursal>>.Builder()
-                        .SetErrorMessage("El archivo no contiene las columnas esperadas: \n \"Numero Sucursal\", \"Nombre Sucursal\", \"Codigo Casa\"")
-                        .SetSuccess(false)
-                        .Build();
-                }
-
-                for (int fila = filaInicio; fila <= totalFilas; fila++)
-                {
-
-                    var sucursal = new Sucursal.Builder()
-                        .SetNumeroSucursal(hoja.Cells[fila, 1].Text)
-                        .SetNombreSucursal(hoja.Cells[fila, 2].Text)
-                        .SetCasa( new Casa.Builder()
-                            .SetCodigoCasa(hoja.Cells[fila, 3].Text)
-                            .Build()
-                        )
-                        .SetFechaRegistro(DateTime.Now)
-                        .SetFechaModificacion(DateTime.Now)
-                        .Build();
-                    sucursales.Add(sucursal);
-                }
-
-                return new ServiceResponse<IEnumerable<Sucursal>>.Builder()
-                    .SetData(sucursales)
-                    .SetMessage("Archivo procesado correctamente.")
-                    .SetSuccess(true)
-                    .Build();
-            }
-            catch (Exception e)
-            {
-                return new ServiceResponse<IEnumerable<Sucursal>>.Builder()
-                    .SetErrorMessage("Error al procesar el archivo: " + e.Message)
-                    .SetSuccess(false)
-                    .Build();
-            }
-        }
-
+     
         public async Task<ServiceResponse<IEnumerable<ParteSucursal>>> ParserExcelAndParteSucursal(string filePath) {
             var parteSucursales = new List<ParteSucursal>();
             try
@@ -215,7 +112,7 @@ namespace CapaVista.utils
                 int filaInicio = 2; // Asumiendo que la primera fila es el encabezado
                 int totalFilas = hoja.Dimension.Rows;
 
-                var validatorColumnsExcel = validarColumnas(filePath, new List<string> { "Numero de Parte", "Costo Unitario", "Stock", "Numero de Sucursal" });
+                var validatorColumnsExcel = validarColumnas(filePath, new List<string> { "Numero de Parte", "Costo Unitario", "Stock", "Numero de Sucursal", "Numero de Casa", "Descripcion Parte" });
 
                 if (!validatorColumnsExcel)
                 {
@@ -229,17 +126,12 @@ namespace CapaVista.utils
                 {
 
                     var parteSucursal = new ParteSucursal.Builder()
-                        .SetParte(
-                            new Parte.Builder()
-                                .SetNumeroParte(hoja.Cells[fila, 1].Text)
-                                .Build()
-                        )
+                        .SetParte(hoja.Cells[fila, 1].Text)
                         .SetCostoUnitario(Convert.ToDecimal(hoja.Cells[fila, 2].Text))
                         .SetCantidad(Convert.ToInt32(hoja.Cells[fila, 3].Text))
-                        .SetSucursal(new Sucursal.Builder()
-                            .SetNumeroSucursal(hoja.Cells[fila, 4].Text)
-                            .Build()
-                        )
+                        .SetSucursal(hoja.Cells[fila, 4].Text)
+                        .SetCasa(hoja.Cells[fila, 5].Text)
+                        .SetDescripcion(hoja.Cells[fila, 6].Text)
                         .SetFechaRegistro(DateTime.Now)
                         .SetFechaModificacion(DateTime.Now)
                         .Build();
@@ -261,56 +153,7 @@ namespace CapaVista.utils
                     .Build();
             }
         }
-
-        public async Task<ServiceResponse<IEnumerable<Parte>>> ParserExcelAndParte(string filePath) {
-            var partes = new List<Parte>();
-            try
-            {
-                ExcelPackage.License.SetNonCommercialOrganization("My Noncommercial organization");
-
-                using var package = new ExcelPackage(new FileInfo(filePath));
-                var hoja = package.Workbook.Worksheets[0]; // Asumiendo que los datos están en la primera hoja
-
-                int filaInicio = 2; // Asumiendo que la primera fila es el encabezado
-                int totalFilas = hoja.Dimension.Rows;
-
-                var validatorColumnsExcel = validarColumnas(filePath, new List<string> { "Numero Parte", "Descripcion Parte" });
-
-                if (!validatorColumnsExcel)
-                {
-                    return new ServiceResponse<IEnumerable<Parte>>.Builder()
-                        .SetErrorMessage("El archivo no contiene las columnas esperadas: \n 'Numero Parte', 'Descripcion Parte' ")
-                        .SetSuccess(false)
-                        .Build();
-                }
-
-                for (int fila = filaInicio; fila <= totalFilas; fila++)
-                {
-
-                    var parte = new Parte.Builder()
-                        .SetNumeroParte(hoja.Cells[fila, 1].Text)
-                        .SetDescripcionParte(hoja.Cells[fila, 2].Text)
-                        .SetFechaRegistro(DateTime.Now)
-                        .SetFechaModificacion(DateTime.Now)
-                        .Build();
-                    partes.Add(parte);
-                }
-
-                return new ServiceResponse<IEnumerable<Parte>>.Builder()
-                    .SetData(partes)
-                    .SetMessage("Archivo procesado correctamente.")
-                    .SetSuccess(true)
-                    .Build();
-            }
-            catch (Exception e)
-            {
-                return new ServiceResponse<IEnumerable<Parte>>.Builder()
-                    .SetErrorMessage("Error al procesar el archivo: " + e.Message)
-                    .SetSuccess(false)
-                    .Build();
-            }
-        }
-
+     
         private bool validarColumnas(string filePath, List<string>encabezadosEsperados)
         {
 

@@ -257,9 +257,6 @@ D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\bin\Debug\net8.0-windo
 D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\bin\Debug\net8.0-windows\zh-Hans\System.ServiceModel.Primitives.resources.dll
 D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\bin\Debug\net8.0-windows\zh-Hant\System.ServiceModel.Primitives.resources.dll
 D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.AsignaciónUsuarioRoles.resources
-D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.GestionCasa.resources
-D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.GestionPartes.resources
-D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.GestionSucursal.resources
 D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.ReporteUsuarios.resources
 D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.AsignacionParteSucursal.resources
 D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.GestionRequisaAjuste.resources
@@ -284,10 +281,7 @@ D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\bin\Debug\net8.0-windo
 D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.reportView.resources
 D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.DetallesRequisa.resources
 D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.GestionRequisa.resources
-D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.Components.ImportarExcelCasa.resources
-D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.Components.ImportarExcelSucursal.resources
 D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.Components.ImportarExcelParteSucursal.resources
 D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.Components.ViewParteSucursales.resources
 D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.Components.ReportRequisaAjustes.resources
 D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.Components.ReportRequisaAjusteEstado.resources
-D:\user\documentos\Nimac\SISTEMA NICMAC\requisas\requisas\obj\Debug\net8.0-windows\CapaVista.Components.ImportarExcelParte.resources

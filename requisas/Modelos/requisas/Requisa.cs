@@ -12,27 +12,30 @@ namespace Modelos.requisas
         private DateTime _fechaRegistro;
         private string _descripcion;
         bool estado;
-        private Sucursal _sucursal;
+        private string _sucursal;
+        private string _casa;
 
         #region constructor
         public Requisa()
         {
         }
-        public Requisa(string nDocumentoRequisa, DateTime fechaRegistro, string descripcion, Sucursal sucursal, bool estado)
+        public Requisa(string nDocumentoRequisa, DateTime fechaRegistro, string descripcion, string sucursal, bool estado, string casa)
         {
             _nDocumentoRequisa = nDocumentoRequisa;
             _fechaRegistro = fechaRegistro;
             _descripcion = descripcion;
             _sucursal = sucursal;
             this.estado = estado;
+            _casa = casa;
         }
         #endregion
 
         public string NDocumentoRequisa { get => _nDocumentoRequisa; set => _nDocumentoRequisa = value; }
         public DateTime FechaRegistro { get => _fechaRegistro; set => _fechaRegistro = value; }
         public string Descripcion { get => _descripcion; set => _descripcion = value; }
-        public Sucursal Sucursal { get => _sucursal ; set => _sucursal = value; }
+        public string Sucursal { get => _sucursal ; set => _sucursal = value; }
         public bool Estado { get => estado; set => estado = value; }
+        public string Casa { get => _casa; set => _casa = value; }
 
         public override string ToString()
         {
@@ -62,7 +65,7 @@ namespace Modelos.requisas
                 _requisa._descripcion = descripcion;
                 return this;
             }
-            public Builder SetSucursal(Sucursal sucursal)
+            public Builder SetSucursal(string sucursal)
             {
                 _requisa._sucursal = sucursal;
                 return this;
@@ -70,6 +73,11 @@ namespace Modelos.requisas
             public Builder SetEstado(bool estado)
             {
                 _requisa.estado = estado;
+                return this;
+            }
+            public Builder SetCasa(string casa)
+            {
+                _requisa._casa = casa;
                 return this;
             }
             public Requisa Build()

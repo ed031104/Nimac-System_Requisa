@@ -33,7 +33,7 @@ namespace Dbo
 
             cmd.Parameters.AddWithValue("@FechaRegistro", requisa.FechaRegistro);
             cmd.Parameters.AddWithValue("@Descripcion", requisa.Descripcion);
-            cmd.Parameters.AddWithValue("@IdSucursal", requisa.Sucursal.NumeroSucursal);
+            cmd.Parameters.AddWithValue("@IdSucursal", requisa.Sucursal);
             cmd.Parameters.AddWithValue("@Estado", requisa.Estado);
 
             try
@@ -54,11 +54,14 @@ namespace Dbo
                 await using var conn = Conexion.conexion();
                 await conn.OpenAsync();
 
-                var query = new StringBuilder();
-                query.Append("SELECT r.N_DocumentoRequisa, r.FechaRegistro, r.Descripcion, r.Estado, r.IdSucursal, s.Numero_Sucursal, s.Nombre_Sucursal, s.FechaRegistro, s.FechaModificacion, c.Codigo_Casa, c.FechaModificacion, c.FechaRegistro, c.Nombre_Casa from Requisa r  ");
-                query.Append("LEFT join Sucursal s on r.IdSucursal = s.Numero_Sucursal ");
-                query.Append("LEFT join Casa c on c.Codigo_Casa = s.Codigo_Casa ");
-                query.Append("where  r.N_DocumentoRequisa = @NDocumentoRequisa ");
+                var query =
+                @"SELECT 
+                    r.N_DocumentoRequisa, 
+                    r.FechaRegistro, 
+                    r.Descripcion, 
+                    r.Estado
+                from Requisa r  
+                where  r.N_DocumentoRequisa = @NDocumentoRequisa ";
 
                 using var cmd = conn.CreateCommand();
                 cmd.CommandText = query.ToString();
@@ -107,7 +110,7 @@ namespace Dbo
             cmd.CommandText = query.ToString();
             cmd.Parameters.AddWithValue("@Descripcion", requisa.Descripcion);
             cmd.Parameters.AddWithValue("@Estado", requisa.Estado);
-            cmd.Parameters.AddWithValue("@idSucursal", requisa.Sucursal.NumeroSucursal);
+            cmd.Parameters.AddWithValue("@idSucursal", requisa.Sucursal);
             cmd.Parameters.AddWithValue("@NumeroRequisa", requisa.NDocumentoRequisa);
 
             try
@@ -166,12 +169,13 @@ namespace Dbo
 
                 string query = @"
                 select	
-	                r.N_DocumentoRequisa [NumeroRequisa], r.FechaRegistro[FechaRegistroRequisa], r.Descripcion[DescripcionRequisa], r.Estado [idEstadoRequisa], r.IdSucursal [idSucursalRequisa], 
-	                s.Numero_Sucursal [NumeroSucursal], s.Nombre_Sucursal [NombreSucursal], s.FechaRegistro [FechaRegistroSucursal], s.FechaModificacion [FechaModificacionSucursal], 
-	                c.Codigo_Casa [CodigoCasa], c.FechaModificacion [FechaModificacionCasa], c.FechaRegistro [FechaResgistroCasa], c.Nombre_Casa [NombreCasa]
-                from Requisa r
-                LEFT join Sucursal s on r.IdSucursal = s.Numero_Sucursal 
-                LEFT join Casa c on c.Codigo_Casa = s.Codigo_Casa 
+	                r.N_DocumentoRequisa [NumeroRequisa], 
+                    r.FechaRegistro[FechaRegistroRequisa], 
+                    r.Descripcion[DescripcionRequisa], 
+                    r.Estado [idEstadoRequisa], r.IdSucursal [idSucursalRequisa], 
+                    r.IdSucursal [sucursalRequisa], 
+                    r.IdCasa [casaRequisa]
+	            from Requisa r
                 ";
 
                 using var cmd = conn.CreateCommand();
@@ -182,27 +186,14 @@ namespace Dbo
                 var requisas = new List<Requisa>();
                 while (await reader.ReadAsync())
                 {
-                    var casa = new Casa.Builder()
-                        .SetCodigoCasa(reader.validateTypeData<string>("CodigoCasa"))
-                        .SetFechaModificacion(reader.validateTypeData<DateTime>("FechaModificacionCasa"))
-                        .SetFechaRegistro(reader.validateTypeData<DateTime>("FechaResgistroCasa"))
-                        .SetNombreCasa(reader.validateTypeData<string>("NombreCasa"))
-                        .Build();
-
-                    var sucursal = new Sucursal.Builder()
-                        .SetNumeroSucursal(reader.validateTypeData<string>("NumeroSucursal"))
-                        .SetNombreSucursal(reader.validateTypeData<string>("NombreSucursal"))
-                        .SetFechaRegistro(reader.validateTypeData<DateTime>("FechaRegistroSucursal"))
-                        .SetFechaModificacion(reader.validateTypeData<DateTime>("FechaModificacionSucursal"))
-                        .SetCasa(casa)
-                        .Build();
-
+                    
                     var requisa = new Requisa.Builder()
                         .SetNDocumentoRequisa(reader.validateTypeData<string>("NumeroRequisa"))
                         .SetFechaRegistro(reader.validateTypeData<DateTime>("FechaRegistroRequisa"))
                         .SetDescripcion(reader.validateTypeData<string>("DescripcionRequisa"))
                         .SetEstado(reader.validateTypeData<bool>("idEstadoRequisa"))
-                        .SetSucursal(sucursal)
+                        .SetSucursal(reader.validateTypeData<string>("sucursalRequisa"))
+                        .SetCasa(reader.validateTypeData<string>("casaRequisa")) 
                         .Build();
                     requisas.Add(requisa);
                 }

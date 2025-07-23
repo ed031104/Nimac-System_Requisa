@@ -35,9 +35,12 @@
             costoUnitarioColumn = new DataGridViewTextBoxColumn();
             stockColumn = new DataGridViewTextBoxColumn();
             sucursalColumn = new DataGridViewTextBoxColumn();
+            casaColumn = new DataGridViewTextBoxColumn();
             groupBox1 = new GroupBox();
             label1 = new Label();
             buscarPorNombreInput = new TextBox();
+            label2 = new Label();
+            numeroParteSearchInput = new TextBox();
             ((System.ComponentModel.ISupportInitialize)table).BeginInit();
             groupBox1.SuspendLayout();
             SuspendLayout();
@@ -46,11 +49,11 @@
             // 
             table.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             table.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            table.Columns.AddRange(new DataGridViewColumn[] { idparteSucursalColumn, numeroParteColumn, nombreParteColumn, costoUnitarioColumn, stockColumn, sucursalColumn });
+            table.Columns.AddRange(new DataGridViewColumn[] { idparteSucursalColumn, numeroParteColumn, nombreParteColumn, costoUnitarioColumn, stockColumn, sucursalColumn, casaColumn });
             table.Location = new Point(12, 110);
             table.Name = "table";
             table.RowHeadersWidth = 51;
-            table.Size = new Size(947, 319);
+            table.Size = new Size(1156, 319);
             table.TabIndex = 0;
             table.CellClick += table_CellClick;
             // 
@@ -73,7 +76,7 @@
             // nombreParteColumn
             // 
             nombreParteColumn.DataPropertyName = "nombreParteColumn";
-            nombreParteColumn.HeaderText = "Nombre de Parte";
+            nombreParteColumn.HeaderText = "Descripción de Parte";
             nombreParteColumn.MinimumWidth = 6;
             nombreParteColumn.Name = "nombreParteColumn";
             nombreParteColumn.Width = 125;
@@ -102,13 +105,23 @@
             sucursalColumn.Name = "sucursalColumn";
             sucursalColumn.Width = 125;
             // 
+            // casaColumn
+            // 
+            casaColumn.DataPropertyName = "casaColumn";
+            casaColumn.HeaderText = "Casa";
+            casaColumn.MinimumWidth = 6;
+            casaColumn.Name = "casaColumn";
+            casaColumn.Width = 125;
+            // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(label2);
+            groupBox1.Controls.Add(numeroParteSearchInput);
             groupBox1.Controls.Add(label1);
             groupBox1.Controls.Add(buscarPorNombreInput);
             groupBox1.Location = new Point(12, 12);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(931, 79);
+            groupBox1.Size = new Size(1140, 79);
             groupBox1.TabIndex = 1;
             groupBox1.TabStop = false;
             groupBox1.Text = "Filtros";
@@ -130,11 +143,28 @@
             buscarPorNombreInput.TabIndex = 0;
             buscarPorNombreInput.TextChanged += buscarPorNombreInput_TextChanged;
             // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(608, 40);
+            label2.Name = "label2";
+            label2.Size = new Size(198, 20);
+            label2.TabIndex = 3;
+            label2.Text = "Buscar por Número de Parte:";
+            // 
+            // numeroParteSearchInput
+            // 
+            numeroParteSearchInput.Location = new Point(813, 36);
+            numeroParteSearchInput.Name = "numeroParteSearchInput";
+            numeroParteSearchInput.Size = new Size(281, 27);
+            numeroParteSearchInput.TabIndex = 2;
+            numeroParteSearchInput.TextChanged += numeroParteSearchInput_TextChanged;
+            // 
             // ViewParteSucursales
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(955, 441);
+            ClientSize = new Size(1164, 441);
             Controls.Add(groupBox1);
             Controls.Add(table);
             Name = "ViewParteSucursales";
@@ -158,5 +188,8 @@
         private DataGridViewTextBoxColumn costoUnitarioColumn;
         private DataGridViewTextBoxColumn stockColumn;
         private DataGridViewTextBoxColumn sucursalColumn;
+        private DataGridViewTextBoxColumn casaColumn;
+        private Label label2;
+        private TextBox numeroParteSearchInput;
     }
 }

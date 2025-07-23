@@ -44,10 +44,12 @@ namespace CapaVista.Components
         {
             table.DataSource = _listParteSucursal.Select(p => new
             {
-                numeroParteColumn = p?.Parte.NumeroParte,
+                numeroParteColumn = p?.Parte,
                 costoUnitarioColumn = p?.CostoUnitario,
                 stockColumn = p?.Stock,
-                numeroSucursalColumn = p?.Sucursal.NumeroSucursal
+                numeroSucursalColumn = p?.Sucursal,
+                casaColumn = p?.Casa,
+                descripcionColumn = p?.Descripcion,
             }).ToList();
         }
     }

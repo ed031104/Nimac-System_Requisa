@@ -35,13 +35,7 @@
             nUEVAToolStripMenuItem = new ToolStripMenuItem();
             gESTIONDEREQUISAToolStripMenuItem = new ToolStripMenuItem();
             viewMenu = new ToolStripMenuItem();
-            toolBarToolStripMenuItem = new ToolStripMenuItem();
             statusBarToolStripMenuItem = new ToolStripMenuItem();
-            toolsMenu = new ToolStripMenuItem();
-            optionsToolStripMenuItem = new ToolStripMenuItem();
-            reporteCasaToolStripMenuItem = new ToolStripMenuItem();
-            windowsMenu = new ToolStripMenuItem();
-            newWindowToolStripMenuItem = new ToolStripMenuItem();
             helpMenu = new ToolStripMenuItem();
             aignarRolButton = new ToolStripMenuItem();
             rEPORTESToolStripMenuItem = new ToolStripMenuItem();
@@ -64,9 +58,8 @@
             // menuStrip
             // 
             menuStrip.ImageScalingSize = new Size(24, 24);
-            menuStrip.Items.AddRange(new ToolStripItem[] { editMenu, viewMenu, toolsMenu, windowsMenu, helpMenu, rEPORTESToolStripMenuItem, usuariosToolStripMenuItem, oPCIONESToolStripMenuItem });
+            menuStrip.Items.AddRange(new ToolStripItem[] { editMenu, viewMenu, helpMenu, rEPORTESToolStripMenuItem, usuariosToolStripMenuItem, oPCIONESToolStripMenuItem });
             menuStrip.Location = new Point(0, 0);
-            menuStrip.MdiWindowListItem = windowsMenu;
             menuStrip.Name = "menuStrip";
             menuStrip.Padding = new Padding(8, 3, 0, 3);
             menuStrip.Size = new Size(911, 34);
@@ -98,60 +91,18 @@
             // 
             // viewMenu
             // 
-            viewMenu.DropDownItems.AddRange(new ToolStripItem[] { toolBarToolStripMenuItem, statusBarToolStripMenuItem });
+            viewMenu.DropDownItems.AddRange(new ToolStripItem[] { statusBarToolStripMenuItem });
             viewMenu.Name = "viewMenu";
             viewMenu.Size = new Size(64, 28);
             viewMenu.Text = "PARTE";
-            // 
-            // toolBarToolStripMenuItem
-            // 
-            toolBarToolStripMenuItem.CheckOnClick = true;
-            toolBarToolStripMenuItem.Name = "toolBarToolStripMenuItem";
-            toolBarToolStripMenuItem.Size = new Size(242, 26);
-            toolBarToolStripMenuItem.Text = "Gestión de Partes";
-            toolBarToolStripMenuItem.Click += ToolBarToolStripMenuItem_Click;
             // 
             // statusBarToolStripMenuItem
             // 
             statusBarToolStripMenuItem.CheckOnClick = true;
             statusBarToolStripMenuItem.Name = "statusBarToolStripMenuItem";
-            statusBarToolStripMenuItem.Size = new Size(242, 26);
-            statusBarToolStripMenuItem.Text = "Asignación de sucursal";
+            statusBarToolStripMenuItem.Size = new Size(283, 26);
+            statusBarToolStripMenuItem.Text = "Gestion Parte Sucursal y Casa";
             statusBarToolStripMenuItem.Click += StatusBarToolStripMenuItem_Click;
-            // 
-            // toolsMenu
-            // 
-            toolsMenu.DropDownItems.AddRange(new ToolStripItem[] { optionsToolStripMenuItem, reporteCasaToolStripMenuItem });
-            toolsMenu.Name = "toolsMenu";
-            toolsMenu.Size = new Size(68, 28);
-            toolsMenu.Text = "CASAS";
-            // 
-            // optionsToolStripMenuItem
-            // 
-            optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            optionsToolStripMenuItem.Size = new Size(183, 26);
-            optionsToolStripMenuItem.Text = "Gestión Casas";
-            optionsToolStripMenuItem.Click += optionsToolStripMenuItem_Click;
-            // 
-            // reporteCasaToolStripMenuItem
-            // 
-            reporteCasaToolStripMenuItem.Name = "reporteCasaToolStripMenuItem";
-            reporteCasaToolStripMenuItem.Size = new Size(183, 26);
-            reporteCasaToolStripMenuItem.Text = "Reporte Casa";
-            // 
-            // windowsMenu
-            // 
-            windowsMenu.DropDownItems.AddRange(new ToolStripItem[] { newWindowToolStripMenuItem });
-            windowsMenu.Name = "windowsMenu";
-            windowsMenu.Size = new Size(110, 28);
-            windowsMenu.Text = "SUCURSALES";
-            // 
-            // newWindowToolStripMenuItem
-            // 
-            newWindowToolStripMenuItem.Name = "newWindowToolStripMenuItem";
-            newWindowToolStripMenuItem.Size = new Size(235, 26);
-            newWindowToolStripMenuItem.Text = "Gestión de Sucursales";
-            newWindowToolStripMenuItem.Click += ShowNewForm;
             // 
             // helpMenu
             // 
@@ -180,7 +131,7 @@
             // 
             requisaMenuButton.DropDownItems.AddRange(new ToolStripItem[] { requisasCompletadasToolStripMenuItem, ajustesRequisaToolStripMenuItem });
             requisaMenuButton.Name = "requisaMenuButton";
-            requisaMenuButton.Size = new Size(224, 26);
+            requisaMenuButton.Size = new Size(144, 26);
             requisaMenuButton.Text = "Requisa";
             requisaMenuButton.Click += irAReportesToolStripMenuItem_Click;
             // 
@@ -289,12 +240,7 @@
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem editMenu;
         private System.Windows.Forms.ToolStripMenuItem viewMenu;
-        private System.Windows.Forms.ToolStripMenuItem toolBarToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem statusBarToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem toolsMenu;
-        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem windowsMenu;
-        private System.Windows.Forms.ToolStripMenuItem newWindowToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpMenu;
         private System.Windows.Forms.ToolStripMenuItem aignarRolButton;
         private System.Windows.Forms.ToolTip toolTip;
@@ -310,7 +256,6 @@
         private ToolStripMenuItem cerrarSesiónToolStripMenuItem;
         private System.Windows.Forms.Timer revisionTimer;
         private ToolStripMenuItem reporteDeUsuariosToolStripMenuItem;
-        private ToolStripMenuItem reporteCasaToolStripMenuItem;
         private ToolStripMenuItem gESTIONDEREQUISAToolStripMenuItem;
         private ToolStripMenuItem requisasCompletadasToolStripMenuItem;
         private ToolStripMenuItem ajustesRequisaToolStripMenuItem;

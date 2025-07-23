@@ -113,13 +113,13 @@ namespace CapaVista
                     ra.IdRequisaAjuste,
                     ra.TipoAjuste,
                     ra.ParteSucursal?.Parte,
-                    ra.ParteSucursal?.Parte?.DescripcionParte ?? "Parte Vacía",
+                    ra.ParteSucursal?.Descripcion ?? "Parte Vacía",
                     ra.MontoAjuste ?? 0,
                     ra.Descripcion ?? "",
                     ra.ParteSucursal?.CostoUnitario ?? 0,
                     ra?.CostoPromedioExtendido ?? 0,
-                    ra?.ParteSucursal?.Sucursal?.Casa?.CodigoCasa ?? "Casa Vacía",
-                    ra?.ParteSucursal?.Sucursal?.NumeroSucursal ?? "Sucursal Vacía",
+                    ra?.ParteSucursal?.Casa ?? "Casa Vacía",
+                    ra?.ParteSucursal?.Sucursal ?? "Sucursal Vacía",
                     ra.ParteSucursal?.CostoUnitario ?? 0,
                     ra?.Reclamo,
                     ra?.Transferencia,
@@ -309,7 +309,7 @@ namespace CapaVista
                         return;
                     }
 
-                    if (reclamo?.DocumentoReclamo?.IdDocumento != null)
+                    if (reclamo?.DocumentoReclamo?.IdDocumento != null || reclamo?.DocumentoReclamo?.IdDocumento == 0)
                     {
                         MessageBox.Show("Ya el reclamo tiene asociado un PDF.");
                         cargarPdfButton.Visible = false;
