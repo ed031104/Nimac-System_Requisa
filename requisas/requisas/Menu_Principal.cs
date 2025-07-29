@@ -275,12 +275,12 @@ namespace CapaVista
 
         private void ShowNewForm(object sender, EventArgs e)
         {
-            
+
         }
 
         private void ToolBarToolStripMenuItem_Click(object sender, EventArgs e)
         {
-          
+
         }
         private void StatusBarToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -332,6 +332,48 @@ namespace CapaVista
             }
 
             ReportRequisaAjustes m1 = new ReportRequisaAjustes();
+            m1.MdiParent = this;
+            m1.Show();
+
+            currentChildForm = m1;
+        }
+
+        private void parteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentChildForm != null && !currentChildForm.IsDisposed)
+            {
+                currentChildForm.Close();
+            }
+
+            ReporteParte m1 = new ReporteParte();
+            m1.MdiParent = this;
+            m1.Show();
+
+            currentChildForm = m1;
+        }
+
+        private void cantidadDeRequisasPorEstadoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentChildForm != null && !currentChildForm.IsDisposed)
+            {
+                currentChildForm.Close();
+            }
+
+            ReporteCantidadRequisaEstados m1 = new ReporteCantidadRequisaEstados();
+            m1.MdiParent = this;
+            m1.Show();
+
+            currentChildForm = m1;
+        }
+
+        private void detallesDeRequisaPorEstadoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentChildForm != null && !currentChildForm.IsDisposed)
+            {
+                currentChildForm.Close();
+            }
+
+            ReporteDetalleCantidadRequisaEstado m1 = new ReporteDetalleCantidadRequisaEstado();
             m1.MdiParent = this;
             m1.Show();
 

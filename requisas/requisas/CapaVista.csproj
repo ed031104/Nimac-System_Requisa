@@ -18,8 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="report\DetalleCantidadRequisaReporte.rdlc" />
+    <EmbeddedResource Include="report\CantidadRequisaReporte.rdlc" />
     <EmbeddedResource Include="report\RequisasReporte.rdlc" />
     <EmbeddedResource Include="report\RequisasGeneral.rdlc" />
+    <EmbeddedResource Include="report\ParteReporte.rdlc" />
     <EmbeddedResource Include="report\UsuariosReporte.rdlc" />
   </ItemGroup>
 

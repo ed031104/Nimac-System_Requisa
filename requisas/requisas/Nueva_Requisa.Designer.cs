@@ -34,6 +34,21 @@
             label1 = new Label();
             label2 = new Label();
             table = new DataGridView();
+            checkColumn = new DataGridViewCheckBoxColumn();
+            columcasa = new DataGridViewTextBoxColumn();
+            sucursalColumn = new DataGridViewTextBoxColumn();
+            numeroParteColumn = new DataGridViewTextBoxColumn();
+            nombreParteColumn = new DataGridViewTextBoxColumn();
+            descripcionColumn = new DataGridViewTextBoxColumn();
+            tipoAjusteColumn = new DataGridViewTextBoxColumn();
+            cantidadColumn = new DataGridViewTextBoxColumn();
+            costoUnitarioColumn = new DataGridViewTextBoxColumn();
+            costoPromedioCOlumn = new DataGridViewTextBoxColumn();
+            costoPromedioExtendidoColumn = new DataGridViewTextBoxColumn();
+            reclamoColumn = new DataGridViewTextBoxColumn();
+            transferirColumn = new DataGridViewTextBoxColumn();
+            viewDocumentColumn = new DataGridViewButtonColumn();
+            requisaAjusteColumn = new DataGridViewTextBoxColumn();
             groupBox1 = new GroupBox();
             descripcionLabel = new Label();
             label9 = new Label();
@@ -63,21 +78,6 @@
             label14 = new Label();
             observacionReclamoInput = new TextBox();
             importarExcelButton = new Button();
-            checkColumn = new DataGridViewCheckBoxColumn();
-            numeroParteColumn = new DataGridViewTextBoxColumn();
-            nombreParteColumn = new DataGridViewTextBoxColumn();
-            columcasa = new DataGridViewTextBoxColumn();
-            sucursalColumn = new DataGridViewTextBoxColumn();
-            descripcionColumn = new DataGridViewTextBoxColumn();
-            tipoAjusteColumn = new DataGridViewTextBoxColumn();
-            cantidadColumn = new DataGridViewTextBoxColumn();
-            costoUnitarioColumn = new DataGridViewTextBoxColumn();
-            costoPromedioCOlumn = new DataGridViewTextBoxColumn();
-            costoPromedioExtendidoColumn = new DataGridViewTextBoxColumn();
-            reclamoColumn = new DataGridViewTextBoxColumn();
-            transferirColumn = new DataGridViewTextBoxColumn();
-            viewDocumentColumn = new DataGridViewButtonColumn();
-            requisaAjusteColumn = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)table).BeginInit();
             groupBox1.SuspendLayout();
@@ -130,16 +130,153 @@
             // table
             // 
             table.AllowUserToAddRows = false;
-            table.AllowUserToOrderColumns = true;
+            table.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             table.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            table.Columns.AddRange(new DataGridViewColumn[] { checkColumn, numeroParteColumn, nombreParteColumn, columcasa, sucursalColumn, descripcionColumn, tipoAjusteColumn, cantidadColumn, costoUnitarioColumn, costoPromedioCOlumn, costoPromedioExtendidoColumn, reclamoColumn, transferirColumn, viewDocumentColumn, requisaAjusteColumn });
+            table.Columns.AddRange(new DataGridViewColumn[] { checkColumn, columcasa, sucursalColumn, numeroParteColumn, nombreParteColumn, descripcionColumn, tipoAjusteColumn, cantidadColumn, costoUnitarioColumn, costoPromedioCOlumn, costoPromedioExtendidoColumn, reclamoColumn, transferirColumn, viewDocumentColumn, requisaAjusteColumn });
             table.Location = new Point(8, 424);
             table.Margin = new Padding(3, 4, 3, 4);
             table.Name = "table";
             table.RowHeadersWidth = 62;
-            table.Size = new Size(1622, 317);
+            table.Size = new Size(1481, 317);
             table.TabIndex = 48;
             table.CellContentClick += dataGridView1_CellContentClick;
+            // 
+            // checkColumn
+            // 
+            checkColumn.DataPropertyName = "checkColumn";
+            checkColumn.HeaderText = "Seleccionar";
+            checkColumn.MinimumWidth = 6;
+            checkColumn.Name = "checkColumn";
+            checkColumn.Width = 91;
+            // 
+            // columcasa
+            // 
+            columcasa.DataPropertyName = "columcasa";
+            columcasa.HeaderText = "Casa";
+            columcasa.MinimumWidth = 8;
+            columcasa.Name = "columcasa";
+            columcasa.SortMode = DataGridViewColumnSortMode.NotSortable;
+            columcasa.Width = 46;
+            // 
+            // sucursalColumn
+            // 
+            sucursalColumn.DataPropertyName = "sucursalColumn";
+            sucursalColumn.HeaderText = "Sucursal";
+            sucursalColumn.MinimumWidth = 8;
+            sucursalColumn.Name = "sucursalColumn";
+            sucursalColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            sucursalColumn.Width = 69;
+            // 
+            // numeroParteColumn
+            // 
+            numeroParteColumn.DataPropertyName = "numeroParteColumn";
+            numeroParteColumn.HeaderText = "No. de Parte";
+            numeroParteColumn.MinimumWidth = 8;
+            numeroParteColumn.Name = "numeroParteColumn";
+            numeroParteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            numeroParteColumn.Width = 87;
+            // 
+            // nombreParteColumn
+            // 
+            nombreParteColumn.DataPropertyName = "nombreParteColumn";
+            nombreParteColumn.HeaderText = "Nombre de Parte";
+            nombreParteColumn.MinimumWidth = 6;
+            nombreParteColumn.Name = "nombreParteColumn";
+            nombreParteColumn.ReadOnly = true;
+            nombreParteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            nombreParteColumn.Width = 86;
+            // 
+            // descripcionColumn
+            // 
+            descripcionColumn.DataPropertyName = "descripcionColumn";
+            descripcionColumn.HeaderText = "Descripción";
+            descripcionColumn.MinimumWidth = 8;
+            descripcionColumn.Name = "descripcionColumn";
+            descripcionColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            descripcionColumn.Width = 93;
+            // 
+            // tipoAjusteColumn
+            // 
+            tipoAjusteColumn.DataPropertyName = "tipoAjusteColumn";
+            tipoAjusteColumn.HeaderText = "Tipo de Ajuste";
+            tipoAjusteColumn.MinimumWidth = 8;
+            tipoAjusteColumn.Name = "tipoAjusteColumn";
+            tipoAjusteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            // 
+            // cantidadColumn
+            // 
+            cantidadColumn.DataPropertyName = "cantidadColumn";
+            cantidadColumn.HeaderText = "Cantidad";
+            cantidadColumn.MinimumWidth = 8;
+            cantidadColumn.Name = "cantidadColumn";
+            cantidadColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            cantidadColumn.Width = 75;
+            // 
+            // costoUnitarioColumn
+            // 
+            costoUnitarioColumn.DataPropertyName = "costoUnitarioColumn";
+            costoUnitarioColumn.HeaderText = "Costo Unit.";
+            costoUnitarioColumn.MinimumWidth = 8;
+            costoUnitarioColumn.Name = "costoUnitarioColumn";
+            costoUnitarioColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            costoUnitarioColumn.Visible = false;
+            costoUnitarioColumn.Width = 78;
+            // 
+            // costoPromedioCOlumn
+            // 
+            costoPromedioCOlumn.DataPropertyName = "costoPromedioCOlumn";
+            costoPromedioCOlumn.HeaderText = "Costo Promedio Unit";
+            costoPromedioCOlumn.MinimumWidth = 8;
+            costoPromedioCOlumn.Name = "costoPromedioCOlumn";
+            costoPromedioCOlumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            costoPromedioCOlumn.Width = 114;
+            // 
+            // costoPromedioExtendidoColumn
+            // 
+            costoPromedioExtendidoColumn.DataPropertyName = "costoPromedioExtendidoColumn";
+            costoPromedioExtendidoColumn.HeaderText = "Costo Promedio Extendido";
+            costoPromedioExtendidoColumn.MinimumWidth = 8;
+            costoPromedioExtendidoColumn.Name = "costoPromedioExtendidoColumn";
+            costoPromedioExtendidoColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            costoPromedioExtendidoColumn.Width = 174;
+            // 
+            // reclamoColumn
+            // 
+            reclamoColumn.DataPropertyName = "reclamoColumn";
+            reclamoColumn.HeaderText = "Reclamo";
+            reclamoColumn.MinimumWidth = 6;
+            reclamoColumn.Name = "reclamoColumn";
+            reclamoColumn.ReadOnly = true;
+            reclamoColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            reclamoColumn.Width = 73;
+            // 
+            // transferirColumn
+            // 
+            transferirColumn.DataPropertyName = "transferirColumn";
+            transferirColumn.HeaderText = "Transferencia de sucursal";
+            transferirColumn.MinimumWidth = 6;
+            transferirColumn.Name = "transferirColumn";
+            transferirColumn.ReadOnly = true;
+            transferirColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            transferirColumn.Width = 114;
+            // 
+            // viewDocumentColumn
+            // 
+            viewDocumentColumn.DataPropertyName = "viewDocumentColumn";
+            viewDocumentColumn.HeaderText = "visualizar";
+            viewDocumentColumn.MinimumWidth = 6;
+            viewDocumentColumn.Name = "viewDocumentColumn";
+            viewDocumentColumn.Width = 76;
+            // 
+            // requisaAjusteColumn
+            // 
+            requisaAjusteColumn.DataPropertyName = "requisaAjusteColumn";
+            requisaAjusteColumn.HeaderText = "requisaAjuste";
+            requisaAjusteColumn.MinimumWidth = 6;
+            requisaAjusteColumn.Name = "requisaAjusteColumn";
+            requisaAjusteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            requisaAjusteColumn.Visible = false;
+            requisaAjusteColumn.Width = 104;
             // 
             // groupBox1
             // 
@@ -157,7 +294,7 @@
             groupBox1.Margin = new Padding(2, 3, 2, 3);
             groupBox1.Name = "groupBox1";
             groupBox1.Padding = new Padding(2, 3, 2, 3);
-            groupBox1.Size = new Size(1235, 192);
+            groupBox1.Size = new Size(1088, 192);
             groupBox1.TabIndex = 49;
             groupBox1.TabStop = false;
             groupBox1.Text = "Datos De Requisa";
@@ -165,7 +302,7 @@
             // descripcionLabel
             // 
             descripcionLabel.AutoSize = true;
-            descripcionLabel.Location = new Point(392, 155);
+            descripcionLabel.Location = new Point(541, 141);
             descripcionLabel.Name = "descripcionLabel";
             descripcionLabel.Size = new Size(87, 20);
             descripcionLabel.TabIndex = 57;
@@ -174,7 +311,7 @@
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(392, 122);
+            label9.Location = new Point(392, 141);
             label9.Name = "label9";
             label9.Size = new Size(129, 20);
             label9.TabIndex = 56;
@@ -207,7 +344,7 @@
             descripcionRequisaInput.Margin = new Padding(2, 3, 2, 3);
             descripcionRequisaInput.Multiline = true;
             descripcionRequisaInput.Name = "descripcionRequisaInput";
-            descripcionRequisaInput.Size = new Size(528, 57);
+            descripcionRequisaInput.Size = new Size(365, 57);
             descripcionRequisaInput.TabIndex = 53;
             // 
             // label6
@@ -289,7 +426,7 @@
             groupBox2.Margin = new Padding(2, 3, 2, 3);
             groupBox2.Name = "groupBox2";
             groupBox2.Padding = new Padding(2, 3, 2, 3);
-            groupBox2.Size = new Size(756, 116);
+            groupBox2.Size = new Size(678, 116);
             groupBox2.TabIndex = 55;
             groupBox2.TabStop = false;
             groupBox2.Text = "Datos De Ajuste";
@@ -300,7 +437,7 @@
             descripcionParteInput.Margin = new Padding(3, 4, 3, 4);
             descripcionParteInput.Multiline = true;
             descripcionParteInput.Name = "descripcionParteInput";
-            descripcionParteInput.Size = new Size(362, 63);
+            descripcionParteInput.Size = new Size(231, 63);
             descripcionParteInput.TabIndex = 58;
             // 
             // label13
@@ -333,7 +470,7 @@
             // agregarButton
             // 
             agregarButton.BackColor = Color.RosyBrown;
-            agregarButton.Location = new Point(767, 376);
+            agregarButton.Location = new Point(706, 320);
             agregarButton.Margin = new Padding(2, 3, 2, 3);
             agregarButton.Name = "agregarButton";
             agregarButton.Size = new Size(128, 32);
@@ -345,7 +482,7 @@
             // guardarButton
             // 
             guardarButton.BackColor = Color.Lime;
-            guardarButton.Location = new Point(1540, 375);
+            guardarButton.Location = new Point(1400, 377);
             guardarButton.Margin = new Padding(2, 3, 2, 3);
             guardarButton.Name = "guardarButton";
             guardarButton.Size = new Size(89, 31);
@@ -356,7 +493,7 @@
             // 
             // cargarPdfButton
             // 
-            cargarPdfButton.Location = new Point(1094, 374);
+            cargarPdfButton.Location = new Point(906, 326);
             cargarPdfButton.Margin = new Padding(3, 4, 3, 4);
             cargarPdfButton.Name = "cargarPdfButton";
             cargarPdfButton.Size = new Size(150, 31);
@@ -367,7 +504,7 @@
             // 
             // eliminarButton
             // 
-            eliminarButton.Location = new Point(917, 378);
+            eliminarButton.Location = new Point(706, 378);
             eliminarButton.Name = "eliminarButton";
             eliminarButton.Size = new Size(160, 29);
             eliminarButton.TabIndex = 60;
@@ -379,7 +516,7 @@
             // 
             moduleTransferir.Controls.Add(label3);
             moduleTransferir.Controls.Add(sucursalTransferirComboBox);
-            moduleTransferir.Location = new Point(1268, 45);
+            moduleTransferir.Location = new Point(1128, 50);
             moduleTransferir.Name = "moduleTransferir";
             moduleTransferir.Size = new Size(361, 161);
             moduleTransferir.TabIndex = 61;
@@ -410,7 +547,7 @@
             // 
             moduleReclamo.Controls.Add(label14);
             moduleReclamo.Controls.Add(observacionReclamoInput);
-            moduleReclamo.Location = new Point(1268, 218);
+            moduleReclamo.Location = new Point(1128, 223);
             moduleReclamo.Name = "moduleReclamo";
             moduleReclamo.Size = new Size(361, 139);
             moduleReclamo.TabIndex = 62;
@@ -423,9 +560,9 @@
             label14.AutoSize = true;
             label14.Location = new Point(12, 36);
             label14.Name = "label14";
-            label14.Size = new Size(94, 20);
+            label14.Size = new Size(143, 20);
             label14.TabIndex = 4;
-            label14.Text = "Observación:";
+            label14.Text = "Detalles del pedido:";
             // 
             // observacionReclamoInput
             // 
@@ -437,7 +574,7 @@
             // 
             // importarExcelButton
             // 
-            importarExcelButton.Location = new Point(1268, 375);
+            importarExcelButton.Location = new Point(906, 375);
             importarExcelButton.Name = "importarExcelButton";
             importarExcelButton.Size = new Size(132, 32);
             importarExcelButton.TabIndex = 59;
@@ -446,136 +583,11 @@
             importarExcelButton.Visible = false;
             importarExcelButton.Click += importarExcelButton_Click;
             // 
-            // checkColumn
-            // 
-            checkColumn.DataPropertyName = "checkColumn";
-            checkColumn.HeaderText = "Seleccionar";
-            checkColumn.MinimumWidth = 6;
-            checkColumn.Name = "checkColumn";
-            checkColumn.Width = 125;
-            // 
-            // numeroParteColumn
-            // 
-            numeroParteColumn.DataPropertyName = "numeroParteColumn";
-            numeroParteColumn.HeaderText = "No. de Parte";
-            numeroParteColumn.MinimumWidth = 8;
-            numeroParteColumn.Name = "numeroParteColumn";
-            numeroParteColumn.Width = 150;
-            // 
-            // nombreParteColumn
-            // 
-            nombreParteColumn.DataPropertyName = "nombreParteColumn";
-            nombreParteColumn.HeaderText = "Nombre de Parte";
-            nombreParteColumn.MinimumWidth = 6;
-            nombreParteColumn.Name = "nombreParteColumn";
-            nombreParteColumn.ReadOnly = true;
-            nombreParteColumn.Width = 125;
-            // 
-            // columcasa
-            // 
-            columcasa.DataPropertyName = "columcasa";
-            columcasa.HeaderText = "Casa";
-            columcasa.MinimumWidth = 8;
-            columcasa.Name = "columcasa";
-            columcasa.Width = 150;
-            // 
-            // sucursalColumn
-            // 
-            sucursalColumn.DataPropertyName = "sucursalColumn";
-            sucursalColumn.HeaderText = "Sucursal";
-            sucursalColumn.MinimumWidth = 8;
-            sucursalColumn.Name = "sucursalColumn";
-            sucursalColumn.Width = 150;
-            // 
-            // descripcionColumn
-            // 
-            descripcionColumn.DataPropertyName = "descripcionColumn";
-            descripcionColumn.HeaderText = "Descripción";
-            descripcionColumn.MinimumWidth = 8;
-            descripcionColumn.Name = "descripcionColumn";
-            descripcionColumn.Width = 150;
-            // 
-            // tipoAjusteColumn
-            // 
-            tipoAjusteColumn.DataPropertyName = "tipoAjusteColumn";
-            tipoAjusteColumn.HeaderText = "Tipo de Ajuste";
-            tipoAjusteColumn.MinimumWidth = 8;
-            tipoAjusteColumn.Name = "tipoAjusteColumn";
-            tipoAjusteColumn.Width = 150;
-            // 
-            // cantidadColumn
-            // 
-            cantidadColumn.DataPropertyName = "cantidadColumn";
-            cantidadColumn.HeaderText = "Cantidad";
-            cantidadColumn.MinimumWidth = 8;
-            cantidadColumn.Name = "cantidadColumn";
-            cantidadColumn.Width = 150;
-            // 
-            // costoUnitarioColumn
-            // 
-            costoUnitarioColumn.DataPropertyName = "costoUnitarioColumn";
-            costoUnitarioColumn.HeaderText = "Costo Unit.";
-            costoUnitarioColumn.MinimumWidth = 8;
-            costoUnitarioColumn.Name = "costoUnitarioColumn";
-            costoUnitarioColumn.Visible = false;
-            costoUnitarioColumn.Width = 150;
-            // 
-            // costoPromedioCOlumn
-            // 
-            costoPromedioCOlumn.DataPropertyName = "costoPromedioCOlumn";
-            costoPromedioCOlumn.HeaderText = "Costo Promedio Unit";
-            costoPromedioCOlumn.MinimumWidth = 8;
-            costoPromedioCOlumn.Name = "costoPromedioCOlumn";
-            costoPromedioCOlumn.Width = 150;
-            // 
-            // costoPromedioExtendidoColumn
-            // 
-            costoPromedioExtendidoColumn.DataPropertyName = "costoPromedioExtendidoColumn";
-            costoPromedioExtendidoColumn.HeaderText = "Costo Promedio Extendido";
-            costoPromedioExtendidoColumn.MinimumWidth = 8;
-            costoPromedioExtendidoColumn.Name = "costoPromedioExtendidoColumn";
-            costoPromedioExtendidoColumn.Width = 150;
-            // 
-            // reclamoColumn
-            // 
-            reclamoColumn.DataPropertyName = "reclamoColumn";
-            reclamoColumn.HeaderText = "Reclamo";
-            reclamoColumn.MinimumWidth = 6;
-            reclamoColumn.Name = "reclamoColumn";
-            reclamoColumn.ReadOnly = true;
-            reclamoColumn.Width = 125;
-            // 
-            // transferirColumn
-            // 
-            transferirColumn.DataPropertyName = "transferirColumn";
-            transferirColumn.HeaderText = "Transferencia de sucursal";
-            transferirColumn.MinimumWidth = 6;
-            transferirColumn.Name = "transferirColumn";
-            transferirColumn.ReadOnly = true;
-            transferirColumn.Width = 125;
-            // 
-            // viewDocumentColumn
-            // 
-            viewDocumentColumn.DataPropertyName = "viewDocumentColumn";
-            viewDocumentColumn.HeaderText = "visualizar";
-            viewDocumentColumn.MinimumWidth = 6;
-            viewDocumentColumn.Name = "viewDocumentColumn";
-            viewDocumentColumn.Width = 125;
-            // 
-            // requisaAjusteColumn
-            // 
-            requisaAjusteColumn.DataPropertyName = "requisaAjusteColumn";
-            requisaAjusteColumn.HeaderText = "requisaAjuste";
-            requisaAjusteColumn.MinimumWidth = 6;
-            requisaAjusteColumn.Name = "requisaAjusteColumn";
-            requisaAjusteColumn.Visible = false;
-            requisaAjusteColumn.Width = 125;
-            // 
             // Nueva_Requisa
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1663, 783);
+            ClientSize = new Size(1519, 783);
             Controls.Add(moduleReclamo);
             Controls.Add(moduleTransferir);
             Controls.Add(eliminarButton);
@@ -646,10 +658,10 @@
         private Label descripcionLabel;
         private Label label9;
         private DataGridViewCheckBoxColumn checkColumn;
-        private DataGridViewTextBoxColumn numeroParteColumn;
-        private DataGridViewTextBoxColumn nombreParteColumn;
         private DataGridViewTextBoxColumn columcasa;
         private DataGridViewTextBoxColumn sucursalColumn;
+        private DataGridViewTextBoxColumn numeroParteColumn;
+        private DataGridViewTextBoxColumn nombreParteColumn;
         private DataGridViewTextBoxColumn descripcionColumn;
         private DataGridViewTextBoxColumn tipoAjusteColumn;
         private DataGridViewTextBoxColumn cantidadColumn;

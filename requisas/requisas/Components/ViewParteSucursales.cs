@@ -15,17 +15,18 @@ namespace CapaVista.Components
     public partial class ViewParteSucursales : Form
     {
 
-        private string _parteSucursal;
+        private ParteSucursalServices _parteSucursalServices = new ParteSucursalServices();
         private List<ParteSucursal> _parteSucursales = new List<ParteSucursal>();
 
-        public string ParteSucursal
+        private string _parteSucursal;
+        public string ParteSucursal { get => _parteSucursal; set => _parteSucursal = value; }
+
+
+        public ViewParteSucursales()
         {
-            get { return _parteSucursal; }
-            set { _parteSucursal = value; }
+            InitializeComponent();
         }
-
-        private ParteSucursalServices _parteSucursalServices = new ParteSucursalServices();
-
+        
         private async void ViewParteSucursales_Load(object sender, EventArgs e)
         {
             var response = await _parteSucursalServices.ObtenerPartesSucursal();
@@ -39,12 +40,6 @@ namespace CapaVista.Components
             await loadData();
         }
 
-        public ViewParteSucursales()
-        {
-            InitializeComponent();
-        }
-
-
         private async void buscarPorNombreInput_TextChanged(object sender, EventArgs e)
         {
             table.DataSource = null;
@@ -54,12 +49,12 @@ namespace CapaVista.Components
             if (String.IsNullOrEmpty(buscarPorNombreInput.Text))
             {
                 await loadData();
+                return;
             }
 
             var listFilter = listTemp.Where(x =>
                 x.Descripcion.ToLower().Contains(buscarPorNombreInput.Text.ToLower()
-            ))
-            .ToList();
+            )).ToList();
 
             table.AutoGenerateColumns = false;
             table.DataSource = listFilter.Select(ps => new
@@ -72,24 +67,6 @@ namespace CapaVista.Components
                 stockColumn = ps.Stock,
                 casaColumn = ps.Casa
             }).ToList();
-
-        }
-
-        private void table_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
-            {
-                var row = table.Rows[e.RowIndex];
-                var cellValue = row.Cells[e.ColumnIndex].Value;
-                if (cellValue != null)
-                {
-                    MessageBox.Show($"Valor seleccionado: {cellValue.ToString()}");
-                }
-
-                _parteSucursal = row.Cells["numeroParteColumn"].Value?.ToString() ?? string.Empty;
-
-                this.Close();
-            }
         }
 
         private async void numeroParteSearchInput_TextChanged(object sender, EventArgs e)
@@ -101,6 +78,7 @@ namespace CapaVista.Components
             if (String.IsNullOrEmpty(buscarPorNombreInput.Text))
             {
                 await loadData();
+                return;
             }
 
             var listFilter = listTemp.Where(x =>
@@ -120,6 +98,24 @@ namespace CapaVista.Components
                 casaColumn = ps.Casa
             }).ToList();
         }
+    
+        private void table_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                var row = table.Rows[e.RowIndex];
+                var cellValue = row.Cells[e.ColumnIndex].Value;
+                if (cellValue != null)
+                {
+                    MessageBox.Show($"Valor seleccionado: {cellValue.ToString()}");
+                }
+
+                _parteSucursal = row.Cells["numeroParteColumn"].Value?.ToString() ?? string.Empty;
+
+                this.Close();
+            }
+        }
+
  
         #region services
         private async Task loadData()

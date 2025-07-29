@@ -42,6 +42,8 @@
             requisaMenuButton = new ToolStripMenuItem();
             requisasCompletadasToolStripMenuItem = new ToolStripMenuItem();
             ajustesRequisaToolStripMenuItem = new ToolStripMenuItem();
+            cantidadDeRequisasPorEstadoToolStripMenuItem = new ToolStripMenuItem();
+            parteToolStripMenuItem = new ToolStripMenuItem();
             usuariosToolStripMenuItem = new ToolStripMenuItem();
             gestionarToolStripMenuItem = new ToolStripMenuItem();
             reporteDeUsuariosToolStripMenuItem = new ToolStripMenuItem();
@@ -52,6 +54,7 @@
             usuarioText = new Label();
             notifyIcon1 = new NotifyIcon(components);
             revisionTimer = new System.Windows.Forms.Timer(components);
+            detallesDeRequisaPorEstadoToolStripMenuItem = new ToolStripMenuItem();
             menuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -121,7 +124,7 @@
             // 
             // rEPORTESToolStripMenuItem
             // 
-            rEPORTESToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { requisaMenuButton });
+            rEPORTESToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { requisaMenuButton, parteToolStripMenuItem });
             rEPORTESToolStripMenuItem.Name = "rEPORTESToolStripMenuItem";
             rEPORTESToolStripMenuItem.Size = new Size(91, 28);
             rEPORTESToolStripMenuItem.Text = "REPORTES";
@@ -129,25 +132,38 @@
             // 
             // requisaMenuButton
             // 
-            requisaMenuButton.DropDownItems.AddRange(new ToolStripItem[] { requisasCompletadasToolStripMenuItem, ajustesRequisaToolStripMenuItem });
+            requisaMenuButton.DropDownItems.AddRange(new ToolStripItem[] { requisasCompletadasToolStripMenuItem, ajustesRequisaToolStripMenuItem, cantidadDeRequisasPorEstadoToolStripMenuItem, detallesDeRequisaPorEstadoToolStripMenuItem });
             requisaMenuButton.Name = "requisaMenuButton";
-            requisaMenuButton.Size = new Size(144, 26);
+            requisaMenuButton.Size = new Size(224, 26);
             requisaMenuButton.Text = "Requisa";
-            requisaMenuButton.Click += irAReportesToolStripMenuItem_Click;
             // 
             // requisasCompletadasToolStripMenuItem
             // 
             requisasCompletadasToolStripMenuItem.Name = "requisasCompletadasToolStripMenuItem";
-            requisasCompletadasToolStripMenuItem.Size = new Size(242, 26);
+            requisasCompletadasToolStripMenuItem.Size = new Size(311, 26);
             requisasCompletadasToolStripMenuItem.Text = "Requisas Completadas";
             requisasCompletadasToolStripMenuItem.Click += requisasCompletadasToolStripMenuItem_Click;
             // 
             // ajustesRequisaToolStripMenuItem
             // 
             ajustesRequisaToolStripMenuItem.Name = "ajustesRequisaToolStripMenuItem";
-            ajustesRequisaToolStripMenuItem.Size = new Size(242, 26);
+            ajustesRequisaToolStripMenuItem.Size = new Size(311, 26);
             ajustesRequisaToolStripMenuItem.Text = "Ajustes Requisa";
             ajustesRequisaToolStripMenuItem.Click += ajustesRequisaToolStripMenuItem_Click;
+            // 
+            // cantidadDeRequisasPorEstadoToolStripMenuItem
+            // 
+            cantidadDeRequisasPorEstadoToolStripMenuItem.Name = "cantidadDeRequisasPorEstadoToolStripMenuItem";
+            cantidadDeRequisasPorEstadoToolStripMenuItem.Size = new Size(311, 26);
+            cantidadDeRequisasPorEstadoToolStripMenuItem.Text = "Cantidad de Requisas por Estado";
+            cantidadDeRequisasPorEstadoToolStripMenuItem.Click += cantidadDeRequisasPorEstadoToolStripMenuItem_Click;
+            // 
+            // parteToolStripMenuItem
+            // 
+            parteToolStripMenuItem.Name = "parteToolStripMenuItem";
+            parteToolStripMenuItem.Size = new Size(224, 26);
+            parteToolStripMenuItem.Text = "Parte";
+            parteToolStripMenuItem.Click += parteToolStripMenuItem_Click;
             // 
             // usuariosToolStripMenuItem
             // 
@@ -209,6 +225,13 @@
             notifyIcon1.Text = "notifyIcon1";
             notifyIcon1.Visible = true;
             // 
+            // detallesDeRequisaPorEstadoToolStripMenuItem
+            // 
+            detallesDeRequisaPorEstadoToolStripMenuItem.Name = "detallesDeRequisaPorEstadoToolStripMenuItem";
+            detallesDeRequisaPorEstadoToolStripMenuItem.Size = new Size(311, 26);
+            detallesDeRequisaPorEstadoToolStripMenuItem.Text = "Detalles de Requisa por Estado";
+            detallesDeRequisaPorEstadoToolStripMenuItem.Click += detallesDeRequisaPorEstadoToolStripMenuItem_Click;
+            // 
             // Menu_Principal
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -259,6 +282,9 @@
         private ToolStripMenuItem gESTIONDEREQUISAToolStripMenuItem;
         private ToolStripMenuItem requisasCompletadasToolStripMenuItem;
         private ToolStripMenuItem ajustesRequisaToolStripMenuItem;
+        private ToolStripMenuItem parteToolStripMenuItem;
+        private ToolStripMenuItem cantidadDeRequisasPorEstadoToolStripMenuItem;
+        private ToolStripMenuItem detallesDeRequisaPorEstadoToolStripMenuItem;
     }
 }
 

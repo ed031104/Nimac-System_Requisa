@@ -56,10 +56,10 @@
             numeroRequisaLabel = new Label();
             label1 = new Label();
             idTipoAjusteColumn = new DataGridViewTextBoxColumn();
-            numeroParteColumn = new DataGridViewTextBoxColumn();
-            nombreParteColumn = new DataGridViewTextBoxColumn();
             casaColumn = new DataGridViewTextBoxColumn();
             sucursalColumn = new DataGridViewTextBoxColumn();
+            numeroParteColumn = new DataGridViewTextBoxColumn();
+            nombreParteColumn = new DataGridViewTextBoxColumn();
             DescripciónAjusteColumn = new DataGridViewTextBoxColumn();
             tipoAjusteColumn = new DataGridViewTextBoxColumn();
             cantidadColumn = new DataGridViewTextBoxColumn();
@@ -117,8 +117,10 @@
             // tableAjustes
             // 
             tableAjustes.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            tableAjustes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            tableAjustes.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             tableAjustes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            tableAjustes.Columns.AddRange(new DataGridViewColumn[] { idTipoAjusteColumn, numeroParteColumn, nombreParteColumn, casaColumn, sucursalColumn, DescripciónAjusteColumn, tipoAjusteColumn, cantidadColumn, costoUnitarioColumn, costoPromedioColumn, costoPromedioExtendidoColumn, reclamoColumn, transferenciaColumn, visualizarColumn });
+            tableAjustes.Columns.AddRange(new DataGridViewColumn[] { idTipoAjusteColumn, casaColumn, sucursalColumn, numeroParteColumn, nombreParteColumn, DescripciónAjusteColumn, tipoAjusteColumn, cantidadColumn, costoUnitarioColumn, costoPromedioColumn, costoPromedioExtendidoColumn, reclamoColumn, transferenciaColumn, visualizarColumn });
             tableAjustes.Location = new Point(20, 90);
             tableAjustes.Name = "tableAjustes";
             tableAjustes.RowHeadersWidth = 51;
@@ -356,24 +358,9 @@
             idTipoAjusteColumn.HeaderText = "Id de Tipo de Ajuste";
             idTipoAjusteColumn.MinimumWidth = 6;
             idTipoAjusteColumn.Name = "idTipoAjusteColumn";
+            idTipoAjusteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
             idTipoAjusteColumn.Visible = false;
-            idTipoAjusteColumn.Width = 125;
-            // 
-            // numeroParteColumn
-            // 
-            numeroParteColumn.DataPropertyName = "numeroParteColumn";
-            numeroParteColumn.HeaderText = "Número de Parte";
-            numeroParteColumn.MinimumWidth = 6;
-            numeroParteColumn.Name = "numeroParteColumn";
-            numeroParteColumn.Width = 125;
-            // 
-            // nombreParteColumn
-            // 
-            nombreParteColumn.DataPropertyName = "nombreParteColumn";
-            nombreParteColumn.HeaderText = "Nombre de Parte";
-            nombreParteColumn.MinimumWidth = 6;
-            nombreParteColumn.Name = "nombreParteColumn";
-            nombreParteColumn.Width = 125;
+            idTipoAjusteColumn.Width = 149;
             // 
             // casaColumn
             // 
@@ -381,7 +368,8 @@
             casaColumn.HeaderText = "Casa";
             casaColumn.MinimumWidth = 6;
             casaColumn.Name = "casaColumn";
-            casaColumn.Width = 125;
+            casaColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            casaColumn.Width = 46;
             // 
             // sucursalColumn
             // 
@@ -389,7 +377,26 @@
             sucursalColumn.HeaderText = "Sucursal";
             sucursalColumn.MinimumWidth = 6;
             sucursalColumn.Name = "sucursalColumn";
-            sucursalColumn.Width = 125;
+            sucursalColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            sucursalColumn.Width = 69;
+            // 
+            // numeroParteColumn
+            // 
+            numeroParteColumn.DataPropertyName = "numeroParteColumn";
+            numeroParteColumn.HeaderText = "Número de Parte";
+            numeroParteColumn.MinimumWidth = 6;
+            numeroParteColumn.Name = "numeroParteColumn";
+            numeroParteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            numeroParteColumn.Width = 85;
+            // 
+            // nombreParteColumn
+            // 
+            nombreParteColumn.DataPropertyName = "nombreParteColumn";
+            nombreParteColumn.HeaderText = "Nombre de Parte";
+            nombreParteColumn.MinimumWidth = 6;
+            nombreParteColumn.Name = "nombreParteColumn";
+            nombreParteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            nombreParteColumn.Width = 86;
             // 
             // DescripciónAjusteColumn
             // 
@@ -397,7 +404,8 @@
             DescripciónAjusteColumn.HeaderText = "Descripción de Ajuste";
             DescripciónAjusteColumn.MinimumWidth = 6;
             DescripciónAjusteColumn.Name = "DescripciónAjusteColumn";
-            DescripciónAjusteColumn.Width = 125;
+            DescripciónAjusteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            DescripciónAjusteColumn.Width = 106;
             // 
             // tipoAjusteColumn
             // 
@@ -405,7 +413,7 @@
             tipoAjusteColumn.HeaderText = "Tipo de Ajuste";
             tipoAjusteColumn.MinimumWidth = 6;
             tipoAjusteColumn.Name = "tipoAjusteColumn";
-            tipoAjusteColumn.Width = 125;
+            tipoAjusteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
             // 
             // cantidadColumn
             // 
@@ -413,7 +421,8 @@
             cantidadColumn.HeaderText = "Cantidad";
             cantidadColumn.MinimumWidth = 6;
             cantidadColumn.Name = "cantidadColumn";
-            cantidadColumn.Width = 125;
+            cantidadColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            cantidadColumn.Width = 75;
             // 
             // costoUnitarioColumn
             // 
@@ -421,7 +430,8 @@
             costoUnitarioColumn.HeaderText = "Costo Unitario";
             costoUnitarioColumn.MinimumWidth = 6;
             costoUnitarioColumn.Name = "costoUnitarioColumn";
-            costoUnitarioColumn.Width = 125;
+            costoUnitarioColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            costoUnitarioColumn.Width = 99;
             // 
             // costoPromedioColumn
             // 
@@ -429,7 +439,8 @@
             costoPromedioColumn.HeaderText = "Costo Promedio";
             costoPromedioColumn.MinimumWidth = 6;
             costoPromedioColumn.Name = "costoPromedioColumn";
-            costoPromedioColumn.Width = 125;
+            costoPromedioColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            costoPromedioColumn.Width = 110;
             // 
             // costoPromedioExtendidoColumn
             // 
@@ -437,7 +448,8 @@
             costoPromedioExtendidoColumn.HeaderText = "Costo Promedio Extendido";
             costoPromedioExtendidoColumn.MinimumWidth = 6;
             costoPromedioExtendidoColumn.Name = "costoPromedioExtendidoColumn";
-            costoPromedioExtendidoColumn.Width = 125;
+            costoPromedioExtendidoColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            costoPromedioExtendidoColumn.Width = 174;
             // 
             // reclamoColumn
             // 
@@ -445,7 +457,8 @@
             reclamoColumn.HeaderText = "Reclamo";
             reclamoColumn.MinimumWidth = 6;
             reclamoColumn.Name = "reclamoColumn";
-            reclamoColumn.Width = 125;
+            reclamoColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            reclamoColumn.Width = 73;
             // 
             // transferenciaColumn
             // 
@@ -453,7 +466,8 @@
             transferenciaColumn.HeaderText = "Transferencia de Sucursal";
             transferenciaColumn.MinimumWidth = 6;
             transferenciaColumn.Name = "transferenciaColumn";
-            transferenciaColumn.Width = 125;
+            transferenciaColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            transferenciaColumn.Width = 114;
             // 
             // visualizarColumn
             // 
@@ -461,7 +475,7 @@
             visualizarColumn.HeaderText = "Visualizar PDF Reclamo";
             visualizarColumn.MinimumWidth = 6;
             visualizarColumn.Name = "visualizarColumn";
-            visualizarColumn.Width = 125;
+            visualizarColumn.Width = 153;
             // 
             // DetallesRequisa
             // 
@@ -512,10 +526,10 @@
         private Label label4;
         private Button cargarPdfButton;
         private DataGridViewTextBoxColumn idTipoAjusteColumn;
-        private DataGridViewTextBoxColumn numeroParteColumn;
-        private DataGridViewTextBoxColumn nombreParteColumn;
         private DataGridViewTextBoxColumn casaColumn;
         private DataGridViewTextBoxColumn sucursalColumn;
+        private DataGridViewTextBoxColumn numeroParteColumn;
+        private DataGridViewTextBoxColumn nombreParteColumn;
         private DataGridViewTextBoxColumn DescripciónAjusteColumn;
         private DataGridViewTextBoxColumn tipoAjusteColumn;
         private DataGridViewTextBoxColumn cantidadColumn;

@@ -200,6 +200,17 @@ namespace requisas
                 .Where(ps => ps.Casa.Equals(casa))
                 .FirstOrDefault();
 
+            if (parteSucursalBuscada?.CostoUnitario <= 0 || parteSucursalBuscada?.Stock <= 0) { 
+                MessageBox.Show("La parte seleccionada no tiene un costo unitario válido o no hay stock disponible.");
+                return;
+            }
+
+            var CantidadAbsoluta = Math.Abs(cantidad);
+            if (parteSucursalBuscada.Stock < CantidadAbsoluta) { 
+                MessageBox.Show($"No hay suficiente stock para la parte {parteSucursalBuscada.Parte} en la sucursal {parteSucursalBuscada.Sucursal}. Stock disponible: {parteSucursalBuscada.Stock}, cantidad solicitada: {cantidad}.");
+                return;
+            }
+
             string idRequisaAjuste = sucursal + "-" + tipoAjuste.Descripcion.Substring(0, 1);
 
             var requisaAjuste = new RequisaAjuste.Builder()

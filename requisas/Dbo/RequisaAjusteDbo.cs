@@ -157,7 +157,10 @@ namespace Dbo
                     //    update Parte_Sucursal
                     //    set
 	                   //     Stock = Stock - @Cantidad
-                    //    where Numero_Parte = @idParte and IdSucursal = @idSucursal;
+                    //    where
+                    //      Numero_Parte = @idParte
+                    //    and
+                    //      IdSucursal = @idSucursal;
                     //";
                     //cmdParteSucursal.CommandText = queryUpdateStock;
                     //cmdParteSucursal.Parameters.AddWithValue("@idParte", requisaAjusteRecorrido.ParteSucursal.Parte.NumeroParte);

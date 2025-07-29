@@ -16,6 +16,15 @@
     <Compile Update="Components\Loading.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Components\ReporteCantidadRequisaEstados.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Components\ReporteDetalleCantidadRequisaEstado.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Components\ReporteParte.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Components\ReportRequisaAjusteEstado.cs">
       <SubType>Form</SubType>
     </Compile>
