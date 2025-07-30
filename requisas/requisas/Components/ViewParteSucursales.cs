@@ -19,6 +19,11 @@ namespace CapaVista.Components
         private List<ParteSucursal> _parteSucursales = new List<ParteSucursal>();
 
         private string _parteSucursal;
+        private string _casa;
+        private string _sucursal;
+
+        public string Casa { get => _casa; set => _casa = value; }
+        public string Sucursal { get => _sucursal; set => _sucursal = value; }
         public string ParteSucursal { get => _parteSucursal; set => _parteSucursal = value; }
 
 
@@ -111,6 +116,8 @@ namespace CapaVista.Components
                 }
 
                 _parteSucursal = row.Cells["numeroParteColumn"].Value?.ToString() ?? string.Empty;
+                _casa = row.Cells["casaColumn"].Value?.ToString() ?? string.Empty;
+                _sucursal = row.Cells["sucursalColumn"].Value?.ToString() ?? string.Empty;
 
                 this.Close();
             }

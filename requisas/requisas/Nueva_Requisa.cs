@@ -97,6 +97,17 @@ namespace requisas
 
                 nParteAjusteInput.Text = partesucursalSeleccionada;
                 nParteAjusteInput.Enabled = true;
+
+                var casa = viewParteSucursales.Casa;
+                var sucursal = viewParteSucursales.Sucursal;
+
+                casaRequisaComboBox.SelectedItem = casaRequisaComboBox.Items
+                    .Cast<string>()
+                    .FirstOrDefault(c => c.Equals(casa));
+
+                sucursalRequisaComboBox.SelectedItem = sucursalRequisaComboBox.Items
+                    .Cast<string>()
+                    .FirstOrDefault(s => s.Equals(sucursal));
             }
         }
 
