@@ -237,6 +237,7 @@
             // 
             // table
             // 
+            table.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             table.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             table.Columns.AddRange(new DataGridViewColumn[] { idColumn, parteColumn, descripcionColumn, stockColumn, costoUnitarioColumn, casaColumn, sucursalColumn, fechaRegistroColumn, fechaModificacionColumn });
             table.Location = new Point(24, 259);

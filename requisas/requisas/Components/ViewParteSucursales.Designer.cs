@@ -37,10 +37,10 @@
             sucursalColumn = new DataGridViewTextBoxColumn();
             casaColumn = new DataGridViewTextBoxColumn();
             groupBox1 = new GroupBox();
-            label1 = new Label();
-            buscarPorNombreInput = new TextBox();
             label2 = new Label();
             numeroParteSearchInput = new TextBox();
+            label1 = new Label();
+            buscarPorNombreInput = new TextBox();
             ((System.ComponentModel.ISupportInitialize)table).BeginInit();
             groupBox1.SuspendLayout();
             SuspendLayout();
@@ -126,27 +126,10 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Filtros";
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(15, 39);
-            label1.Name = "label1";
-            label1.Size = new Size(196, 20);
-            label1.TabIndex = 1;
-            label1.Text = "Buscar por nombre de Parte:";
-            // 
-            // buscarPorNombreInput
-            // 
-            buscarPorNombreInput.Location = new Point(220, 35);
-            buscarPorNombreInput.Name = "buscarPorNombreInput";
-            buscarPorNombreInput.Size = new Size(281, 27);
-            buscarPorNombreInput.TabIndex = 0;
-            buscarPorNombreInput.TextChanged += buscarPorNombreInput_TextChanged;
-            // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(608, 40);
+            label2.Location = new Point(10, 40);
             label2.Name = "label2";
             label2.Size = new Size(198, 20);
             label2.TabIndex = 3;
@@ -154,11 +137,28 @@
             // 
             // numeroParteSearchInput
             // 
-            numeroParteSearchInput.Location = new Point(813, 36);
+            numeroParteSearchInput.Location = new Point(215, 36);
             numeroParteSearchInput.Name = "numeroParteSearchInput";
             numeroParteSearchInput.Size = new Size(281, 27);
             numeroParteSearchInput.TabIndex = 2;
             numeroParteSearchInput.TextChanged += numeroParteSearchInput_TextChanged;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(606, 37);
+            label1.Name = "label1";
+            label1.Size = new Size(196, 20);
+            label1.TabIndex = 1;
+            label1.Text = "Buscar por nombre de Parte:";
+            // 
+            // buscarPorNombreInput
+            // 
+            buscarPorNombreInput.Location = new Point(811, 33);
+            buscarPorNombreInput.Name = "buscarPorNombreInput";
+            buscarPorNombreInput.Size = new Size(281, 27);
+            buscarPorNombreInput.TabIndex = 0;
+            buscarPorNombreInput.TextChanged += buscarPorNombreInput_TextChanged;
             // 
             // ViewParteSucursales
             // 

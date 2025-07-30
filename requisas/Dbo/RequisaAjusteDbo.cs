@@ -151,21 +151,29 @@ namespace Dbo
                     #endregion
 
                     #region Restar Stock de Parte Sucursal
-                    //using SqlCommand cmdParteSucursal = conn.CreateCommand();
-                    //cmdParteSucursal.Transaction = transaction;
-                    //string queryUpdateStock = @"
-                    //    update Parte_Sucursal
-                    //    set
-	                   //     Stock = Stock - @Cantidad
-                    //    where
-                    //      Numero_Parte = @idParte
-                    //    and
-                    //      IdSucursal = @idSucursal;
-                    //";
-                    //cmdParteSucursal.CommandText = queryUpdateStock;
-                    //cmdParteSucursal.Parameters.AddWithValue("@idParte", requisaAjusteRecorrido.ParteSucursal.Parte.NumeroParte);
-                    //cmdParteSucursal.Parameters.AddWithValue("@idSucursal", requisaAjusteRecorrido.ParteSucursal.Sucursal.NumeroSucursal);
-                    //cmdParteSucursal.Parameters.AddWithValue("@Cantidad", requisaAjusteRecorrido);
+                    using SqlCommand cmdParteSucursal = conn.CreateCommand();
+                    cmdParteSucursal.Transaction = transaction;
+                    string queryUpdateStock = @"
+                        update Parte_Sucursal
+                        set
+	                        Stock = Stock - @Cantidad
+                        where
+                          Numero_Parte = @idParte
+                        and
+                          IdSucursal = @idSucursal
+                        and
+                          idCasa = @idCasa
+                    ";
+
+                    int montoAjuste = Convert.ToInt32(Math.Abs(requisaAjusteRecorrido.MontoAjuste.Value));
+
+                    cmdParteSucursal.CommandText = queryUpdateStock;
+                    cmdParteSucursal.Parameters.AddWithValue("@idParte", requisaAjusteRecorrido.ParteSucursal.Parte);
+                    cmdParteSucursal.Parameters.AddWithValue("@idSucursal", requisaAjusteRecorrido.ParteSucursal.Sucursal);
+                    cmdParteSucursal.Parameters.AddWithValue("@idCasa", requisaAjusteRecorrido.ParteSucursal.Casa);
+                    cmdParteSucursal.Parameters.AddWithValue("@Cantidad", montoAjuste);
+                    
+                    await cmdParteSucursal.ExecuteNonQueryAsync();
                     #endregion
                 }
                 await transaction.CommitAsync();

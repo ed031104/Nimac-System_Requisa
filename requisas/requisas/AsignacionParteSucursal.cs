@@ -172,6 +172,7 @@ namespace CapaVista
                 }
 
                 var parteSucursal = new ParteSucursal.Builder()
+                    .SetIdParteSucursal(int.Parse(idParteCasaInput.Text))
                     .SetParte(parteInput.Text)
                     .SetSucursal(sucursalInput.Text)
                     .SetCantidad(int.Parse(stockInput.Text.Trim()))
