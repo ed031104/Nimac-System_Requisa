@@ -302,7 +302,8 @@
             // descripcionLabel
             // 
             descripcionLabel.AutoSize = true;
-            descripcionLabel.Location = new Point(541, 141);
+            descripcionLabel.ForeColor = Color.Brown;
+            descripcionLabel.Location = new Point(537, 125);
             descripcionLabel.Name = "descripcionLabel";
             descripcionLabel.Size = new Size(87, 20);
             descripcionLabel.TabIndex = 57;
@@ -311,7 +312,7 @@
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(392, 141);
+            label9.Location = new Point(392, 125);
             label9.Name = "label9";
             label9.Size = new Size(129, 20);
             label9.TabIndex = 56;

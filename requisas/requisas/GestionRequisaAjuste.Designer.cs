@@ -120,6 +120,8 @@
             // 
             // table
             // 
+            table.AllowUserToAddRows = false;
+            table.AllowUserToDeleteRows = false;
             table.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             table.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             table.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
@@ -127,6 +129,7 @@
             table.Columns.AddRange(new DataGridViewColumn[] { numeroRequisaColumn, descripcionRequisaColumn, cantidadAjusteColumn, costoTotalColumn, estadoRequisaColumn, fechaCreacionColumn, diasDemoraColumn, usuarioColumn, viewDatalleColumn });
             table.Location = new Point(23, 217);
             table.Name = "table";
+            table.ReadOnly = true;
             table.RowHeadersWidth = 51;
             table.Size = new Size(1396, 322);
             table.TabIndex = 22;
@@ -139,6 +142,7 @@
             numeroRequisaColumn.HeaderText = "Número de Requisa";
             numeroRequisaColumn.MinimumWidth = 6;
             numeroRequisaColumn.Name = "numeroRequisaColumn";
+            numeroRequisaColumn.ReadOnly = true;
             numeroRequisaColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
             numeroRequisaColumn.Width = 132;
             // 
@@ -148,6 +152,7 @@
             descripcionRequisaColumn.HeaderText = "Descripción Requisa";
             descripcionRequisaColumn.MinimumWidth = 6;
             descripcionRequisaColumn.Name = "descripcionRequisaColumn";
+            descripcionRequisaColumn.ReadOnly = true;
             descripcionRequisaColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
             descripcionRequisaColumn.Width = 134;
             // 
@@ -157,6 +162,7 @@
             cantidadAjusteColumn.HeaderText = "Cantidad de Items";
             cantidadAjusteColumn.MinimumWidth = 6;
             cantidadAjusteColumn.Name = "cantidadAjusteColumn";
+            cantidadAjusteColumn.ReadOnly = true;
             cantidadAjusteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
             cantidadAjusteColumn.Width = 90;
             // 
@@ -166,6 +172,7 @@
             costoTotalColumn.HeaderText = "Costo Total";
             costoTotalColumn.MinimumWidth = 6;
             costoTotalColumn.Name = "costoTotalColumn";
+            costoTotalColumn.ReadOnly = true;
             costoTotalColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
             costoTotalColumn.Width = 81;
             // 
@@ -175,6 +182,7 @@
             estadoRequisaColumn.HeaderText = "Estado de Requisa";
             estadoRequisaColumn.MinimumWidth = 6;
             estadoRequisaColumn.Name = "estadoRequisaColumn";
+            estadoRequisaColumn.ReadOnly = true;
             estadoRequisaColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
             estadoRequisaColumn.Width = 123;
             // 
@@ -184,6 +192,7 @@
             fechaCreacionColumn.HeaderText = "Fecha de Creación";
             fechaCreacionColumn.MinimumWidth = 6;
             fechaCreacionColumn.Name = "fechaCreacionColumn";
+            fechaCreacionColumn.ReadOnly = true;
             fechaCreacionColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
             fechaCreacionColumn.Width = 123;
             // 
@@ -203,6 +212,7 @@
             usuarioColumn.HeaderText = "Creado Por";
             usuarioColumn.MinimumWidth = 6;
             usuarioColumn.Name = "usuarioColumn";
+            usuarioColumn.ReadOnly = true;
             usuarioColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
             usuarioColumn.Width = 79;
             // 
@@ -212,6 +222,7 @@
             viewDatalleColumn.HeaderText = "Ver Detalles";
             viewDatalleColumn.MinimumWidth = 6;
             viewDatalleColumn.Name = "viewDatalleColumn";
+            viewDatalleColumn.ReadOnly = true;
             viewDatalleColumn.Width = 85;
             // 
             // filtroComboBox

@@ -38,14 +38,14 @@
             label3 = new Label();
             label2 = new Label();
             table = new DataGridView();
-            rolComboBox = new ComboBox();
-            usuarioComboBox = new ComboBox();
-            label1 = new Label();
-            nombreSearchInput = new TextBox();
             fechaCreacionColumn = new DataGridViewTextBoxColumn();
             usuarioColumn = new DataGridViewTextBoxColumn();
             rolColumn = new DataGridViewTextBoxColumn();
             idRolUsuarioColumn = new DataGridViewTextBoxColumn();
+            rolComboBox = new ComboBox();
+            usuarioComboBox = new ComboBox();
+            label1 = new Label();
+            nombreSearchInput = new TextBox();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)table).BeginInit();
             SuspendLayout();
@@ -65,9 +65,10 @@
             groupBox1.Controls.Add(usuarioComboBox);
             groupBox1.Controls.Add(label1);
             groupBox1.Controls.Add(nombreSearchInput);
-            groupBox1.Location = new Point(12, 12);
+            groupBox1.Dock = DockStyle.Fill;
+            groupBox1.Location = new Point(0, 0);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(776, 426);
+            groupBox1.Size = new Size(800, 450);
             groupBox1.TabIndex = 0;
             groupBox1.TabStop = false;
             groupBox1.Text = "Asignación de roles a usuarios";
@@ -148,6 +149,7 @@
             // 
             // table
             // 
+            table.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             table.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             table.Columns.AddRange(new DataGridViewColumn[] { fechaCreacionColumn, usuarioColumn, rolColumn, idRolUsuarioColumn });
             table.Location = new Point(21, 213);
@@ -156,39 +158,6 @@
             table.Size = new Size(721, 188);
             table.TabIndex = 4;
             table.CellClick += table_CellClick;
-            // 
-            // rolComboBox
-            // 
-            rolComboBox.FormattingEnabled = true;
-            rolComboBox.Location = new Point(591, 131);
-            rolComboBox.Name = "rolComboBox";
-            rolComboBox.Size = new Size(151, 28);
-            rolComboBox.TabIndex = 3;
-            // 
-            // usuarioComboBox
-            // 
-            usuarioComboBox.FormattingEnabled = true;
-            usuarioComboBox.Location = new Point(591, 65);
-            usuarioComboBox.Name = "usuarioComboBox";
-            usuarioComboBox.Size = new Size(151, 28);
-            usuarioComboBox.TabIndex = 2;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(21, 65);
-            label1.Name = "label1";
-            label1.Size = new Size(138, 20);
-            label1.TabIndex = 1;
-            label1.Text = "Buscar por Nombre";
-            // 
-            // nombreSearchInput
-            // 
-            nombreSearchInput.Location = new Point(21, 100);
-            nombreSearchInput.Name = "nombreSearchInput";
-            nombreSearchInput.Size = new Size(221, 27);
-            nombreSearchInput.TabIndex = 0;
-            nombreSearchInput.KeyDown += nombreSearchInput_KeyDown;
             // 
             // fechaCreacionColumn
             // 
@@ -222,6 +191,39 @@
             idRolUsuarioColumn.Name = "idRolUsuarioColumn";
             idRolUsuarioColumn.ReadOnly = true;
             idRolUsuarioColumn.Width = 125;
+            // 
+            // rolComboBox
+            // 
+            rolComboBox.FormattingEnabled = true;
+            rolComboBox.Location = new Point(591, 131);
+            rolComboBox.Name = "rolComboBox";
+            rolComboBox.Size = new Size(151, 28);
+            rolComboBox.TabIndex = 3;
+            // 
+            // usuarioComboBox
+            // 
+            usuarioComboBox.FormattingEnabled = true;
+            usuarioComboBox.Location = new Point(591, 65);
+            usuarioComboBox.Name = "usuarioComboBox";
+            usuarioComboBox.Size = new Size(151, 28);
+            usuarioComboBox.TabIndex = 2;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(21, 65);
+            label1.Name = "label1";
+            label1.Size = new Size(138, 20);
+            label1.TabIndex = 1;
+            label1.Text = "Buscar por Nombre";
+            // 
+            // nombreSearchInput
+            // 
+            nombreSearchInput.Location = new Point(21, 100);
+            nombreSearchInput.Name = "nombreSearchInput";
+            nombreSearchInput.Size = new Size(221, 27);
+            nombreSearchInput.TabIndex = 0;
+            nombreSearchInput.KeyDown += nombreSearchInput_KeyDown;
             // 
             // AsignaciónUsuarioRoles
             // 

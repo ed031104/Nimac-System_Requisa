@@ -32,6 +32,20 @@
             groupBox3 = new GroupBox();
             cargarPdfButton = new Button();
             tableAjustes = new DataGridView();
+            idTipoAjusteColumn = new DataGridViewTextBoxColumn();
+            casaColumn = new DataGridViewTextBoxColumn();
+            sucursalColumn = new DataGridViewTextBoxColumn();
+            numeroParteColumn = new DataGridViewTextBoxColumn();
+            nombreParteColumn = new DataGridViewTextBoxColumn();
+            DescripciónAjusteColumn = new DataGridViewTextBoxColumn();
+            tipoAjusteColumn = new DataGridViewTextBoxColumn();
+            cantidadColumn = new DataGridViewTextBoxColumn();
+            costoUnitarioColumn = new DataGridViewTextBoxColumn();
+            costoPromedioColumn = new DataGridViewTextBoxColumn();
+            costoPromedioExtendidoColumn = new DataGridViewTextBoxColumn();
+            reclamoColumn = new DataGridViewTextBoxColumn();
+            transferenciaColumn = new DataGridViewTextBoxColumn();
+            visualizarColumn = new DataGridViewButtonColumn();
             groupBox2 = new GroupBox();
             tableEstados = new DataGridView();
             idHistorialRequisaColumn = new DataGridViewTextBoxColumn();
@@ -55,20 +69,6 @@
             label3 = new Label();
             numeroRequisaLabel = new Label();
             label1 = new Label();
-            idTipoAjusteColumn = new DataGridViewTextBoxColumn();
-            casaColumn = new DataGridViewTextBoxColumn();
-            sucursalColumn = new DataGridViewTextBoxColumn();
-            numeroParteColumn = new DataGridViewTextBoxColumn();
-            nombreParteColumn = new DataGridViewTextBoxColumn();
-            DescripciónAjusteColumn = new DataGridViewTextBoxColumn();
-            tipoAjusteColumn = new DataGridViewTextBoxColumn();
-            cantidadColumn = new DataGridViewTextBoxColumn();
-            costoUnitarioColumn = new DataGridViewTextBoxColumn();
-            costoPromedioColumn = new DataGridViewTextBoxColumn();
-            costoPromedioExtendidoColumn = new DataGridViewTextBoxColumn();
-            reclamoColumn = new DataGridViewTextBoxColumn();
-            transferenciaColumn = new DataGridViewTextBoxColumn();
-            visualizarColumn = new DataGridViewButtonColumn();
             panel1.SuspendLayout();
             groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)tableAjustes).BeginInit();
@@ -116,6 +116,8 @@
             // 
             // tableAjustes
             // 
+            tableAjustes.AllowUserToAddRows = false;
+            tableAjustes.AllowUserToDeleteRows = false;
             tableAjustes.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             tableAjustes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             tableAjustes.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
@@ -123,11 +125,151 @@
             tableAjustes.Columns.AddRange(new DataGridViewColumn[] { idTipoAjusteColumn, casaColumn, sucursalColumn, numeroParteColumn, nombreParteColumn, DescripciónAjusteColumn, tipoAjusteColumn, cantidadColumn, costoUnitarioColumn, costoPromedioColumn, costoPromedioExtendidoColumn, reclamoColumn, transferenciaColumn, visualizarColumn });
             tableAjustes.Location = new Point(20, 90);
             tableAjustes.Name = "tableAjustes";
+            tableAjustes.ReadOnly = true;
             tableAjustes.RowHeadersWidth = 51;
             tableAjustes.Size = new Size(1484, 313);
             tableAjustes.TabIndex = 0;
             tableAjustes.CellClick += tableAjustes_CellClick;
             tableAjustes.CellContentClick += tableAjustes_CellContentClick;
+            // 
+            // idTipoAjusteColumn
+            // 
+            idTipoAjusteColumn.DataPropertyName = "idTipoAjusteColumn";
+            idTipoAjusteColumn.HeaderText = "Id de Tipo de Ajuste";
+            idTipoAjusteColumn.MinimumWidth = 6;
+            idTipoAjusteColumn.Name = "idTipoAjusteColumn";
+            idTipoAjusteColumn.ReadOnly = true;
+            idTipoAjusteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            idTipoAjusteColumn.Visible = false;
+            idTipoAjusteColumn.Width = 149;
+            // 
+            // casaColumn
+            // 
+            casaColumn.DataPropertyName = "casaColumn";
+            casaColumn.HeaderText = "Casa";
+            casaColumn.MinimumWidth = 6;
+            casaColumn.Name = "casaColumn";
+            casaColumn.ReadOnly = true;
+            casaColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            casaColumn.Width = 46;
+            // 
+            // sucursalColumn
+            // 
+            sucursalColumn.DataPropertyName = "sucursalColumn";
+            sucursalColumn.HeaderText = "Sucursal";
+            sucursalColumn.MinimumWidth = 6;
+            sucursalColumn.Name = "sucursalColumn";
+            sucursalColumn.ReadOnly = true;
+            sucursalColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            sucursalColumn.Width = 69;
+            // 
+            // numeroParteColumn
+            // 
+            numeroParteColumn.DataPropertyName = "numeroParteColumn";
+            numeroParteColumn.HeaderText = "Número de Parte";
+            numeroParteColumn.MinimumWidth = 6;
+            numeroParteColumn.Name = "numeroParteColumn";
+            numeroParteColumn.ReadOnly = true;
+            numeroParteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            numeroParteColumn.Width = 85;
+            // 
+            // nombreParteColumn
+            // 
+            nombreParteColumn.DataPropertyName = "nombreParteColumn";
+            nombreParteColumn.HeaderText = "Nombre de Parte";
+            nombreParteColumn.MinimumWidth = 6;
+            nombreParteColumn.Name = "nombreParteColumn";
+            nombreParteColumn.ReadOnly = true;
+            nombreParteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            nombreParteColumn.Width = 86;
+            // 
+            // DescripciónAjusteColumn
+            // 
+            DescripciónAjusteColumn.DataPropertyName = "DescripciónAjusteColumn";
+            DescripciónAjusteColumn.HeaderText = "Descripción de Ajuste";
+            DescripciónAjusteColumn.MinimumWidth = 6;
+            DescripciónAjusteColumn.Name = "DescripciónAjusteColumn";
+            DescripciónAjusteColumn.ReadOnly = true;
+            DescripciónAjusteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            DescripciónAjusteColumn.Width = 106;
+            // 
+            // tipoAjusteColumn
+            // 
+            tipoAjusteColumn.DataPropertyName = "tipoAjusteColumn";
+            tipoAjusteColumn.HeaderText = "Tipo de Ajuste";
+            tipoAjusteColumn.MinimumWidth = 6;
+            tipoAjusteColumn.Name = "tipoAjusteColumn";
+            tipoAjusteColumn.ReadOnly = true;
+            tipoAjusteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            // 
+            // cantidadColumn
+            // 
+            cantidadColumn.DataPropertyName = "cantidadColumn";
+            cantidadColumn.HeaderText = "Cantidad";
+            cantidadColumn.MinimumWidth = 6;
+            cantidadColumn.Name = "cantidadColumn";
+            cantidadColumn.ReadOnly = true;
+            cantidadColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            cantidadColumn.Width = 75;
+            // 
+            // costoUnitarioColumn
+            // 
+            costoUnitarioColumn.DataPropertyName = "costoUnitarioColumn";
+            costoUnitarioColumn.HeaderText = "Costo Unitario";
+            costoUnitarioColumn.MinimumWidth = 6;
+            costoUnitarioColumn.Name = "costoUnitarioColumn";
+            costoUnitarioColumn.ReadOnly = true;
+            costoUnitarioColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            costoUnitarioColumn.Width = 99;
+            // 
+            // costoPromedioColumn
+            // 
+            costoPromedioColumn.DataPropertyName = "costoPromedioColumn";
+            costoPromedioColumn.HeaderText = "Costo Promedio";
+            costoPromedioColumn.MinimumWidth = 6;
+            costoPromedioColumn.Name = "costoPromedioColumn";
+            costoPromedioColumn.ReadOnly = true;
+            costoPromedioColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            costoPromedioColumn.Width = 110;
+            // 
+            // costoPromedioExtendidoColumn
+            // 
+            costoPromedioExtendidoColumn.DataPropertyName = "costoPromedioExtendidoColumn";
+            costoPromedioExtendidoColumn.HeaderText = "Costo Promedio Extendido";
+            costoPromedioExtendidoColumn.MinimumWidth = 6;
+            costoPromedioExtendidoColumn.Name = "costoPromedioExtendidoColumn";
+            costoPromedioExtendidoColumn.ReadOnly = true;
+            costoPromedioExtendidoColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            costoPromedioExtendidoColumn.Width = 174;
+            // 
+            // reclamoColumn
+            // 
+            reclamoColumn.DataPropertyName = "reclamoColumn";
+            reclamoColumn.HeaderText = "Reclamo";
+            reclamoColumn.MinimumWidth = 6;
+            reclamoColumn.Name = "reclamoColumn";
+            reclamoColumn.ReadOnly = true;
+            reclamoColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            reclamoColumn.Width = 73;
+            // 
+            // transferenciaColumn
+            // 
+            transferenciaColumn.DataPropertyName = "transferenciaColumn";
+            transferenciaColumn.HeaderText = "Transferencia de Sucursal";
+            transferenciaColumn.MinimumWidth = 6;
+            transferenciaColumn.Name = "transferenciaColumn";
+            transferenciaColumn.ReadOnly = true;
+            transferenciaColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            transferenciaColumn.Width = 114;
+            // 
+            // visualizarColumn
+            // 
+            visualizarColumn.DataPropertyName = "visualizarColumn";
+            visualizarColumn.HeaderText = "Visualizar PDF Reclamo";
+            visualizarColumn.MinimumWidth = 6;
+            visualizarColumn.Name = "visualizarColumn";
+            visualizarColumn.ReadOnly = true;
+            visualizarColumn.Width = 153;
             // 
             // groupBox2
             // 
@@ -351,131 +493,6 @@
             label1.Size = new Size(143, 20);
             label1.TabIndex = 0;
             label1.Text = "Número de Requisa:";
-            // 
-            // idTipoAjusteColumn
-            // 
-            idTipoAjusteColumn.DataPropertyName = "idTipoAjusteColumn";
-            idTipoAjusteColumn.HeaderText = "Id de Tipo de Ajuste";
-            idTipoAjusteColumn.MinimumWidth = 6;
-            idTipoAjusteColumn.Name = "idTipoAjusteColumn";
-            idTipoAjusteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            idTipoAjusteColumn.Visible = false;
-            idTipoAjusteColumn.Width = 149;
-            // 
-            // casaColumn
-            // 
-            casaColumn.DataPropertyName = "casaColumn";
-            casaColumn.HeaderText = "Casa";
-            casaColumn.MinimumWidth = 6;
-            casaColumn.Name = "casaColumn";
-            casaColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            casaColumn.Width = 46;
-            // 
-            // sucursalColumn
-            // 
-            sucursalColumn.DataPropertyName = "sucursalColumn";
-            sucursalColumn.HeaderText = "Sucursal";
-            sucursalColumn.MinimumWidth = 6;
-            sucursalColumn.Name = "sucursalColumn";
-            sucursalColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            sucursalColumn.Width = 69;
-            // 
-            // numeroParteColumn
-            // 
-            numeroParteColumn.DataPropertyName = "numeroParteColumn";
-            numeroParteColumn.HeaderText = "Número de Parte";
-            numeroParteColumn.MinimumWidth = 6;
-            numeroParteColumn.Name = "numeroParteColumn";
-            numeroParteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            numeroParteColumn.Width = 85;
-            // 
-            // nombreParteColumn
-            // 
-            nombreParteColumn.DataPropertyName = "nombreParteColumn";
-            nombreParteColumn.HeaderText = "Nombre de Parte";
-            nombreParteColumn.MinimumWidth = 6;
-            nombreParteColumn.Name = "nombreParteColumn";
-            nombreParteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            nombreParteColumn.Width = 86;
-            // 
-            // DescripciónAjusteColumn
-            // 
-            DescripciónAjusteColumn.DataPropertyName = "DescripciónAjusteColumn";
-            DescripciónAjusteColumn.HeaderText = "Descripción de Ajuste";
-            DescripciónAjusteColumn.MinimumWidth = 6;
-            DescripciónAjusteColumn.Name = "DescripciónAjusteColumn";
-            DescripciónAjusteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            DescripciónAjusteColumn.Width = 106;
-            // 
-            // tipoAjusteColumn
-            // 
-            tipoAjusteColumn.DataPropertyName = "tipoAjusteColumn";
-            tipoAjusteColumn.HeaderText = "Tipo de Ajuste";
-            tipoAjusteColumn.MinimumWidth = 6;
-            tipoAjusteColumn.Name = "tipoAjusteColumn";
-            tipoAjusteColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            // 
-            // cantidadColumn
-            // 
-            cantidadColumn.DataPropertyName = "cantidadColumn";
-            cantidadColumn.HeaderText = "Cantidad";
-            cantidadColumn.MinimumWidth = 6;
-            cantidadColumn.Name = "cantidadColumn";
-            cantidadColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            cantidadColumn.Width = 75;
-            // 
-            // costoUnitarioColumn
-            // 
-            costoUnitarioColumn.DataPropertyName = "costoUnitarioColumn";
-            costoUnitarioColumn.HeaderText = "Costo Unitario";
-            costoUnitarioColumn.MinimumWidth = 6;
-            costoUnitarioColumn.Name = "costoUnitarioColumn";
-            costoUnitarioColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            costoUnitarioColumn.Width = 99;
-            // 
-            // costoPromedioColumn
-            // 
-            costoPromedioColumn.DataPropertyName = "costoPromedioColumn";
-            costoPromedioColumn.HeaderText = "Costo Promedio";
-            costoPromedioColumn.MinimumWidth = 6;
-            costoPromedioColumn.Name = "costoPromedioColumn";
-            costoPromedioColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            costoPromedioColumn.Width = 110;
-            // 
-            // costoPromedioExtendidoColumn
-            // 
-            costoPromedioExtendidoColumn.DataPropertyName = "costoPromedioExtendidoColumn";
-            costoPromedioExtendidoColumn.HeaderText = "Costo Promedio Extendido";
-            costoPromedioExtendidoColumn.MinimumWidth = 6;
-            costoPromedioExtendidoColumn.Name = "costoPromedioExtendidoColumn";
-            costoPromedioExtendidoColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            costoPromedioExtendidoColumn.Width = 174;
-            // 
-            // reclamoColumn
-            // 
-            reclamoColumn.DataPropertyName = "reclamoColumn";
-            reclamoColumn.HeaderText = "Reclamo";
-            reclamoColumn.MinimumWidth = 6;
-            reclamoColumn.Name = "reclamoColumn";
-            reclamoColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            reclamoColumn.Width = 73;
-            // 
-            // transferenciaColumn
-            // 
-            transferenciaColumn.DataPropertyName = "transferenciaColumn";
-            transferenciaColumn.HeaderText = "Transferencia de Sucursal";
-            transferenciaColumn.MinimumWidth = 6;
-            transferenciaColumn.Name = "transferenciaColumn";
-            transferenciaColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            transferenciaColumn.Width = 114;
-            // 
-            // visualizarColumn
-            // 
-            visualizarColumn.DataPropertyName = "visualizarColumn";
-            visualizarColumn.HeaderText = "Visualizar PDF Reclamo";
-            visualizarColumn.MinimumWidth = 6;
-            visualizarColumn.Name = "visualizarColumn";
-            visualizarColumn.Width = 153;
             // 
             // DetallesRequisa
             // 

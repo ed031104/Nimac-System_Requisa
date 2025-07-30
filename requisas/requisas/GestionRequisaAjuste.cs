@@ -39,14 +39,16 @@ namespace CapaVista
                 return;
             }
             _requisaJoinEstado = response.Data.ToList();
-           
+
             await cargarEstadosFiltros();
             await cargarRequisasTable();
         }
 
         private void table_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0 || e.ColumnIndex < 0)
+            int lastColumnIndex = table.Columns.Count - 1;
+
+            if (e.RowIndex < 0 || e.ColumnIndex < 0 || e.RowIndex >= lastColumnIndex)
             {
                 return; // Evitar errores si se hace clic en el encabezado o fuera de las celdas
             }
@@ -73,12 +75,14 @@ namespace CapaVista
 
         private async void table_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0)
-            {
-                estadoComboBox.DataSource = null;
-                RechazarButton.Enabled = true;
-                agregarButton.Enabled = true;
+            int lastColumnIndex = table.Rows.Count - 1;
 
+            estadoComboBox.DataSource = null;
+            RechazarButton.Enabled = true;
+            agregarButton.Enabled = true;
+            
+            if (e.RowIndex > 0 && e.RowIndex < lastColumnIndex)
+            {           
                 try
                 {
                     var numeroRequisa = table.Rows[e.RowIndex].Cells["numeroRequisaColumn"].Value.ToString() ?? "";
@@ -121,6 +125,7 @@ namespace CapaVista
 
                     _numeroRequisaSeleccionada = numeroRequisa;
                     estadoComboBox.DataSource = stateNotInRequisa;
+                    return;
                 }
                 catch (Exception ex)
                 {
@@ -638,7 +643,7 @@ namespace CapaVista
 
             return isValid;
         }
-       
+
         private enum requisaFilter
         {
             FechaCreacion = 0,

@@ -80,7 +80,7 @@ namespace CapaVista.Components
 
             var listTemp = _parteSucursales;
 
-            if (String.IsNullOrEmpty(buscarPorNombreInput.Text))
+            if (String.IsNullOrEmpty(numeroParteSearchInput.Text))
             {
                 await loadData();
                 return;

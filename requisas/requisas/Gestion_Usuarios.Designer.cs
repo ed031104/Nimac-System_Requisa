@@ -57,6 +57,7 @@
             // 
             // table
             // 
+            table.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             table.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             table.Columns.AddRange(new DataGridViewColumn[] { idUsuarioColumn, nombreColumn, emailColum, contrasenaColumn, creadoEnColumn });
             table.Location = new Point(12, 237);
@@ -113,6 +114,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             groupBox1.Controls.Add(label5);
             groupBox1.Controls.Add(label4);
             groupBox1.Controls.Add(label3);

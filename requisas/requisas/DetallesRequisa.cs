@@ -152,6 +152,11 @@ namespace CapaVista
             tableAjustes.DataSource = null;
             tableAjustes.AutoGenerateColumns = false;
             tableAjustes.DataSource = dt;
+
+            int lastRowIndex = tableAjustes.Rows.Count - 1;
+            DataGridViewRow lastRow = tableAjustes.Rows[lastRowIndex];
+            lastRow.ReadOnly = true;
+            lastRow.DefaultCellStyle.BackColor = Color.LightGray; // Cambiar el color de fondo de la fila de totales
         }
 
         private async void tableAjustes_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -297,6 +302,11 @@ namespace CapaVista
 
         private void tableAjustes_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex < 0 || e.ColumnIndex < 0)
+            {   
+                return; // Evitar errores si se hace clic en el encabezado o fuera de las celdas
+            }
+
             if (e.RowIndex >= 0 || e.ColumnIndex >= 0)
             {
                 try
@@ -316,7 +326,7 @@ namespace CapaVista
                         return;
                     }
 
-                    if (ajuste.TipoAjusteId != (int)Ajustes.Reverso && ajuste.TipoAjusteId != (int)Ajustes.MalEnviado)
+                    if (ajuste?.TipoAjusteId != (int)Ajustes.Reverso && ajuste?.TipoAjusteId != (int)Ajustes.MalEnviado)
                     {
                         return;
                     }
