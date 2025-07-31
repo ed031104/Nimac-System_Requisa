@@ -81,7 +81,7 @@ namespace CapaVista
             RechazarButton.Enabled = true;
             agregarButton.Enabled = true;
             
-            if (e.RowIndex > 0 && e.RowIndex < lastColumnIndex)
+            if (e.RowIndex >= 0 && e.RowIndex < lastColumnIndex)
             {           
                 try
                 {
